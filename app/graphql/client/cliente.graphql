@@ -1,0 +1,30 @@
+query FindOneByDocumentNumber($numberDocument: String!) {
+  findOneByDocumentNumber(numberDocument: $numberDocument) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    name
+    lastName
+    numberDocument
+    email
+    address
+    celular
+    identificationType
+  }
+}
+query Clients($orderBy: [FindClientOrderBy!], $where: FindClientWhere, $pagination: Pagination) {
+  clients(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    name
+    identificationType
+    lastName
+    numberDocument
+    email
+    address
+    celular
+  }
+}

@@ -1,0 +1,375 @@
+
+query OrderRepair($orderRepairId: ID!) {
+  orderRepair(id: $orderRepairId) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    status
+    deliveryDate
+    client {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      lastName
+      numberDocument
+      email
+      address
+      celular
+    }
+    repairType {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      costEstimate
+      fields {
+        id
+        createdAt
+        updatedAt
+        deletedAt
+        name
+        type
+        isRequired
+        minLength
+        maxLength
+      }
+    }
+    fieldValues {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      field {
+        id
+        createdAt
+        updatedAt
+        deletedAt
+        name
+        type
+        isRequired
+        minLength
+        maxLength
+      }
+      valorTexto
+      valorFecha
+      valorNumerico
+      valorTextoLargo
+      valorFoto {
+        id
+        createdAt
+        updatedAt
+        deletedAt
+        fileName
+        fileExtension
+        fileMode
+        fileMongoId
+        fileUrl
+        url
+      }
+    }
+  }
+}
+
+query OrderRepairsType($where: FindOrderRepairTypeWhere, $orderBy: [FindOrderRepairTypeOrderBy!], $pagination: Pagination) {
+  orderRepairsType(where: $where, orderBy: $orderBy, pagination: $pagination) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    name
+    costEstimate
+    fields {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      type
+      isRequired
+      minLength
+      maxLength
+    }
+  }
+  orderRepairsTypeCount(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    totalItems
+    itemsPerPage
+    totalPages
+    currentPage
+  }
+}
+query OrderRepairs($orderBy: [FindOrderRepairOrderBy!], $where: FindOrderRepairWhere, $pagination: Pagination) {
+  orderRepairs(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    status
+    deliveryDate
+    client {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      identificationType
+      lastName
+      numberDocument
+      email
+      address
+      celular
+    }
+    repairType {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      costEstimate
+      fields {
+        id
+        createdAt
+        updatedAt
+        deletedAt
+        name
+        type
+        isRequired
+        minLength
+        maxLength
+      }
+    }
+    fieldValues {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      orderRepair {
+        id
+        createdAt
+        updatedAt
+        deletedAt
+        status
+        deliveryDate
+      }
+      field {
+        id
+        createdAt
+        updatedAt
+        deletedAt
+        name
+        type
+        isRequired
+        minLength
+        maxLength
+      }
+      valorTexto
+      valorFecha
+      valorNumerico
+      valorTextoLargo
+      valorFoto {
+        id
+        createdAt
+        updatedAt
+        deletedAt
+        fileName
+        fileExtension
+        fileMode
+        fileMongoId
+        fileUrl
+        url
+      }
+    }
+    invoice {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      invoiceNumber
+      issueDate
+      dueDate
+      cliente {
+        id
+        createdAt
+        updatedAt
+        deletedAt
+        name
+        identificationType
+        lastName
+        numberDocument
+        email
+        address
+        celular
+      }
+      user {
+        id
+        createdAt
+        updatedAt
+        deletedAt
+        name
+        middleName
+        lastName
+        secondSurname
+        email
+        identificationType
+        identificationNumber
+        dateIssue
+        legalRepresentativeIdentificationType
+        legalRepresentativeIdentificationNumber
+        phoneCountryCode
+        phoneNumber
+        address
+        hasRural
+        confirmationCode
+        position
+        typeWoker
+        status
+        phoneVerification
+        emailVerification
+        type
+        fullName
+      }
+      orrderReapirty {
+        id
+        createdAt
+        updatedAt
+        deletedAt
+        status
+        deliveryDate
+        client {
+          id
+          createdAt
+          updatedAt
+          deletedAt
+          name
+          identificationType
+          lastName
+          numberDocument
+          email
+          address
+          celular
+        }
+        repairType {
+          id
+          createdAt
+          updatedAt
+          deletedAt
+          name
+          costEstimate
+          fields {
+            id
+            createdAt
+            updatedAt
+            deletedAt
+            name
+            type
+            isRequired
+            minLength
+            maxLength
+          }
+        }
+        invoice {
+          id
+          createdAt
+          updatedAt
+          deletedAt
+          invoiceNumber
+          issueDate
+          dueDate
+          subtotal
+          tax
+          total
+          discount
+          status
+          paymentMethod
+          paymentReference
+          description
+        }
+        fieldValues {
+          id
+          createdAt
+          updatedAt
+          deletedAt
+          orderRepair {
+            id
+            createdAt
+            updatedAt
+            deletedAt
+            status
+            deliveryDate
+          }
+          field {
+            id
+            createdAt
+            updatedAt
+            deletedAt
+            name
+            type
+            isRequired
+            minLength
+            maxLength
+          }
+          valorTexto
+          valorFecha
+          valorNumerico
+          valorTextoLargo
+          valorFoto {
+            id
+            createdAt
+            updatedAt
+            deletedAt
+            fileName
+            fileExtension
+            fileMode
+            fileMongoId
+            fileUrl
+            url
+          }
+        }
+        repairFieldForm {
+          id
+          createdAt
+          updatedAt
+          deletedAt
+          name
+          type
+          isRequired
+          minLength
+          maxLength
+          orderRepairty {
+            id
+            createdAt
+            updatedAt
+            deletedAt
+            status
+            deliveryDate
+          }
+        }
+      }
+      subtotal
+      tax
+      total
+      discount
+      status
+      paymentMethod
+      paymentReference
+      description
+    }
+  }
+  orderRepairsCount(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    totalItems
+    itemsPerPage
+    totalPages
+    currentPage
+  }
+}
+query genrateQrByRepair($idRepair: String!) {
+  genrateQrByRepair(idRepair: $idRepair)
+}
+mutation CreateOrderRepairType($createInput: CreateRepairTypeInput!) {
+  createOrderRepairType(createInput: $createInput) {
+    id
+  }
+}

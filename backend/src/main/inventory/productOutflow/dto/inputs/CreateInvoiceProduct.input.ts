@@ -1,0 +1,19 @@
+import { Field, InputType, Float, Int, ID } from '@nestjs/graphql';
+
+@InputType()
+export class CreateInvoiceProductInput {
+  @Field(() => Float)
+  quantity: number;
+
+  @Field(() => Float)
+  unitPrice: number;
+
+  @Field(() => Float, { nullable: true })
+  discount?: number;
+
+  @Field(() => Float, { nullable: true })
+  tax?: number;
+
+  @Field(() => ID)
+  productId: string;
+}

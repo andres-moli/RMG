@@ -1,0 +1,233 @@
+mutation CreateOrderRepairFull($createOrderRepairFullInput: CreateOrderRepairFullInput!) {
+  createOrderRepairFull(createOrderRepairFullInput: $createOrderRepairFullInput) 
+}
+query OrderRepair($orderRepairId: ID!) {
+  orderRepair(id: $orderRepairId) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    status
+    deliveryDate
+    client {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      lastName
+      numberDocument
+      email
+      address
+      celular
+    }
+    repairType {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      costEstimate
+      fields {
+        id
+        createdAt
+        updatedAt
+        deletedAt
+        name
+        type
+        isRequired
+        minLength
+        maxLength
+      }
+    }
+    fieldValues {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      field {
+        id
+        createdAt
+        updatedAt
+        deletedAt
+        name
+        type
+        isRequired
+        minLength
+        maxLength
+      }
+      valorTexto
+      valorFecha
+      valorNumerico
+      valorTextoLargo
+      valorFoto {
+        id
+        createdAt
+        updatedAt
+        deletedAt
+        fileName
+        fileExtension
+        fileMode
+        fileMongoId
+        fileUrl
+        url
+      }
+    }
+    invoice {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      invoiceNumber
+      issueDate
+      dueDate
+      subtotal
+      tax
+      total
+      discount
+      status
+      paymentMethod
+      paymentReference
+      description
+      cliente {
+          id
+          createdAt
+          updatedAt
+          deletedAt
+          name
+          lastName
+          numberDocument
+          email
+          address
+          celular
+      }
+      orrderReapirty {
+        repairType {
+          name
+          costEstimate
+        }
+      }
+    }
+  }
+}
+
+query OrderRepairsType($where: FindOrderRepairTypeWhere, $orderBy: [FindOrderRepairTypeOrderBy!]) {
+  orderRepairsType(where: $where, orderBy: $orderBy) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    name
+    costEstimate
+    fields {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      type
+      isRequired
+      minLength
+      maxLength
+    }
+  }
+}
+query OrderRepairs($orderBy: [FindOrderRepairOrderBy!], $where: FindOrderRepairWhere, $pagination: Pagination) {
+  orderRepairs(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    status
+    deliveryDate
+    client {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      identificationType
+      lastName
+      numberDocument
+      email
+      address
+      celular
+    }
+    repairType {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      costEstimate
+      fields {
+        id
+        createdAt
+        updatedAt
+        deletedAt
+        name
+        type
+        isRequired
+        minLength
+        maxLength
+      }
+    }
+    fieldValues {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      orderRepair {
+        id
+        createdAt
+        updatedAt
+        deletedAt
+        status
+        deliveryDate
+      }
+      field {
+        id
+        createdAt
+        updatedAt
+        deletedAt
+        name
+        type
+        isRequired
+        minLength
+        maxLength
+      }
+      valorTexto
+      valorFecha
+      valorNumerico
+      valorTextoLargo
+      valorFoto {
+        id
+        createdAt
+        updatedAt
+        deletedAt
+        fileName
+        fileExtension
+        fileMode
+        fileMongoId
+        fileUrl
+        url
+      }
+    }
+  }
+}
+query genrateQrByRepair($idRepair: String!) {
+  genrateQrByRepair(idRepair: $idRepair)
+}
+query StatictsByStatusRepair {
+  statictsByStatusRepair {
+    total
+    total_pendiente
+    total_completa
+    total_cancelada
+  }
+}
+mutation UpdateOrderRepair($updateInput: UpdateOrderRepairInput!) {
+  updateOrderRepair(updateInput: $updateInput) {
+    id
+  }
+}

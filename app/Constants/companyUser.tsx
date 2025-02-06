@@ -1,0 +1,1 @@
+export const COMPANY_USER_OWER = 'a94f655f-486b-4b44-88da-c695909f0428'
