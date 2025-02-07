@@ -70,5 +70,13 @@ export class ClientService extends CrudServiceFrom(serviceStructure) {
     })
     return findOne
   }
+  async findOneByNumberPhone(context: IContext, numberPhone: string){
+    const findOne = await this.getRepository(context).findOne({
+      where: {
+        celular: numberPhone
+      }
+    })
+    return findOne
+  }
 
 }

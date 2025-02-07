@@ -8,6 +8,7 @@ import { CreateOrderRepairFullInput, useCreateOrderRepairFullMutation, UserDocum
 import { ToastyErrorGraph } from '../../graphql';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import uploadFile from '../../Lib/uptloadFile';
+import UploadProgressModal from './updload';
 
 const { color } = useColor();
 
@@ -15,6 +16,8 @@ const StepProgress = ({navigation}) => {
   const [createRepair] = useCreateOrderRepairFullMutation()
   const [step, setStep] = useState(1);
   const [nextDisabled, setnextDisabled] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const totalSteps = 3;
   const [clientData, setClientData] = useState({
     nombre: '',
@@ -63,11 +66,15 @@ const StepProgress = ({navigation}) => {
           name: `test-file.jpeg`,
           type: x.valorFotoId.mimeType,
         }
-        const data = await uploadFile(file);
+        setIsUploading(true);
+        setUploadProgress(0);
+        const data = await uploadFile(file,setUploadProgress);
+        setIsUploading(false);
+        setUploadProgress(0);
+
         if(data?.error){
           throw Error('Hubo un error al subir de archivo')
         }
-        console.log(data?.id)
         return {
           fieldId: x.fieldId,
           valorFotoId: data?.id
@@ -146,7 +153,7 @@ const StepProgress = ({navigation}) => {
       {step === 1 && <ClientForm clientData={clientData} setClientData={setClientData} />}
       {step === 2 && <RepairDetailsForm onSubmit={handleRepairDataSubmit} ref={repairDetailsRef}/>}
       {step === 3 && <GenerateQR base64QR={qr}/>}
-
+      <UploadProgressModal visible={isUploading} progress={uploadProgress} />
       <View style={styles.buttonContainer}>
         {step > 1 && step < 3 && (
           <TouchableOpacity onPress={handlePrevious} style={[styles.button, styles.backButton]}>

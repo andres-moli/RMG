@@ -28,3 +28,28 @@ query Clients($orderBy: [FindClientOrderBy!], $where: FindClientWhere, $paginati
     celular
   }
 }
+query FindOneByNumberPhone($numberPhone: String!) {
+  findOneByNumberPhone(numberPhone: $numberPhone) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    name
+    identificationType
+    lastName
+    numberDocument
+    email
+    address
+    celular
+  }
+}
+mutation CreateClient($createInput: CreateClientInput!) {
+  createClient(createInput: $createInput) {
+    id
+  }
+}
+mutation UpdateClient($updateInput: UpdateClientInput!) {
+  updateClient(updateInput: $updateInput) {
+    id
+  }
+}

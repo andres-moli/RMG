@@ -179,7 +179,6 @@ const RepairDetailsForm = forwardRef(({ onSubmit }: { onSubmit: (data: any) => v
             alert(`El archivo no debe superar los ${MAX_FILE_SIZE_MB}MB.`);
             return;
           }
-      
           handleChange(field.id, file, true);
         }
       };

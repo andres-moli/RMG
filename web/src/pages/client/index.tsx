@@ -4,6 +4,7 @@ import MainLayout from "../../layouts/mainLayouts/mainLayouts";
 import RegisterModal from "../../components/modals/modal-user/modal-add-user";
 import UserTable from "../../components/users/tables/user-tables";
 import ClientTable from "../../components/users/tables/client-tables";
+import RegisterClientModal from "../../components/modals/modal-client/modal-add-client";
 
 const ClientPage: React.FC = () => {
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
@@ -34,7 +35,7 @@ const ClientPage: React.FC = () => {
           <ClientTable />
         </Card>
       </div>
-      <RegisterModal
+      <RegisterClientModal
         isOpen={isRegisterModalOpen}
         onClose={closeRegisterModal}
       />

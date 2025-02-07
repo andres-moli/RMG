@@ -2,7 +2,7 @@ import * as FileSystem from 'expo-file-system';
 import { shareAsync } from 'expo-sharing';
 import { Alert, Share } from 'react-native';
 
-const API_URL = 'https://4tpbvf4h-3035.use.devtunnels.ms/invoice/generate-pdf'; // Reemplaza con tu URL real
+const API_URL = 'https://2dw9tmtv-3035.use2.devtunnels.ms/invoice/generate-pdf'; // Reemplaza con tu URL real
 
 export const downloadAndShareInvoice = async (invoiceData: any) => {
   try {

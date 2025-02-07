@@ -26,7 +26,7 @@ const typeDocumentsOptions: { key: string; value: string | number }[] = [
     value: "Permiso de permanencia espacial"
   },
 ]
-const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose }) => {
+const RegisterClientModal: React.FC<RegisterModalProps> = ({ isOpen, onClose }) => {
   const [createUser] = useCreateUserMutation()
   const [formData, setFormData] = useState({
     name: "",
@@ -69,7 +69,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose }) => {
 
     if (!formData.name) formErrors.name = "Este campo es obligatorio";
     if (!formData.lastName) formErrors.lastName = "Este campo es obligatorio";
-    if (!formData.email || !emailPattern.test(formData.email)) formErrors.email = "Correo electrónico no válido";
+    if (!emailPattern.test(formData.email)) formErrors.email = "Correo electrónico no válido";
     if (!formData.address) formErrors.address = "Este campo es obligatorio";
     if (!formData.phoneNumber || !phonePattern.test(formData.phoneNumber)) formErrors.phoneNumber = "Número de teléfono inválido";
     if (!formData.identificationNumber || !phonePattern.test(formData.identificationNumber)) formErrors.identificationNumber = "Número de identificación inválido";
@@ -86,15 +86,12 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose }) => {
       setErrors(formErrors);
       return;
     }
-    const toatsId = toast.loading('Creando usuario..')
+    const toatsId = toast.loading('Creando cliente..')
     try {
       const res = await createUser({
         variables: {
           createInput: {
             ...formData,
-            type: UserTypes.User,
-            identificationType: formData.identificationType as UserDocumentTypes,
-            password: formData.identificationNumber
           }
         }
       })
@@ -104,7 +101,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose }) => {
         return
       }
       toast.success('Usuario creado...');
-      apolloClient.cache.evict({ fieldName: "users" })
+      apolloClient.cache.evict({ fieldName: "Clients" })
     } catch (err) {
         ToastyErrorGraph(err as any)
     } finally {
@@ -127,7 +124,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white p-6 rounded-lg w-[800px] shadow-lg max-h-[80vh] overflow-y-auto">
-        <h2 className="text-2xl font-bold mb-4">Registro de Usuario</h2>
+        <h2 className="text-2xl font-bold mb-4">Registro de Cliente</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label htmlFor="name" className="block text-sm font-medium">Nombres</label>
@@ -249,4 +246,4 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose }) => {
   );
 };
 
-export default RegisterModal;
+export default RegisterClientModal;

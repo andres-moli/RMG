@@ -51,4 +51,12 @@ export class ClientResolver extends CrudResolverFrom(resolverStructure) {
       ): Promise<Client> {
             return this.service.findOneByDocumentNumber(context,numberDocument)
       }
+      @Query(() => Client, { name: 'findOneByNumberPhone', nullable: true })
+      @AnyUser()
+      async findOneByNumberPhone(
+            @CurrentContext() context: IContext,
+            @Args({ type: () => String, name: 'numberPhone' }) numberPhone: string,
+      ): Promise<Client> {
+            return this.service.findOneByNumberPhone(context,numberPhone)
+      }
 }

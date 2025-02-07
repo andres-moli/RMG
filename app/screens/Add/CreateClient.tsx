@@ -3,7 +3,7 @@ import { View, Text, TextInput, StyleSheet, Keyboard, ActivityIndicator } from '
 import { useColor } from '../../Constants/Color';
 import Select, { OptionsSelect } from '../../components/input/Select';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { useFindOneByDocumentNumberLazyQuery, UserDocumentTypes } from '../../graphql/generated/graphql';
+import { useFindOneByDocumentNumberLazyQuery, useFindOneByNumberPhoneLazyQuery, UserDocumentTypes } from '../../graphql/generated/graphql';
 
 const { color } = useColor();
 
@@ -41,6 +41,8 @@ interface ClientFormProps {
 }
 const ClientForm: React.FC<ClientFormProps> = ({ clientData, setClientData }) => {
   const [findOneClient, { loading }] = useFindOneByDocumentNumberLazyQuery();
+  const [findOneClientByNumberQuery, { loading: loadingPhone }] = useFindOneByNumberPhoneLazyQuery();
+
 
   const handleInputChange = (name: string, value: string) => {
     setClientData((prev) => ({
@@ -74,7 +76,42 @@ const ClientForm: React.FC<ClientFormProps> = ({ clientData, setClientData }) =>
           nombre: '',
           apellido: '',
           email: '',
-          telefono: '',
+          telefono: prev.telefono,
+          numberDocumento: prev.numberDocumento, // Mantener solo el número de documento
+          typeNumberDocument: '',
+          address: ''
+        }));
+      }
+    } catch (error) {
+      console.error('Error fetching client:', error);
+    }
+  };
+  const findOneClientByNumber = async () => {
+    if (!clientData.telefono.trim()) return;
+
+    try {
+      const { data } = await findOneClientByNumberQuery({
+        variables: { numberPhone: clientData.telefono },
+        fetchPolicy: 'no-cache'
+      });
+
+      if (data?.findOneByNumberPhone) {
+        const client = data.findOneByNumberPhone;
+        setClientData({
+          nombre: client.name,
+          apellido: client.lastName || '',
+          email: client.email,
+          telefono: client.celular,
+          numberDocumento: client.numberDocument,
+          typeNumberDocument: client.identificationType || '',
+          address: client.address || ''
+        });
+      } else {
+        setClientData((prev) => ({
+          nombre: '',
+          apellido: '',
+          email: '',
+          telefono: prev.telefono,
           numberDocumento: prev.numberDocumento, // Mantener solo el número de documento
           typeNumberDocument: '',
           address: ''
@@ -103,8 +140,22 @@ const ClientForm: React.FC<ClientFormProps> = ({ clientData, setClientData }) =>
           }}
           keyboardType="numeric"
         />
-
-        {loading && <ActivityIndicator size="small" color={color.primary} />}
+        <Text style={styles.textPlaceholder}>Celular</Text>
+        <TextInput
+          style={[styles.input]}
+          value={clientData.telefono || ''}
+          placeholder="Celular"
+          onChangeText={(text) => 
+            {
+              handleInputChange('telefono', text)
+            }}
+          onBlur={() => {
+            Keyboard.dismiss();
+            findOneClientByNumber();
+          }}
+          keyboardType="phone-pad"
+        />
+        {loading  || loadingPhone && <ActivityIndicator size="small" color={color.primary} />}
 
         <Select
           onSelect={(text) => handleInputChange('typeNumberDocument', text)}
@@ -139,14 +190,6 @@ const ClientForm: React.FC<ClientFormProps> = ({ clientData, setClientData }) =>
           keyboardType="email-address"
         />
 
-        <Text style={styles.textPlaceholder}>Celular</Text>
-        <TextInput
-          style={[styles.input]}
-          value={clientData.telefono || ''}
-          placeholder="Celular"
-          onChangeText={(text) => handleInputChange('telefono', text)}
-          keyboardType="phone-pad"
-        />
         <Text style={styles.textPlaceholder}>Dirreción</Text>
         <TextInput
           style={[styles.input]}

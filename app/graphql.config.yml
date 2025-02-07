@@ -1,5 +1,5 @@
 # .graphqlrc.yml
-schema: "https://4tpbvf4h-3035.use.devtunnels.ms/graphql"
+schema: "https://2dw9tmtv-3035.use2.devtunnels.ms/graphql"
 documents: "graphql/**/*.graphql"
 generates:
   graphql/generated/graphql.ts:

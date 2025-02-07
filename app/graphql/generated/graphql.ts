@@ -1671,6 +1671,7 @@ export type Query = {
   findOne: UserKey;
   findOneArg?: Maybe<Position>;
   findOneByDocumentNumber?: Maybe<Client>;
+  findOneByNumberPhone?: Maybe<Client>;
   functionalities: FunctionalityModel;
   genrateQrByRepair: Scalars['String']['output'];
   group: Group;
@@ -2014,6 +2015,11 @@ export type QueryFindOneArgArgs = {
 
 export type QueryFindOneByDocumentNumberArgs = {
   numberDocument: Scalars['String']['input'];
+};
+
+
+export type QueryFindOneByNumberPhoneArgs = {
+  numberPhone: Scalars['String']['input'];
 };
 
 
@@ -2851,6 +2857,13 @@ export type ClientsQueryVariables = Exact<{
 
 export type ClientsQuery = { __typename?: 'Query', clients: Array<{ __typename?: 'Client', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, identificationType?: UserDocumentTypes | null, lastName?: string | null, numberDocument: string, email: string, address?: string | null, celular: string }> };
 
+export type FindOneByNumberPhoneQueryVariables = Exact<{
+  numberPhone: Scalars['String']['input'];
+}>;
+
+
+export type FindOneByNumberPhoneQuery = { __typename?: 'Query', findOneByNumberPhone?: { __typename?: 'Client', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, identificationType?: UserDocumentTypes | null, lastName?: string | null, numberDocument: string, email: string, address?: string | null, celular: string } | null };
+
 export type CreateInvoiceMutationVariables = Exact<{
   createInput: CreateInvoiceInput;
 }>;
@@ -3158,6 +3171,56 @@ export type ClientsQueryHookResult = ReturnType<typeof useClientsQuery>;
 export type ClientsLazyQueryHookResult = ReturnType<typeof useClientsLazyQuery>;
 export type ClientsSuspenseQueryHookResult = ReturnType<typeof useClientsSuspenseQuery>;
 export type ClientsQueryResult = Apollo.QueryResult<ClientsQuery, ClientsQueryVariables>;
+export const FindOneByNumberPhoneDocument = gql`
+    query FindOneByNumberPhone($numberPhone: String!) {
+  findOneByNumberPhone(numberPhone: $numberPhone) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    name
+    identificationType
+    lastName
+    numberDocument
+    email
+    address
+    celular
+  }
+}
+    `;
+
+/**
+ * __useFindOneByNumberPhoneQuery__
+ *
+ * To run a query within a React component, call `useFindOneByNumberPhoneQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindOneByNumberPhoneQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindOneByNumberPhoneQuery({
+ *   variables: {
+ *      numberPhone: // value for 'numberPhone'
+ *   },
+ * });
+ */
+export function useFindOneByNumberPhoneQuery(baseOptions: Apollo.QueryHookOptions<FindOneByNumberPhoneQuery, FindOneByNumberPhoneQueryVariables> & ({ variables: FindOneByNumberPhoneQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindOneByNumberPhoneQuery, FindOneByNumberPhoneQueryVariables>(FindOneByNumberPhoneDocument, options);
+      }
+export function useFindOneByNumberPhoneLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindOneByNumberPhoneQuery, FindOneByNumberPhoneQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindOneByNumberPhoneQuery, FindOneByNumberPhoneQueryVariables>(FindOneByNumberPhoneDocument, options);
+        }
+export function useFindOneByNumberPhoneSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<FindOneByNumberPhoneQuery, FindOneByNumberPhoneQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<FindOneByNumberPhoneQuery, FindOneByNumberPhoneQueryVariables>(FindOneByNumberPhoneDocument, options);
+        }
+export type FindOneByNumberPhoneQueryHookResult = ReturnType<typeof useFindOneByNumberPhoneQuery>;
+export type FindOneByNumberPhoneLazyQueryHookResult = ReturnType<typeof useFindOneByNumberPhoneLazyQuery>;
+export type FindOneByNumberPhoneSuspenseQueryHookResult = ReturnType<typeof useFindOneByNumberPhoneSuspenseQuery>;
+export type FindOneByNumberPhoneQueryResult = Apollo.QueryResult<FindOneByNumberPhoneQuery, FindOneByNumberPhoneQueryVariables>;
 export const CreateInvoiceDocument = gql`
     mutation CreateInvoice($createInput: CreateInvoiceInput!) {
   createInvoice(createInput: $createInput) {

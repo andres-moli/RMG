@@ -11,9 +11,9 @@ const compressImage = async (uri: string) => {
   return result.uri;
 };
 // Función para subir el archivo
-const handleUploadImage = async (file: any) => {
+const handleUploadImage = async (file: any,  setProgress: React.Dispatch<React.SetStateAction<number>>) => {
   try {
-    const url = `https://4tpbvf4h-3035.use.devtunnels.ms/attachment/files`;
+    const url = `https://2dw9tmtv-3035.use2.devtunnels.ms/attachment/files`;
     const formData = new FormData();
     formData.append('file', {
       uri: await compressImage(file.uri),
@@ -28,8 +28,8 @@ const handleUploadImage = async (file: any) => {
       },
       timeout: 60000, // Aumentar el tiempo de espera si es necesario
       onUploadProgress: (progressEvent) => {
-        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent?.total || 0);
-        console.log(`Subida: ${percentCompleted}%`);
+        const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+        setProgress(percent);
       },
     });
     return response?.data;
