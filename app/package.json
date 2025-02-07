@@ -8,6 +8,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "gen:gql": "graphql-codegen --config graphql.config.yml",
+    "gn": "eas build -p android --profile preview",
     "gn:dev": "eas build -e development"
   },
   "dependencies": {

@@ -89,7 +89,7 @@ export const downloadAndShareInvoice = (invoiceData: Invoice) => {
 
         <div class="invoice-details">
           <div class="invoice-num">
-            <strong>Número de Factura:</strong> ${invoiceData.invoiceNumber}<br>
+            <strong>Número de Recibo:</strong> ${invoiceData.invoiceNumber}<br>
             <strong>Fecha:</strong> ${dayjs(invoiceData.createdAt).format('YYYY-MM-DD HH:mm:ss')}
           </div>
         </div>
@@ -154,7 +154,7 @@ export const downloadAndShareInvoice = (invoiceData: Invoice) => {
   // Generar y descargar el PDF
   html2pdf(container, {
     margin: 10,
-    filename: `Factura_${invoiceData.invoiceNumber}.pdf`,
+    filename: `Recibo_${invoiceData.invoiceNumber}.pdf`,
     image: { type: "jpeg", quality: 0.98 },
     html2canvas: { scale: 2 },
     jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
