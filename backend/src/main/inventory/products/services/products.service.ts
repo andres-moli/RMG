@@ -9,6 +9,7 @@ import { CompanyService } from 'src/main/company/services/company.service';
 import { IContext } from 'src/patterns/crud-pattern/interfaces/context.interface';
 import { Repository } from 'typeorm';
 import { FilesService } from 'src/general/files/services/files.service';
+import { StatisticService } from 'src/main/statistic/service/statistic.service';
 
 export const serviceStructure = CrudServiceStructure({
   entityType: Products,
@@ -21,7 +22,8 @@ export const serviceStructure = CrudServiceStructure({
 export class ProductsService extends CrudServiceFrom(serviceStructure) {
   constructor(
     private readonly companyService: CompanyService,
-    private readonly fileService: FilesService
+    private readonly fileService: FilesService,
+    private readonly statisticService: StatisticService
   ){ super(); }
   async beforeCreate(context: IContext, repository: Repository<Products>, entity: Products, createInput: CreateProductInput): Promise<void> {
     // entity.company = await this.companyService.findOne(context,createInput.companyId,true);
@@ -29,4 +31,8 @@ export class ProductsService extends CrudServiceFrom(serviceStructure) {
       entity.file = await this.fileService.findOne(context,createInput.fileId,true);
     }
   }
+  getSctockProductById(id: string){
+    return this.statisticService.getStockProducts(id)
+  }
+  
 }

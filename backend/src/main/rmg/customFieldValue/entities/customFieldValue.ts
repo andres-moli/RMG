@@ -32,6 +32,10 @@ export class CustomFieldValue extends CrudEntity {
   @Field(() => String, { nullable: true })
   valorTextoLargo?: string;
 
+  @Column({nullable: true })
+  @Field(() => String, { nullable: true })
+  valorSeletor?: string;
+
   @ManyToOne(()=> FileInfo, {nullable: true, lazy: true})
   @Field(() => FileInfo, { nullable: true })
   valorFoto?: FileInfo;

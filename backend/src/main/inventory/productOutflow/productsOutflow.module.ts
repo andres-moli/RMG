@@ -7,6 +7,8 @@ import { InvoiceProduct } from './entities/InvoiceProduct.entity';
 import { CompanyModule } from 'src/main/company/company.module';
 import { UsersModule } from 'src/security/users/users.module';
 import { ProductsModule } from '../products/products.module';
+import { ClientModule } from 'src/main/rmg/client/client.module';
+import { StatisticCardsModule } from 'src/main/statistic/statistic.module';
 
 
 @Module({
@@ -15,7 +17,9 @@ import { ProductsModule } from '../products/products.module';
     TypeOrmModule.forFeature([ProductOutflow,InvoiceProduct]),
     CompanyModule,
     UsersModule,
-    ProductsModule
+    ProductsModule,
+    ClientModule,
+    StatisticCardsModule
   ]
 })
 export class ProductOutflowsModule {}

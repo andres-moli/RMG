@@ -24,8 +24,8 @@ export class Client extends CrudEntity {
   @Field(() => String, { nullable: true })
   lastName:string;
   
-  @Column()
-  @Field(() => String)
+  @Column({nullable: true})
+  @Field(() => String, {nullable: true})
   numberDocument:string;
 
   @Column({nullable: true})

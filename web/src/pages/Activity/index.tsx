@@ -21,13 +21,13 @@ const ReapirPage: React.FC = () => {
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Reparaciones</h1>
               <h3 className="text-lg font-medium text-gray-600 dark:text-gray-400">Gestiona las reparaciones</h3>
             </div>
-            <button
-              onClick={openRegisterModal}
+            <a
+              href="/create-repair"
               type="button"
               className="text-green-700 hover:text-white border border-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-green-500 dark:text-green-500 dark:hover:text-white dark:hover:bg-green-600 dark:focus:ring-green-800"
             >
               + Add
-            </button>
+            </a>
           </div>
         </Card>
 
@@ -35,7 +35,7 @@ const ReapirPage: React.FC = () => {
           <ActivityTable  />
         </Card>
       </div>
-      <RegisterCategoriesModal isOpen={isRegisterModalOpen} onClose={closeRegisterModal} />
+      {/* <RegisterCategoriesModal isOpen={isRegisterModalOpen} onClose={closeRegisterModal} /> */}
     </MainLayout>
   );
 };

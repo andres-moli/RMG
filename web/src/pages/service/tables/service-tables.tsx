@@ -4,6 +4,7 @@ import { MetadataPagination, RepairType, useOrderRepairsTypeQuery, User, UserSta
 import Card from '../../../components/cards/Card';
 import TableSkeleton from '../../../components/esqueleto/table';
 import { PaginationTable } from '../../../components/table/PaginationTable';
+import UpdateRegisterService from '../modal/modal-edit-service';
 
 const ServiceTable: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -27,7 +28,8 @@ const ServiceTable: React.FC = () => {
       }
     }
   })
-  const onEdit = (user: RepairType) => {
+  const onEdit = (user: RepairType | undefined) => {
+    console.log(user)
     setUser(user)
     openRegisterModal()
 
@@ -91,13 +93,14 @@ const ServiceTable: React.FC = () => {
             <th scope="col" className="px-6 py-3">Nombre</th>
             <th scope="col" className="px-6 py-3">Valor</th>
             <th scope="col" className="px-6 py-3">Fecha</th>
+            <th scope="col" className="px-6 py-3">Estado</th>
             <th scope="col" className="px-6 py-3">Total de campos</th>
             <th scope="col" className="px-6 py-3">Acción</th>
           </tr>
         </thead>
         <tbody>
           {
-          data?.orderRepairsType.map((repairType, index) => (
+          data?.orderRepairsType?.map((repairType, index) => (
               <tr
                 key={index}
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
@@ -126,9 +129,10 @@ const ServiceTable: React.FC = () => {
                 </th>
                 <td className="px-6 py-4">{repairType.costEstimate}</td>
                 <td className="px-6 py-4">{repairType.createdAt}</td>
+                <td className="px-6 py-4">{repairType.status ? 'Activo' : 'Inactivo'}</td>
                 <td className="px-6 py-4">{repairType.fields?.length}</td>
                 <td className="px-6 py-4">
-                  <BiPencil className="w-5 h-8 text-gray-500 mr-3 cursor-pointer" onClick={()=> onEdit(user)}/>
+                  <BiPencil className="w-5 h-8 text-gray-500 mr-3 cursor-pointer" onClick={()=> onEdit(repairType)}/>
                 </td>
               </tr>
             ))}
@@ -138,12 +142,12 @@ const ServiceTable: React.FC = () => {
       <Card className="w-50 md:w-30 lg:w-50">
         <PaginationTable skipState={{ value: skip, setValue: setSkip }} metaDataPagination={data?.orderRepairsTypeCount as MetadataPagination} takeValue={takeValue} />
       </Card>
-      {/* <EditUserModal
+      <UpdateRegisterService
         isOpen={isRegisterModalOpen}
         onClose={closeRegisterModal}
-        user={user}
+        service={user}
         key={user?.id}
-      /> */}
+      />
     </div>
   );
 };

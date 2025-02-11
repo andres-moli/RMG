@@ -10,6 +10,9 @@ export class RepairType extends CrudEntity {
   @Field(() => String)
   name: string;
 
+  @Column({ nullable: true, default: true })
+  @Field(() => Boolean, { nullable: true })
+  status: boolean
   @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
   @Field(() => Float, { nullable: true })
   costEstimate?: number;

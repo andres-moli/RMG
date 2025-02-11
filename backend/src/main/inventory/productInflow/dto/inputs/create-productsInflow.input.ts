@@ -7,9 +7,9 @@ export class CreateProductInflowInput {
   @IsNotEmpty()
   productId: number;
 
-  @Field(() => ID)
-  @IsNotEmpty()
-  companyId: number;
+  // @Field(() => ID)
+  // @IsNotEmpty()
+  // companyId: number;
 
   @Field(() => Float)
   @IsNumber()

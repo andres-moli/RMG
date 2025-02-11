@@ -49,3 +49,13 @@ query FindOneByNumberPhone($numberPhone: String!) {
     celular
   }
 }
+mutation CreateClient($createInput: CreateClientInput!) {
+  createClient(createInput: $createInput) {
+    id
+  }
+}
+mutation UpdateClient($updateInput: UpdateClientInput!) {
+  updateClient(updateInput: $updateInput) {
+    id
+  }
+}

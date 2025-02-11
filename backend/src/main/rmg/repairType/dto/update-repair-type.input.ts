@@ -10,5 +10,8 @@ export class UpdateRepairTypeInput extends PartialType(CreateRepairTypeInput) {
   @Field(() => ID)
   @IsString()
   id: string;
-    
+  
+  @Field(()=> Boolean)
+  @IsBoolean()
+  status: boolean
 }

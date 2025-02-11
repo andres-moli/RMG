@@ -33,6 +33,51 @@ export type AuthResponse = {
   user: User;
 };
 
+export type BalanceInput = {
+  companyId: Scalars['String'];
+  fechaFin: Scalars['String'];
+  fechaInicio: Scalars['String'];
+};
+
+export type BalanceResponse = {
+  __typename?: 'BalanceResponse';
+  id: Scalars['String'];
+  saldo: Scalars['Float'];
+  saldo_efectivo: Scalars['Float'];
+  saldo_transferencia: Scalars['Float'];
+  total_entrada: Scalars['Float'];
+  total_entrada_efectivo: Scalars['Float'];
+  total_entrada_transferencia: Scalars['Float'];
+  total_gasto: Scalars['Float'];
+  total_gasto_efectivo: Scalars['Float'];
+  total_gasto_transferencia: Scalars['Float'];
+  total_recuado: Scalars['Float'];
+  total_saldo_anterior: Scalars['Float'];
+  total_saldo_anterior_efectivo: Scalars['Float'];
+  total_saldo_anterior_transferencia: Scalars['Float'];
+  total_salida: Scalars['Float'];
+  total_salida_efectivo: Scalars['Float'];
+  total_salida_transferencia: Scalars['Float'];
+  total_vendido_cita: Scalars['Float'];
+  total_vendido_cita_efectivo: Scalars['Float'];
+  total_vendido_cita_transferencia: Scalars['Float'];
+  total_vendido_producto: Scalars['Float'];
+  total_vendido_producto_efectivo: Scalars['Float'];
+  total_vendido_producto_transferencia: Scalars['Float'];
+};
+
+export type CategoryExpenses = {
+  __typename?: 'CategoryExpenses';
+  createdAt: Scalars['DateTime'];
+  deletedAt?: Maybe<Scalars['DateTime']>;
+  description?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  isDefualtCategory: Scalars['Boolean'];
+  name: Scalars['String'];
+  status: StatusCategoryExpenses;
+  updatedAt: Scalars['DateTime'];
+};
+
 export type City = {
   __typename?: 'City';
   code: Scalars['Int'];
@@ -50,12 +95,12 @@ export type Client = {
   celular: Scalars['String'];
   createdAt: Scalars['DateTime'];
   deletedAt?: Maybe<Scalars['DateTime']>;
-  email: Scalars['String'];
+  email?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   identificationType?: Maybe<UserDocumentTypes>;
   lastName?: Maybe<Scalars['String']>;
   name: Scalars['String'];
-  numberDocument: Scalars['String'];
+  numberDocument?: Maybe<Scalars['String']>;
   updatedAt: Scalars['DateTime'];
 };
 
@@ -116,6 +161,12 @@ export type CreateAndRemoveRoleFxInput = {
   role: Scalars['ID'];
 };
 
+export type CreateCategoryExpensesInput = {
+  description?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
+  status?: InputMaybe<StatusCategoryExpenses>;
+};
+
 export type CreateClientContactInput = {
   celular: Scalars['String'];
   clientId: Scalars['String'];
@@ -132,7 +183,7 @@ export type CreateClientInput = {
   identificationType: UserDocumentTypes;
   lastName: Scalars['String'];
   name: Scalars['String'];
-  numberDocument: Scalars['String'];
+  numberDocument?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateCompanyInput = {
@@ -167,6 +218,25 @@ export type CreateDummyInput = {
   phone?: InputMaybe<Scalars['String']>;
   secondField: Scalars['DateTime'];
   thirdField: Scalars['Float'];
+};
+
+export type CreateExpensesInput = {
+  amount: Scalars['Float'];
+  categoryId: Scalars['ID'];
+  description: Scalars['String'];
+  expenseDate: Scalars['DateTime'];
+  isRecurring?: InputMaybe<Scalars['Boolean']>;
+  nextDueDate?: InputMaybe<Scalars['DateTime']>;
+  paymentMethod: PaymentMethodEnum;
+  referenceNumber?: InputMaybe<Scalars['String']>;
+  status?: InputMaybe<StatusExpenses>;
+};
+
+export type CreateExpensesWorkerInput = {
+  amount: Scalars['Float'];
+  companyId: Scalars['ID'];
+  paymentMethod: PaymentMethodEnum;
+  workerId: Scalars['ID'];
 };
 
 export type CreateGroupInput = {
@@ -285,7 +355,6 @@ export type CreatePositionInput = {
 };
 
 export type CreateProductInflowInput = {
-  companyId: Scalars['ID'];
   description?: InputMaybe<Scalars['String']>;
   inflowDate: Scalars['DateTime'];
   productId: Scalars['ID'];
@@ -293,7 +362,6 @@ export type CreateProductInflowInput = {
 };
 
 export type CreateProductInput = {
-  companyId: Scalars['ID'];
   costPrice?: InputMaybe<Scalars['Float']>;
   description?: InputMaybe<Scalars['String']>;
   expirationDate?: InputMaybe<Scalars['DateTime']>;
@@ -308,13 +376,12 @@ export type CreateProductInput = {
 };
 
 export type CreateProductOutflowInput = {
-  companyId: Scalars['ID'];
+  clientId: Scalars['String'];
   description?: InputMaybe<Scalars['String']>;
   inflowDate: Scalars['DateTime'];
   invoiceProducts: Array<CreateInvoiceProductInput>;
   paymentMethod: PaymentMethodEnum;
   status: StatusInvoice;
-  userId: Scalars['String'];
 };
 
 export type CreateProfileInput = {
@@ -333,6 +400,7 @@ export type CreateRepairFieldInput = {
   maxLength?: InputMaybe<Scalars['Float']>;
   minLength?: InputMaybe<Scalars['Float']>;
   name: Scalars['String'];
+  selectorOptions?: InputMaybe<Array<SelectorOptionDto>>;
   type: FieldTypeEnum;
 };
 
@@ -382,6 +450,7 @@ export type CustomFieldValue = {
   valorFecha?: Maybe<Scalars['DateTime']>;
   valorFoto?: Maybe<FileInfo>;
   valorNumerico?: Maybe<Scalars['Float']>;
+  valorSeletor?: Maybe<Scalars['String']>;
   valorTexto?: Maybe<Scalars['String']>;
   valorTextoLargo?: Maybe<Scalars['String']>;
 };
@@ -490,11 +559,43 @@ export type EmailRecipient = {
   type: RecipientType;
 };
 
+export type Expense = {
+  __typename?: 'Expense';
+  amount: Scalars['Float'];
+  autorizoBy?: Maybe<User>;
+  canceldBy?: Maybe<User>;
+  category: CategoryExpenses;
+  createdAt: Scalars['DateTime'];
+  createdBy: User;
+  deletedAt?: Maybe<Scalars['DateTime']>;
+  description: Scalars['String'];
+  expenseDate: Scalars['DateTime'];
+  id: Scalars['ID'];
+  invoiceNumber: Scalars['String'];
+  isRecurring: Scalars['Boolean'];
+  nextDueDate?: Maybe<Scalars['DateTime']>;
+  paymentMethod: Scalars['String'];
+  referenceNumber?: Maybe<Scalars['String']>;
+  status: StatusExpenses;
+  updatedAt: Scalars['DateTime'];
+};
+
+export type FacturadoPorTrabajador = {
+  __typename?: 'FacturadoPorTrabajador';
+  apellido: Scalars['String'];
+  commission_percentage: Scalars['Float'];
+  company_id: Scalars['String'];
+  nombre: Scalars['String'];
+  total_facturado: Scalars['Float'];
+  worker_id: Scalars['String'];
+};
+
 export enum FieldTypeEnum {
   Date = 'DATE',
   Image = 'IMAGE',
   LongText = 'LONG_TEXT',
   Number = 'NUMBER',
+  Selector = 'SELECTOR',
   Text = 'TEXT'
 }
 
@@ -517,6 +618,18 @@ export enum FileModes {
   Mongo = 'mongo',
   Url = 'url'
 }
+
+export type FindCategoryExpensesOrderBy = {
+  createdAt?: InputMaybe<OrderTypes>;
+  name?: InputMaybe<OrderTypes>;
+};
+
+export type FindCategoryExpensesWhere = {
+  _and?: InputMaybe<Array<FindCategoryExpensesWhere>>;
+  _or?: InputMaybe<Array<FindCategoryExpensesWhere>>;
+  company?: InputMaybe<StringFilter>;
+  status?: InputMaybe<StringFilter>;
+};
 
 export type FindClientContactOrderBy = {
   createdAt?: InputMaybe<OrderTypes>;
@@ -605,6 +718,20 @@ export type FindDummyWhere = {
   secondField?: InputMaybe<DateFilter>;
   thirdField?: InputMaybe<NumberFilter>;
   type?: InputMaybe<FindDummyTypeWhere>;
+};
+
+export type FindExpensesOrderBy = {
+  createdAt?: InputMaybe<OrderTypes>;
+};
+
+export type FindExpensesWhere = {
+  _and?: InputMaybe<Array<FindExpensesWhere>>;
+  _or?: InputMaybe<Array<FindExpensesWhere>>;
+  company?: InputMaybe<StringFilter>;
+  createdBy?: InputMaybe<StringFilter>;
+  description?: InputMaybe<StringFilter>;
+  expenseDate?: InputMaybe<DateFilter>;
+  status?: InputMaybe<StringFilter>;
 };
 
 export type FindInventoryCloseOrderBy = {
@@ -736,6 +863,12 @@ export enum FunctionalityTag {
   Standard = 'STANDARD'
 }
 
+export type GetFacturadoPorTrabajadorInput = {
+  companyId: Scalars['ID'];
+  fechaFin: Scalars['String'];
+  fechaInicio: Scalars['String'];
+};
+
 export type Group = {
   __typename?: 'Group';
   createdAt: Scalars['DateTime'];
@@ -848,6 +981,7 @@ export type Mutation = {
   addUserRole: User;
   codeConfirmation: User;
   create: RoleFx;
+  createCategoryExpense: CategoryExpenses;
   createClient: Client;
   createClientContact: ClientContact;
   createCompany: Company;
@@ -856,6 +990,8 @@ export type Mutation = {
   createDocumentType: DocumentType;
   createDummiesX: Array<Dummy>;
   createDummy: Dummy;
+  createExpense: Expense;
+  createExpensesWoker: Expense;
   createGroup: Group;
   createInventoryClose: InventoryClose;
   createInvoice: Invoice;
@@ -880,12 +1016,14 @@ export type Mutation = {
   i18nTest: Scalars['String'];
   recoverPassword: Scalars['String'];
   remove: NotificationGroup;
+  removeCategoryExpense: CategoryExpenses;
   removeClient: Client;
   removeClientContact: ClientContact;
   removeCompany: Company;
   removeCustomFieldValue: CustomFieldValue;
   removeDocumentType: DocumentType;
   removeDummy: Dummy;
+  removeExpense: Expense;
   removeGroup: Group;
   removeInventoryClose: InventoryClose;
   removeInvoice: Invoice;
@@ -914,12 +1052,14 @@ export type Mutation = {
   signUpWithEmail: AuthResponse;
   signin: AuthResponse;
   update: NotificationGroup;
+  updateCategoryExpense: CategoryExpenses;
   updateClient: Client;
   updateClientContact: ClientContact;
   updateCompany: Company;
   updateCustomFieldValue: CustomFieldValue;
   updateDocumentType: DocumentType;
   updateDummy: Dummy;
+  updateExpense: Expense;
   updateGroup: Group;
   updateInventoryClose: InventoryClose;
   updateInvoice: Invoice;
@@ -958,6 +1098,11 @@ export type MutationCreateArgs = {
 };
 
 
+export type MutationCreateCategoryExpenseArgs = {
+  createInput: CreateCategoryExpensesInput;
+};
+
+
 export type MutationCreateClientArgs = {
   createInput: CreateClientInput;
 };
@@ -985,6 +1130,16 @@ export type MutationCreateDocumentTypeArgs = {
 
 export type MutationCreateDummyArgs = {
   createInput: CreateDummyInput;
+};
+
+
+export type MutationCreateExpenseArgs = {
+  createInput: CreateExpensesInput;
+};
+
+
+export type MutationCreateExpensesWokerArgs = {
+  createInput: CreateExpensesWorkerInput;
 };
 
 
@@ -1103,6 +1258,11 @@ export type MutationRemoveArgs = {
 };
 
 
+export type MutationRemoveCategoryExpenseArgs = {
+  id: Scalars['ID'];
+};
+
+
 export type MutationRemoveClientArgs = {
   id: Scalars['ID'];
 };
@@ -1129,6 +1289,11 @@ export type MutationRemoveDocumentTypeArgs = {
 
 
 export type MutationRemoveDummyArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationRemoveExpenseArgs = {
   id: Scalars['ID'];
 };
 
@@ -1268,6 +1433,11 @@ export type MutationUpdateArgs = {
 };
 
 
+export type MutationUpdateCategoryExpenseArgs = {
+  updateInput: UpdateCategoryExpensesInput;
+};
+
+
 export type MutationUpdateClientArgs = {
   updateInput: UpdateClientInput;
 };
@@ -1295,6 +1465,11 @@ export type MutationUpdateDocumentTypeArgs = {
 
 export type MutationUpdateDummyArgs = {
   updateInput: UpdateDummyInput;
+};
+
+
+export type MutationUpdateExpenseArgs = {
+  updateInput: UpdateExpensesInput;
 };
 
 
@@ -1567,6 +1742,7 @@ export enum ProductInflowEmun {
 
 export type ProductOutflow = {
   __typename?: 'ProductOutflow';
+  client: Client;
   createdAt: Scalars['DateTime'];
   deletedAt?: Maybe<Scalars['DateTime']>;
   description?: Maybe<Scalars['String']>;
@@ -1576,7 +1752,6 @@ export type ProductOutflow = {
   paymentMethod: PaymentMethodEnum;
   status: StatusInvoice;
   updatedAt: Scalars['DateTime'];
-  user: User;
 };
 
 export type Products = {
@@ -1593,6 +1768,7 @@ export type Products = {
   minStock?: Maybe<Scalars['Float']>;
   name: Scalars['String'];
   salePrice: Scalars['Float'];
+  stock: StockProductView;
   tax?: Maybe<Scalars['Float']>;
   unitOfMeasure?: Maybe<Scalars['String']>;
   updatedAt: Scalars['DateTime'];
@@ -1619,10 +1795,16 @@ export type Profile = {
 
 export type Query = {
   __typename?: 'Query';
+  CategoryExpense: CategoryExpenses;
+  CategoryExpenses: Array<CategoryExpenses>;
+  CategoryExpensesCount: MetadataPagination;
   Company: Company;
   Companys: Array<Company>;
   CompanysCount: MetadataPagination;
   Count: MetadataPagination;
+  Expense: Expense;
+  Expenses: Array<Expense>;
+  ExpensesCount: MetadataPagination;
   InventoryClose: InventoryClose;
   InventoryCloses: Array<InventoryClose>;
   InventoryClosesCount: MetadataPagination;
@@ -1669,8 +1851,10 @@ export type Query = {
   findOne: UserKey;
   findOneArg?: Maybe<Position>;
   findOneByDocumentNumber?: Maybe<Client>;
+  findOneByNumberPhone?: Maybe<Client>;
   functionalities: FunctionalityModel;
   genrateQrByRepair: Scalars['String'];
+  getStockProduct: StockProductView;
   group: Group;
   groups: Array<Group>;
   groupsCount: MetadataPagination;
@@ -1683,6 +1867,9 @@ export type Query = {
   notificationConfigsCount: MetadataPagination;
   notifications: Array<Notification>;
   notificationsCount: MetadataPagination;
+  obtenerBalanceEmpresaByDate: BalanceResponse;
+  obtenerFacturadoPorTrabajador: Array<FacturadoPorTrabajador>;
+  obtenerTopProductosVendidos: Array<TopProductosVendidos>;
   orderRepair: OrderRepairty;
   orderRepairType: RepairType;
   orderRepairs: Array<OrderRepairty>;
@@ -1717,6 +1904,25 @@ export type Query = {
 };
 
 
+export type QueryCategoryExpenseArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryCategoryExpensesArgs = {
+  orderBy?: InputMaybe<Array<FindCategoryExpensesOrderBy>>;
+  pagination?: InputMaybe<Pagination>;
+  where?: InputMaybe<FindCategoryExpensesWhere>;
+};
+
+
+export type QueryCategoryExpensesCountArgs = {
+  orderBy?: InputMaybe<Array<FindCategoryExpensesOrderBy>>;
+  pagination?: InputMaybe<Pagination>;
+  where?: InputMaybe<FindCategoryExpensesWhere>;
+};
+
+
 export type QueryCompanyArgs = {
   id: Scalars['ID'];
 };
@@ -1740,6 +1946,25 @@ export type QueryCountArgs = {
   orderBy?: InputMaybe<Array<FindUsersOrderBy>>;
   pagination?: InputMaybe<Pagination>;
   where?: InputMaybe<FindUsersWhere>;
+};
+
+
+export type QueryExpenseArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryExpensesArgs = {
+  orderBy?: InputMaybe<Array<FindExpensesOrderBy>>;
+  pagination?: InputMaybe<Pagination>;
+  where?: InputMaybe<FindExpensesWhere>;
+};
+
+
+export type QueryExpensesCountArgs = {
+  orderBy?: InputMaybe<Array<FindExpensesOrderBy>>;
+  pagination?: InputMaybe<Pagination>;
+  where?: InputMaybe<FindExpensesWhere>;
 };
 
 
@@ -2015,8 +2240,18 @@ export type QueryFindOneByDocumentNumberArgs = {
 };
 
 
+export type QueryFindOneByNumberPhoneArgs = {
+  numberPhone: Scalars['String'];
+};
+
+
 export type QueryGenrateQrByRepairArgs = {
   idRepair: Scalars['String'];
+};
+
+
+export type QueryGetStockProductArgs = {
+  productId: Scalars['String'];
 };
 
 
@@ -2077,6 +2312,21 @@ export type QueryNotificationsArgs = {
 
 export type QueryNotificationsCountArgs = {
   pagination?: InputMaybe<Pagination>;
+};
+
+
+export type QueryObtenerBalanceEmpresaByDateArgs = {
+  input: BalanceInput;
+};
+
+
+export type QueryObtenerFacturadoPorTrabajadorArgs = {
+  input: GetFacturadoPorTrabajadorInput;
+};
+
+
+export type QueryObtenerTopProductosVendidosArgs = {
+  input: GetFacturadoPorTrabajadorInput;
 };
 
 
@@ -2256,6 +2506,7 @@ export type RepairField = {
   minLength?: Maybe<Scalars['Float']>;
   name: Scalars['String'];
   repairType: RepairType;
+  selectorOptions?: Maybe<Array<SelectorOption>>;
   type: FieldTypeEnum;
   updatedAt: Scalars['DateTime'];
 };
@@ -2290,6 +2541,7 @@ export type RepairType = {
   fields?: Maybe<Array<RepairField>>;
   id: Scalars['ID'];
   name: Scalars['String'];
+  status?: Maybe<Scalars['Boolean']>;
   updatedAt: Scalars['DateTime'];
 };
 
@@ -2321,6 +2573,20 @@ export enum RouterType {
   InternalRouteWithArguments = 'InternalRouteWithArguments',
   InternaltRoute = 'InternaltRoute'
 }
+
+export type SelectorOption = {
+  __typename?: 'SelectorOption';
+  createdAt: Scalars['DateTime'];
+  deletedAt?: Maybe<Scalars['DateTime']>;
+  id: Scalars['ID'];
+  repairField: RepairField;
+  updatedAt: Scalars['DateTime'];
+  value: Scalars['String'];
+};
+
+export type SelectorOptionDto = {
+  value: Scalars['String'];
+};
 
 export type SendDoubleVerificationInput = {
   email?: InputMaybe<Scalars['String']>;
@@ -2403,12 +2669,32 @@ export enum StatePersistent {
   Send = 'Send'
 }
 
+export enum StatusCategoryExpenses {
+  Activo = 'ACTIVO',
+  Inactivo = 'INACTIVO'
+}
+
+export enum StatusExpenses {
+  Cancelada = 'CANCELADA',
+  Pagada = 'PAGADA',
+  Pendiente = 'PENDIENTE'
+}
+
 export enum StatusInvoice {
   Anulada = 'ANULADA',
   Elaborada = 'ELABORADA',
   Pagada = 'PAGADA',
   Vencida = 'VENCIDA'
 }
+
+export type StockProductView = {
+  __typename?: 'StockProductView';
+  entrada_producto: Scalars['Float'];
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  salida_producto: Scalars['Float'];
+  stock: Scalars['Float'];
+};
 
 export type StringFilter = {
   _contains?: InputMaybe<Scalars['String']>;
@@ -2422,6 +2708,18 @@ export type StringFilter = {
   _notlike?: InputMaybe<Scalars['String']>;
   _notstartswith?: InputMaybe<Scalars['String']>;
   _startswith?: InputMaybe<Scalars['String']>;
+};
+
+export type TopProductosVendidos = {
+  __typename?: 'TopProductosVendidos';
+  company_id: Scalars['String'];
+  cost_price: Scalars['Float'];
+  diferencia: Scalars['Float'];
+  nombre_producto: Scalars['String'];
+  product_id: Scalars['String'];
+  quantity: Scalars['Float'];
+  sale_price: Scalars['Float'];
+  total_vendido_producto: Scalars['Float'];
 };
 
 export enum TypeNotification {
@@ -2447,6 +2745,13 @@ export enum TypeWorker {
   Externo = 'externo',
   Interno = 'interno'
 }
+
+export type UpdateCategoryExpensesInput = {
+  description?: InputMaybe<Scalars['String']>;
+  id: Scalars['ID'];
+  name?: InputMaybe<Scalars['String']>;
+  status?: InputMaybe<StatusCategoryExpenses>;
+};
 
 export type UpdateClientContactInput = {
   celular?: InputMaybe<Scalars['String']>;
@@ -2505,6 +2810,21 @@ export type UpdateDummyInput = {
   phone?: InputMaybe<Scalars['String']>;
   secondField?: InputMaybe<Scalars['DateTime']>;
   thirdField?: InputMaybe<Scalars['Float']>;
+};
+
+export type UpdateExpensesInput = {
+  amount?: InputMaybe<Scalars['Float']>;
+  autorizoById?: InputMaybe<Scalars['ID']>;
+  canceldById?: InputMaybe<Scalars['ID']>;
+  categoryId?: InputMaybe<Scalars['ID']>;
+  description?: InputMaybe<Scalars['String']>;
+  expenseDate?: InputMaybe<Scalars['DateTime']>;
+  id: Scalars['ID'];
+  isRecurring?: InputMaybe<Scalars['Boolean']>;
+  nextDueDate?: InputMaybe<Scalars['DateTime']>;
+  paymentMethod?: InputMaybe<PaymentMethodEnum>;
+  referenceNumber?: InputMaybe<Scalars['String']>;
+  status?: InputMaybe<StatusExpenses>;
 };
 
 export type UpdateGroupInput = {
@@ -2618,7 +2938,6 @@ export type UpdatePositionInput = {
 };
 
 export type UpdateProductsInflowInput = {
-  companyId?: InputMaybe<Scalars['ID']>;
   description?: InputMaybe<Scalars['String']>;
   id: Scalars['ID'];
   inflowDate?: InputMaybe<Scalars['DateTime']>;
@@ -2628,7 +2947,6 @@ export type UpdateProductsInflowInput = {
 };
 
 export type UpdateProductsInput = {
-  companyId?: InputMaybe<Scalars['ID']>;
   costPrice?: InputMaybe<Scalars['Float']>;
   description?: InputMaybe<Scalars['String']>;
   expirationDate?: InputMaybe<Scalars['DateTime']>;
@@ -2644,14 +2962,13 @@ export type UpdateProductsInput = {
 };
 
 export type UpdateProductsOutflowInput = {
-  companyId?: InputMaybe<Scalars['ID']>;
+  clientId?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
   id: Scalars['ID'];
   inflowDate?: InputMaybe<Scalars['DateTime']>;
   invoiceProducts?: InputMaybe<Array<CreateInvoiceProductInput>>;
   paymentMethod?: InputMaybe<PaymentMethodEnum>;
   status?: InputMaybe<StatusInvoice>;
-  userId?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateProfileInput = {
@@ -2671,6 +2988,7 @@ export type UpdateRepairTypeInput = {
   fields?: InputMaybe<Array<CreateRepairFieldInput>>;
   id: Scalars['ID'];
   name?: InputMaybe<Scalars['String']>;
+  status: Scalars['Boolean'];
 };
 
 export type UpdateRoleInput = {
@@ -2833,7 +3151,7 @@ export type FindOneByDocumentNumberQueryVariables = Exact<{
 }>;
 
 
-export type FindOneByDocumentNumberQuery = { __typename?: 'Query', findOneByDocumentNumber?: { __typename?: 'Client', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, lastName?: string | null, numberDocument: string, email: string, address?: string | null, celular: string, identificationType?: UserDocumentTypes | null } | null };
+export type FindOneByDocumentNumberQuery = { __typename?: 'Query', findOneByDocumentNumber?: { __typename?: 'Client', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, lastName?: string | null, numberDocument?: string | null, email?: string | null, address?: string | null, celular: string, identificationType?: UserDocumentTypes | null } | null };
 
 export type ClientsQueryVariables = Exact<{
   orderBy?: InputMaybe<Array<FindClientOrderBy> | FindClientOrderBy>;
@@ -2842,14 +3160,102 @@ export type ClientsQueryVariables = Exact<{
 }>;
 
 
-export type ClientsQuery = { __typename?: 'Query', clients: Array<{ __typename?: 'Client', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, identificationType?: UserDocumentTypes | null, lastName?: string | null, numberDocument: string, email: string, address?: string | null, celular: string }>, clientsCount: { __typename?: 'MetadataPagination', totalItems?: number | null, itemsPerPage?: number | null, totalPages?: number | null, currentPage?: number | null } };
+export type ClientsQuery = { __typename?: 'Query', clients: Array<{ __typename?: 'Client', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, identificationType?: UserDocumentTypes | null, lastName?: string | null, numberDocument?: string | null, email?: string | null, address?: string | null, celular: string }>, clientsCount: { __typename?: 'MetadataPagination', totalItems?: number | null, itemsPerPage?: number | null, totalPages?: number | null, currentPage?: number | null } };
+
+export type FindOneByNumberPhoneQueryVariables = Exact<{
+  numberPhone: Scalars['String'];
+}>;
+
+
+export type FindOneByNumberPhoneQuery = { __typename?: 'Query', findOneByNumberPhone?: { __typename?: 'Client', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, identificationType?: UserDocumentTypes | null, lastName?: string | null, numberDocument?: string | null, email?: string | null, address?: string | null, celular: string } | null };
+
+export type CreateClientMutationVariables = Exact<{
+  createInput: CreateClientInput;
+}>;
+
+
+export type CreateClientMutation = { __typename?: 'Mutation', createClient: { __typename?: 'Client', id: string } };
+
+export type UpdateClientMutationVariables = Exact<{
+  updateInput: UpdateClientInput;
+}>;
+
+
+export type UpdateClientMutation = { __typename?: 'Mutation', updateClient: { __typename?: 'Client', id: string } };
+
+export type CreateCategoryExpenseMutationVariables = Exact<{
+  createInput: CreateCategoryExpensesInput;
+}>;
+
+
+export type CreateCategoryExpenseMutation = { __typename?: 'Mutation', createCategoryExpense: { __typename?: 'CategoryExpenses', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, description?: string | null, status: StatusCategoryExpenses } };
+
+export type UpdateCategoryExpenseMutationVariables = Exact<{
+  updateInput: UpdateCategoryExpensesInput;
+}>;
+
+
+export type UpdateCategoryExpenseMutation = { __typename?: 'Mutation', updateCategoryExpense: { __typename?: 'CategoryExpenses', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, description?: string | null, status: StatusCategoryExpenses } };
+
+export type CategoryExpensesQueryVariables = Exact<{
+  orderBy?: InputMaybe<Array<FindCategoryExpensesOrderBy> | FindCategoryExpensesOrderBy>;
+  where?: InputMaybe<FindCategoryExpensesWhere>;
+  pagination?: InputMaybe<Pagination>;
+}>;
+
+
+export type CategoryExpensesQuery = { __typename?: 'Query', CategoryExpenses: Array<{ __typename?: 'CategoryExpenses', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, description?: string | null, status: StatusCategoryExpenses, isDefualtCategory: boolean }>, CategoryExpensesCount: { __typename?: 'MetadataPagination', totalItems?: number | null, itemsPerPage?: number | null, totalPages?: number | null, currentPage?: number | null } };
+
+export type CategoryExpenseQueryVariables = Exact<{
+  categoryExpenseId: Scalars['ID'];
+}>;
+
+
+export type CategoryExpenseQuery = { __typename?: 'Query', CategoryExpense: { __typename?: 'CategoryExpenses', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, description?: string | null, status: StatusCategoryExpenses } };
+
+export type CreateExpenseMutationVariables = Exact<{
+  createInput: CreateExpensesInput;
+}>;
+
+
+export type CreateExpenseMutation = { __typename?: 'Mutation', createExpense: { __typename?: 'Expense', id: string } };
+
+export type UpdateExpenseMutationVariables = Exact<{
+  updateInput: UpdateExpensesInput;
+}>;
+
+
+export type UpdateExpenseMutation = { __typename?: 'Mutation', updateExpense: { __typename?: 'Expense', id: string } };
+
+export type ExpensesQueryVariables = Exact<{
+  orderBy?: InputMaybe<Array<FindExpensesOrderBy> | FindExpensesOrderBy>;
+  where?: InputMaybe<FindExpensesWhere>;
+  pagination?: InputMaybe<Pagination>;
+}>;
+
+
+export type ExpensesQuery = { __typename?: 'Query', Expenses: Array<{ __typename?: 'Expense', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, description: string, amount: number, expenseDate: any, invoiceNumber: string, isRecurring: boolean, nextDueDate?: any | null, paymentMethod: string, referenceNumber?: string | null, status: StatusExpenses, category: { __typename?: 'CategoryExpenses', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, description?: string | null, status: StatusCategoryExpenses }, createdBy: { __typename?: 'User', fullName: string, email: string, id: string, identificationNumber?: string | null }, autorizoBy?: { __typename?: 'User', fullName: string, email: string, id: string, identificationNumber?: string | null } | null, canceldBy?: { __typename?: 'User', fullName: string, email: string, id: string, identificationNumber?: string | null } | null }>, ExpensesCount: { __typename?: 'MetadataPagination', totalItems?: number | null, itemsPerPage?: number | null, totalPages?: number | null, currentPage?: number | null } };
+
+export type ExpenseQueryVariables = Exact<{
+  expenseId: Scalars['ID'];
+}>;
+
+
+export type ExpenseQuery = { __typename?: 'Query', Expense: { __typename?: 'Expense', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, description: string, amount: number, expenseDate: any, invoiceNumber: string, isRecurring: boolean, nextDueDate?: any | null, paymentMethod: string, referenceNumber?: string | null, status: StatusExpenses, category: { __typename?: 'CategoryExpenses', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, description?: string | null, status: StatusCategoryExpenses }, createdBy: { __typename?: 'User', fullName: string, email: string, id: string, identificationNumber?: string | null }, autorizoBy?: { __typename?: 'User', fullName: string, email: string, id: string, identificationNumber?: string | null } | null, canceldBy?: { __typename?: 'User', fullName: string, email: string, id: string, identificationNumber?: string | null } | null } };
+
+export type CreateInvoiceMutationVariables = Exact<{
+  createInput: CreateInvoiceInput;
+}>;
+
+
+export type CreateInvoiceMutation = { __typename?: 'Mutation', createInvoice: { __typename?: 'Invoice', id: string } };
 
 export type OrderRepairQueryVariables = Exact<{
   orderRepairId: Scalars['ID'];
 }>;
 
 
-export type OrderRepairQuery = { __typename?: 'Query', orderRepair: { __typename?: 'OrderRepairty', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, status: OrderStatusEnum, deliveryDate?: any | null, client: { __typename?: 'Client', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, lastName?: string | null, numberDocument: string, email: string, address?: string | null, celular: string }, repairType: { __typename?: 'RepairType', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, costEstimate?: number | null, fields?: Array<{ __typename?: 'RepairField', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, type: FieldTypeEnum, isRequired: boolean, minLength?: number | null, maxLength?: number | null }> | null }, fieldValues?: Array<{ __typename?: 'CustomFieldValue', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, valorTexto?: string | null, valorFecha?: any | null, valorNumerico?: number | null, valorTextoLargo?: string | null, field: { __typename?: 'RepairField', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, type: FieldTypeEnum, isRequired: boolean, minLength?: number | null, maxLength?: number | null }, valorFoto?: { __typename?: 'FileInfo', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, fileName: string, fileExtension: string, fileMode: FileModes, fileMongoId?: string | null, fileUrl?: string | null, url: string } | null }> | null } };
+export type OrderRepairQuery = { __typename?: 'Query', orderRepair: { __typename?: 'OrderRepairty', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, status: OrderStatusEnum, deliveryDate?: any | null, client: { __typename?: 'Client', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, lastName?: string | null, numberDocument?: string | null, email?: string | null, address?: string | null, celular: string }, repairType: { __typename?: 'RepairType', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, costEstimate?: number | null, status?: boolean | null, fields?: Array<{ __typename?: 'RepairField', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, type: FieldTypeEnum, isRequired: boolean, minLength?: number | null, maxLength?: number | null }> | null }, fieldValues?: Array<{ __typename?: 'CustomFieldValue', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, valorTexto?: string | null, valorFecha?: any | null, valorNumerico?: number | null, valorTextoLargo?: string | null, valorSeletor?: string | null, field: { __typename?: 'RepairField', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, type: FieldTypeEnum, isRequired: boolean, minLength?: number | null, maxLength?: number | null }, valorFoto?: { __typename?: 'FileInfo', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, fileName: string, fileExtension: string, fileMode: FileModes, fileMongoId?: string | null, fileUrl?: string | null, url: string } | null }> | null } };
 
 export type OrderRepairsTypeQueryVariables = Exact<{
   where?: InputMaybe<FindOrderRepairTypeWhere>;
@@ -2858,7 +3264,7 @@ export type OrderRepairsTypeQueryVariables = Exact<{
 }>;
 
 
-export type OrderRepairsTypeQuery = { __typename?: 'Query', orderRepairsType: Array<{ __typename?: 'RepairType', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, costEstimate?: number | null, fields?: Array<{ __typename?: 'RepairField', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, type: FieldTypeEnum, isRequired: boolean, minLength?: number | null, maxLength?: number | null }> | null }>, orderRepairsTypeCount: { __typename?: 'MetadataPagination', totalItems?: number | null, itemsPerPage?: number | null, totalPages?: number | null, currentPage?: number | null } };
+export type OrderRepairsTypeQuery = { __typename?: 'Query', orderRepairsType: Array<{ __typename?: 'RepairType', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, costEstimate?: number | null, status?: boolean | null, fields?: Array<{ __typename?: 'RepairField', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, type: FieldTypeEnum, isRequired: boolean, minLength?: number | null, maxLength?: number | null, selectorOptions?: Array<{ __typename?: 'SelectorOption', value: string, id: string, repairField: { __typename?: 'RepairField', id: string } }> | null }> | null }>, orderRepairsTypeCount: { __typename?: 'MetadataPagination', totalItems?: number | null, itemsPerPage?: number | null, totalPages?: number | null, currentPage?: number | null } };
 
 export type OrderRepairsQueryVariables = Exact<{
   orderBy?: InputMaybe<Array<FindOrderRepairOrderBy> | FindOrderRepairOrderBy>;
@@ -2867,7 +3273,7 @@ export type OrderRepairsQueryVariables = Exact<{
 }>;
 
 
-export type OrderRepairsQuery = { __typename?: 'Query', orderRepairs: Array<{ __typename?: 'OrderRepairty', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, status: OrderStatusEnum, deliveryDate?: any | null, client: { __typename?: 'Client', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, identificationType?: UserDocumentTypes | null, lastName?: string | null, numberDocument: string, email: string, address?: string | null, celular: string }, repairType: { __typename?: 'RepairType', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, costEstimate?: number | null, fields?: Array<{ __typename?: 'RepairField', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, type: FieldTypeEnum, isRequired: boolean, minLength?: number | null, maxLength?: number | null }> | null }, fieldValues?: Array<{ __typename?: 'CustomFieldValue', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, valorTexto?: string | null, valorFecha?: any | null, valorNumerico?: number | null, valorTextoLargo?: string | null, orderRepair: { __typename?: 'OrderRepairty', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, status: OrderStatusEnum, deliveryDate?: any | null }, field: { __typename?: 'RepairField', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, type: FieldTypeEnum, isRequired: boolean, minLength?: number | null, maxLength?: number | null }, valorFoto?: { __typename?: 'FileInfo', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, fileName: string, fileExtension: string, fileMode: FileModes, fileMongoId?: string | null, fileUrl?: string | null, url: string } | null }> | null, invoice?: { __typename?: 'Invoice', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, invoiceNumber: string, issueDate: any, dueDate?: any | null, subtotal?: number | null, tax?: number | null, total?: number | null, discount?: number | null, status: StatusInvoice, paymentMethod?: PaymentMethodEnum | null, paymentReference?: string | null, description?: string | null, cliente: { __typename?: 'Client', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, identificationType?: UserDocumentTypes | null, lastName?: string | null, numberDocument: string, email: string, address?: string | null, celular: string }, user: { __typename?: 'User', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name?: string | null, middleName?: string | null, lastName?: string | null, secondSurname?: string | null, email: string, identificationType?: UserDocumentTypes | null, identificationNumber?: string | null, dateIssue?: any | null, legalRepresentativeIdentificationType?: UserDocumentTypes | null, legalRepresentativeIdentificationNumber?: string | null, phoneCountryCode?: string | null, phoneNumber?: string | null, address?: string | null, hasRural?: boolean | null, confirmationCode?: string | null, position?: string | null, typeWoker?: TypeWorker | null, status: UserStatusTypes, phoneVerification: boolean, emailVerification: boolean, type: UserTypes, fullName: string }, orrderReapirty: { __typename?: 'OrderRepairty', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, status: OrderStatusEnum, deliveryDate?: any | null, client: { __typename?: 'Client', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, identificationType?: UserDocumentTypes | null, lastName?: string | null, numberDocument: string, email: string, address?: string | null, celular: string }, repairType: { __typename?: 'RepairType', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, costEstimate?: number | null, fields?: Array<{ __typename?: 'RepairField', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, type: FieldTypeEnum, isRequired: boolean, minLength?: number | null, maxLength?: number | null }> | null }, invoice?: { __typename?: 'Invoice', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, invoiceNumber: string, issueDate: any, dueDate?: any | null, subtotal?: number | null, tax?: number | null, total?: number | null, discount?: number | null, status: StatusInvoice, paymentMethod?: PaymentMethodEnum | null, paymentReference?: string | null, description?: string | null } | null, fieldValues?: Array<{ __typename?: 'CustomFieldValue', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, valorTexto?: string | null, valorFecha?: any | null, valorNumerico?: number | null, valorTextoLargo?: string | null, orderRepair: { __typename?: 'OrderRepairty', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, status: OrderStatusEnum, deliveryDate?: any | null }, field: { __typename?: 'RepairField', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, type: FieldTypeEnum, isRequired: boolean, minLength?: number | null, maxLength?: number | null }, valorFoto?: { __typename?: 'FileInfo', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, fileName: string, fileExtension: string, fileMode: FileModes, fileMongoId?: string | null, fileUrl?: string | null, url: string } | null }> | null, repairFieldForm?: Array<{ __typename?: 'RepairFieldForm', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, type: FieldTypeEnum, isRequired: boolean, minLength?: number | null, maxLength?: number | null, orderRepairty: { __typename?: 'OrderRepairty', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, status: OrderStatusEnum, deliveryDate?: any | null } }> | null } } | null }>, orderRepairsCount: { __typename?: 'MetadataPagination', totalItems?: number | null, itemsPerPage?: number | null, totalPages?: number | null, currentPage?: number | null } };
+export type OrderRepairsQuery = { __typename?: 'Query', orderRepairs: Array<{ __typename?: 'OrderRepairty', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, status: OrderStatusEnum, deliveryDate?: any | null, client: { __typename?: 'Client', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, identificationType?: UserDocumentTypes | null, lastName?: string | null, numberDocument?: string | null, email?: string | null, address?: string | null, celular: string }, repairType: { __typename?: 'RepairType', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, status?: boolean | null, costEstimate?: number | null, fields?: Array<{ __typename?: 'RepairField', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, type: FieldTypeEnum, isRequired: boolean, minLength?: number | null, maxLength?: number | null, selectorOptions?: Array<{ __typename?: 'SelectorOption', value: string, id: string, repairField: { __typename?: 'RepairField', id: string } }> | null }> | null }, fieldValues?: Array<{ __typename?: 'CustomFieldValue', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, valorTexto?: string | null, valorFecha?: any | null, valorNumerico?: number | null, valorTextoLargo?: string | null, valorSeletor?: string | null, orderRepair: { __typename?: 'OrderRepairty', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, status: OrderStatusEnum, deliveryDate?: any | null }, field: { __typename?: 'RepairField', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, type: FieldTypeEnum, isRequired: boolean, minLength?: number | null, maxLength?: number | null, selectorOptions?: Array<{ __typename?: 'SelectorOption', value: string, id: string, repairField: { __typename?: 'RepairField', id: string } }> | null }, valorFoto?: { __typename?: 'FileInfo', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, fileName: string, fileExtension: string, fileMode: FileModes, fileMongoId?: string | null, fileUrl?: string | null, url: string } | null }> | null, invoice?: { __typename?: 'Invoice', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, invoiceNumber: string, issueDate: any, dueDate?: any | null, subtotal?: number | null, tax?: number | null, total?: number | null, discount?: number | null, status: StatusInvoice, paymentMethod?: PaymentMethodEnum | null, paymentReference?: string | null, description?: string | null, cliente: { __typename?: 'Client', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, identificationType?: UserDocumentTypes | null, lastName?: string | null, numberDocument?: string | null, email?: string | null, address?: string | null, celular: string }, user: { __typename?: 'User', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name?: string | null, middleName?: string | null, lastName?: string | null, secondSurname?: string | null, email: string, identificationType?: UserDocumentTypes | null, identificationNumber?: string | null, dateIssue?: any | null, legalRepresentativeIdentificationType?: UserDocumentTypes | null, legalRepresentativeIdentificationNumber?: string | null, phoneCountryCode?: string | null, phoneNumber?: string | null, address?: string | null, hasRural?: boolean | null, confirmationCode?: string | null, position?: string | null, typeWoker?: TypeWorker | null, status: UserStatusTypes, phoneVerification: boolean, emailVerification: boolean, type: UserTypes, fullName: string }, orrderReapirty: { __typename?: 'OrderRepairty', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, status: OrderStatusEnum, deliveryDate?: any | null, client: { __typename?: 'Client', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, identificationType?: UserDocumentTypes | null, lastName?: string | null, numberDocument?: string | null, email?: string | null, address?: string | null, celular: string }, repairType: { __typename?: 'RepairType', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, costEstimate?: number | null, fields?: Array<{ __typename?: 'RepairField', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, type: FieldTypeEnum, isRequired: boolean, minLength?: number | null, maxLength?: number | null }> | null }, invoice?: { __typename?: 'Invoice', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, invoiceNumber: string, issueDate: any, dueDate?: any | null, subtotal?: number | null, tax?: number | null, total?: number | null, discount?: number | null, status: StatusInvoice, paymentMethod?: PaymentMethodEnum | null, paymentReference?: string | null, description?: string | null } | null, fieldValues?: Array<{ __typename?: 'CustomFieldValue', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, valorTexto?: string | null, valorFecha?: any | null, valorNumerico?: number | null, valorTextoLargo?: string | null, valorSeletor?: string | null, orderRepair: { __typename?: 'OrderRepairty', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, status: OrderStatusEnum, deliveryDate?: any | null }, field: { __typename?: 'RepairField', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, type: FieldTypeEnum, isRequired: boolean, minLength?: number | null, maxLength?: number | null }, valorFoto?: { __typename?: 'FileInfo', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, fileName: string, fileExtension: string, fileMode: FileModes, fileMongoId?: string | null, fileUrl?: string | null, url: string } | null }> | null, repairFieldForm?: Array<{ __typename?: 'RepairFieldForm', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, type: FieldTypeEnum, isRequired: boolean, minLength?: number | null, maxLength?: number | null, orderRepairty: { __typename?: 'OrderRepairty', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, status: OrderStatusEnum, deliveryDate?: any | null } }> | null } } | null }>, orderRepairsCount: { __typename?: 'MetadataPagination', totalItems?: number | null, itemsPerPage?: number | null, totalPages?: number | null, currentPage?: number | null } };
 
 export type GenrateQrByRepairQueryVariables = Exact<{
   idRepair: Scalars['String'];
@@ -2882,6 +3288,110 @@ export type CreateOrderRepairTypeMutationVariables = Exact<{
 
 
 export type CreateOrderRepairTypeMutation = { __typename?: 'Mutation', createOrderRepairType: { __typename?: 'RepairType', id: string } };
+
+export type CreateOrderRepairFullMutationVariables = Exact<{
+  createOrderRepairFullInput: CreateOrderRepairFullInput;
+}>;
+
+
+export type CreateOrderRepairFullMutation = { __typename?: 'Mutation', createOrderRepairFull: string };
+
+export type UpdateOrderRepairMutationVariables = Exact<{
+  updateInput: UpdateOrderRepairInput;
+}>;
+
+
+export type UpdateOrderRepairMutation = { __typename?: 'Mutation', updateOrderRepair: { __typename?: 'OrderRepairty', id: string } };
+
+export type UpdateOrderRepairTypeMutationVariables = Exact<{
+  updateInput: UpdateRepairTypeInput;
+}>;
+
+
+export type UpdateOrderRepairTypeMutation = { __typename?: 'Mutation', updateOrderRepairType: { __typename?: 'RepairType', id: string } };
+
+export type CreateProductMutationVariables = Exact<{
+  createInput: CreateProductInput;
+}>;
+
+
+export type CreateProductMutation = { __typename?: 'Mutation', createProduct: { __typename?: 'Products', id: string } };
+
+export type UpdateProductMutationVariables = Exact<{
+  updateInput: UpdateProductsInput;
+}>;
+
+
+export type UpdateProductMutation = { __typename?: 'Mutation', updateProduct: { __typename?: 'Products', id: string } };
+
+export type ProductsQueryVariables = Exact<{
+  orderBy?: InputMaybe<Array<FindProductsOrderBy> | FindProductsOrderBy>;
+  where?: InputMaybe<FindProductsWhere>;
+  pagination?: InputMaybe<Pagination>;
+}>;
+
+
+export type ProductsQuery = { __typename?: 'Query', Products: Array<{ __typename?: 'Products', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, description?: string | null, salePrice: number, costPrice?: number | null, tax?: number | null, unitOfMeasure?: string | null, isActive: boolean, expirationDate?: any | null, isShowPublic: boolean, minStock?: number | null, stock: { __typename?: 'StockProductView', id: string, entrada_producto: number, salida_producto: number, stock: number, name: string } }>, ProductsCount: { __typename?: 'MetadataPagination', totalItems?: number | null, itemsPerPage?: number | null, totalPages?: number | null, currentPage?: number | null } };
+
+export type ProductQueryVariables = Exact<{
+  productId: Scalars['ID'];
+}>;
+
+
+export type ProductQuery = { __typename?: 'Query', Product: { __typename?: 'Products', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, description?: string | null, salePrice: number, costPrice?: number | null, tax?: number | null, unitOfMeasure?: string | null, isActive: boolean, expirationDate?: any | null, minStock?: number | null, stock: { __typename?: 'StockProductView', id: string, entrada_producto: number, salida_producto: number, stock: number, name: string } } };
+
+export type CreateProductInflowMutationVariables = Exact<{
+  createInput: CreateProductInflowInput;
+}>;
+
+
+export type CreateProductInflowMutation = { __typename?: 'Mutation', createProductInflow: { __typename?: 'ProductInflow', id: string } };
+
+export type UpdateProductInflowMutationVariables = Exact<{
+  updateInput: UpdateProductsInflowInput;
+}>;
+
+
+export type UpdateProductInflowMutation = { __typename?: 'Mutation', updateProductInflow: { __typename?: 'ProductInflow', id: string } };
+
+export type ProductsInflowsQueryVariables = Exact<{
+  orderBy?: InputMaybe<Array<FindProductsInflowOrderBy> | FindProductsInflowOrderBy>;
+  where?: InputMaybe<FindProductsInflowWhere>;
+  pagination?: InputMaybe<Pagination>;
+}>;
+
+
+export type ProductsInflowsQuery = { __typename?: 'Query', ProductsInflows: Array<{ __typename?: 'ProductInflow', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, quantity: number, inflowDate: any, status: ProductInflowEmun, description?: string | null, product: { __typename?: 'Products', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, description?: string | null, salePrice: number, costPrice?: number | null, tax?: number | null, unitOfMeasure?: string | null, isActive: boolean, expirationDate?: any | null }, user: { __typename?: 'User', email: string, fullName: string, id: string, identificationNumber?: string | null } }>, ProductsInflowsCount: { __typename?: 'MetadataPagination', currentPage?: number | null, itemsPerPage?: number | null, totalItems?: number | null, totalPages?: number | null } };
+
+export type ProductInflowQueryVariables = Exact<{
+  productInflowId: Scalars['ID'];
+}>;
+
+
+export type ProductInflowQuery = { __typename?: 'Query', ProductInflow: { __typename?: 'ProductInflow', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, quantity: number, inflowDate: any, description?: string | null, product: { __typename?: 'Products', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, description?: string | null, salePrice: number, costPrice?: number | null, tax?: number | null, unitOfMeasure?: string | null, isActive: boolean, expirationDate?: any | null }, user: { __typename?: 'User', email: string, fullName: string, id: string, identificationNumber?: string | null } } };
+
+export type CreateProductOutflowMutationVariables = Exact<{
+  createInput: CreateProductOutflowInput;
+}>;
+
+
+export type CreateProductOutflowMutation = { __typename?: 'Mutation', createProductOutflow: { __typename?: 'ProductOutflow', id: string } };
+
+export type UpdateProductOutflowMutationVariables = Exact<{
+  updateInput: UpdateProductsOutflowInput;
+}>;
+
+
+export type UpdateProductOutflowMutation = { __typename?: 'Mutation', updateProductOutflow: { __typename?: 'ProductOutflow', id: string } };
+
+export type ProductsOutflowsQueryVariables = Exact<{
+  orderBy?: InputMaybe<Array<FindProductsOutflowOrderBy> | FindProductsOutflowOrderBy>;
+  where?: InputMaybe<FindProductsOutflowWhere>;
+  pagination?: InputMaybe<Pagination>;
+}>;
+
+
+export type ProductsOutflowsQuery = { __typename?: 'Query', ProductsOutflows: Array<{ __typename?: 'ProductOutflow', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, inflowDate: any, description?: string | null, paymentMethod: PaymentMethodEnum, status: StatusInvoice, client: { __typename?: 'Client', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, lastName?: string | null, numberDocument?: string | null, email?: string | null, address?: string | null, celular: string }, invoiceProducts: Array<{ __typename?: 'InvoiceProduct', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, quantity: number, unitPrice: number, subtotal: number, discount?: number | null, tax?: number | null, total: number, product: { __typename?: 'Products', costPrice?: number | null, id: string, name: string, tax?: number | null, salePrice: number } }> }>, ProductsOutflowsCount: { __typename?: 'MetadataPagination', currentPage?: number | null, itemsPerPage?: number | null, totalItems?: number | null, totalPages?: number | null } };
 
 export type UsersQueryVariables = Exact<{
   orderBy?: InputMaybe<Array<FindUsersOrderBy> | FindUsersOrderBy>;
@@ -3301,6 +3811,541 @@ export function useClientsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Cl
 export type ClientsQueryHookResult = ReturnType<typeof useClientsQuery>;
 export type ClientsLazyQueryHookResult = ReturnType<typeof useClientsLazyQuery>;
 export type ClientsQueryResult = Apollo.QueryResult<ClientsQuery, ClientsQueryVariables>;
+export const FindOneByNumberPhoneDocument = gql`
+    query FindOneByNumberPhone($numberPhone: String!) {
+  findOneByNumberPhone(numberPhone: $numberPhone) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    name
+    identificationType
+    lastName
+    numberDocument
+    email
+    address
+    celular
+  }
+}
+    `;
+
+/**
+ * __useFindOneByNumberPhoneQuery__
+ *
+ * To run a query within a React component, call `useFindOneByNumberPhoneQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindOneByNumberPhoneQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindOneByNumberPhoneQuery({
+ *   variables: {
+ *      numberPhone: // value for 'numberPhone'
+ *   },
+ * });
+ */
+export function useFindOneByNumberPhoneQuery(baseOptions: Apollo.QueryHookOptions<FindOneByNumberPhoneQuery, FindOneByNumberPhoneQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindOneByNumberPhoneQuery, FindOneByNumberPhoneQueryVariables>(FindOneByNumberPhoneDocument, options);
+      }
+export function useFindOneByNumberPhoneLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindOneByNumberPhoneQuery, FindOneByNumberPhoneQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindOneByNumberPhoneQuery, FindOneByNumberPhoneQueryVariables>(FindOneByNumberPhoneDocument, options);
+        }
+export type FindOneByNumberPhoneQueryHookResult = ReturnType<typeof useFindOneByNumberPhoneQuery>;
+export type FindOneByNumberPhoneLazyQueryHookResult = ReturnType<typeof useFindOneByNumberPhoneLazyQuery>;
+export type FindOneByNumberPhoneQueryResult = Apollo.QueryResult<FindOneByNumberPhoneQuery, FindOneByNumberPhoneQueryVariables>;
+export const CreateClientDocument = gql`
+    mutation CreateClient($createInput: CreateClientInput!) {
+  createClient(createInput: $createInput) {
+    id
+  }
+}
+    `;
+export type CreateClientMutationFn = Apollo.MutationFunction<CreateClientMutation, CreateClientMutationVariables>;
+
+/**
+ * __useCreateClientMutation__
+ *
+ * To run a mutation, you first call `useCreateClientMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateClientMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createClientMutation, { data, loading, error }] = useCreateClientMutation({
+ *   variables: {
+ *      createInput: // value for 'createInput'
+ *   },
+ * });
+ */
+export function useCreateClientMutation(baseOptions?: Apollo.MutationHookOptions<CreateClientMutation, CreateClientMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateClientMutation, CreateClientMutationVariables>(CreateClientDocument, options);
+      }
+export type CreateClientMutationHookResult = ReturnType<typeof useCreateClientMutation>;
+export type CreateClientMutationResult = Apollo.MutationResult<CreateClientMutation>;
+export type CreateClientMutationOptions = Apollo.BaseMutationOptions<CreateClientMutation, CreateClientMutationVariables>;
+export const UpdateClientDocument = gql`
+    mutation UpdateClient($updateInput: UpdateClientInput!) {
+  updateClient(updateInput: $updateInput) {
+    id
+  }
+}
+    `;
+export type UpdateClientMutationFn = Apollo.MutationFunction<UpdateClientMutation, UpdateClientMutationVariables>;
+
+/**
+ * __useUpdateClientMutation__
+ *
+ * To run a mutation, you first call `useUpdateClientMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateClientMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateClientMutation, { data, loading, error }] = useUpdateClientMutation({
+ *   variables: {
+ *      updateInput: // value for 'updateInput'
+ *   },
+ * });
+ */
+export function useUpdateClientMutation(baseOptions?: Apollo.MutationHookOptions<UpdateClientMutation, UpdateClientMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateClientMutation, UpdateClientMutationVariables>(UpdateClientDocument, options);
+      }
+export type UpdateClientMutationHookResult = ReturnType<typeof useUpdateClientMutation>;
+export type UpdateClientMutationResult = Apollo.MutationResult<UpdateClientMutation>;
+export type UpdateClientMutationOptions = Apollo.BaseMutationOptions<UpdateClientMutation, UpdateClientMutationVariables>;
+export const CreateCategoryExpenseDocument = gql`
+    mutation CreateCategoryExpense($createInput: CreateCategoryExpensesInput!) {
+  createCategoryExpense(createInput: $createInput) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    name
+    description
+    status
+  }
+}
+    `;
+export type CreateCategoryExpenseMutationFn = Apollo.MutationFunction<CreateCategoryExpenseMutation, CreateCategoryExpenseMutationVariables>;
+
+/**
+ * __useCreateCategoryExpenseMutation__
+ *
+ * To run a mutation, you first call `useCreateCategoryExpenseMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCategoryExpenseMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCategoryExpenseMutation, { data, loading, error }] = useCreateCategoryExpenseMutation({
+ *   variables: {
+ *      createInput: // value for 'createInput'
+ *   },
+ * });
+ */
+export function useCreateCategoryExpenseMutation(baseOptions?: Apollo.MutationHookOptions<CreateCategoryExpenseMutation, CreateCategoryExpenseMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateCategoryExpenseMutation, CreateCategoryExpenseMutationVariables>(CreateCategoryExpenseDocument, options);
+      }
+export type CreateCategoryExpenseMutationHookResult = ReturnType<typeof useCreateCategoryExpenseMutation>;
+export type CreateCategoryExpenseMutationResult = Apollo.MutationResult<CreateCategoryExpenseMutation>;
+export type CreateCategoryExpenseMutationOptions = Apollo.BaseMutationOptions<CreateCategoryExpenseMutation, CreateCategoryExpenseMutationVariables>;
+export const UpdateCategoryExpenseDocument = gql`
+    mutation UpdateCategoryExpense($updateInput: UpdateCategoryExpensesInput!) {
+  updateCategoryExpense(updateInput: $updateInput) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    name
+    description
+    status
+  }
+}
+    `;
+export type UpdateCategoryExpenseMutationFn = Apollo.MutationFunction<UpdateCategoryExpenseMutation, UpdateCategoryExpenseMutationVariables>;
+
+/**
+ * __useUpdateCategoryExpenseMutation__
+ *
+ * To run a mutation, you first call `useUpdateCategoryExpenseMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCategoryExpenseMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCategoryExpenseMutation, { data, loading, error }] = useUpdateCategoryExpenseMutation({
+ *   variables: {
+ *      updateInput: // value for 'updateInput'
+ *   },
+ * });
+ */
+export function useUpdateCategoryExpenseMutation(baseOptions?: Apollo.MutationHookOptions<UpdateCategoryExpenseMutation, UpdateCategoryExpenseMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateCategoryExpenseMutation, UpdateCategoryExpenseMutationVariables>(UpdateCategoryExpenseDocument, options);
+      }
+export type UpdateCategoryExpenseMutationHookResult = ReturnType<typeof useUpdateCategoryExpenseMutation>;
+export type UpdateCategoryExpenseMutationResult = Apollo.MutationResult<UpdateCategoryExpenseMutation>;
+export type UpdateCategoryExpenseMutationOptions = Apollo.BaseMutationOptions<UpdateCategoryExpenseMutation, UpdateCategoryExpenseMutationVariables>;
+export const CategoryExpensesDocument = gql`
+    query CategoryExpenses($orderBy: [FindCategoryExpensesOrderBy!], $where: FindCategoryExpensesWhere, $pagination: Pagination) {
+  CategoryExpenses(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    name
+    description
+    status
+    isDefualtCategory
+  }
+  CategoryExpensesCount(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    totalItems
+    itemsPerPage
+    totalPages
+    currentPage
+  }
+}
+    `;
+
+/**
+ * __useCategoryExpensesQuery__
+ *
+ * To run a query within a React component, call `useCategoryExpensesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCategoryExpensesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCategoryExpensesQuery({
+ *   variables: {
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *      pagination: // value for 'pagination'
+ *   },
+ * });
+ */
+export function useCategoryExpensesQuery(baseOptions?: Apollo.QueryHookOptions<CategoryExpensesQuery, CategoryExpensesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CategoryExpensesQuery, CategoryExpensesQueryVariables>(CategoryExpensesDocument, options);
+      }
+export function useCategoryExpensesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CategoryExpensesQuery, CategoryExpensesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CategoryExpensesQuery, CategoryExpensesQueryVariables>(CategoryExpensesDocument, options);
+        }
+export type CategoryExpensesQueryHookResult = ReturnType<typeof useCategoryExpensesQuery>;
+export type CategoryExpensesLazyQueryHookResult = ReturnType<typeof useCategoryExpensesLazyQuery>;
+export type CategoryExpensesQueryResult = Apollo.QueryResult<CategoryExpensesQuery, CategoryExpensesQueryVariables>;
+export const CategoryExpenseDocument = gql`
+    query CategoryExpense($categoryExpenseId: ID!) {
+  CategoryExpense(id: $categoryExpenseId) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    name
+    description
+    status
+  }
+}
+    `;
+
+/**
+ * __useCategoryExpenseQuery__
+ *
+ * To run a query within a React component, call `useCategoryExpenseQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCategoryExpenseQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCategoryExpenseQuery({
+ *   variables: {
+ *      categoryExpenseId: // value for 'categoryExpenseId'
+ *   },
+ * });
+ */
+export function useCategoryExpenseQuery(baseOptions: Apollo.QueryHookOptions<CategoryExpenseQuery, CategoryExpenseQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CategoryExpenseQuery, CategoryExpenseQueryVariables>(CategoryExpenseDocument, options);
+      }
+export function useCategoryExpenseLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CategoryExpenseQuery, CategoryExpenseQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CategoryExpenseQuery, CategoryExpenseQueryVariables>(CategoryExpenseDocument, options);
+        }
+export type CategoryExpenseQueryHookResult = ReturnType<typeof useCategoryExpenseQuery>;
+export type CategoryExpenseLazyQueryHookResult = ReturnType<typeof useCategoryExpenseLazyQuery>;
+export type CategoryExpenseQueryResult = Apollo.QueryResult<CategoryExpenseQuery, CategoryExpenseQueryVariables>;
+export const CreateExpenseDocument = gql`
+    mutation CreateExpense($createInput: CreateExpensesInput!) {
+  createExpense(createInput: $createInput) {
+    id
+  }
+}
+    `;
+export type CreateExpenseMutationFn = Apollo.MutationFunction<CreateExpenseMutation, CreateExpenseMutationVariables>;
+
+/**
+ * __useCreateExpenseMutation__
+ *
+ * To run a mutation, you first call `useCreateExpenseMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateExpenseMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createExpenseMutation, { data, loading, error }] = useCreateExpenseMutation({
+ *   variables: {
+ *      createInput: // value for 'createInput'
+ *   },
+ * });
+ */
+export function useCreateExpenseMutation(baseOptions?: Apollo.MutationHookOptions<CreateExpenseMutation, CreateExpenseMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateExpenseMutation, CreateExpenseMutationVariables>(CreateExpenseDocument, options);
+      }
+export type CreateExpenseMutationHookResult = ReturnType<typeof useCreateExpenseMutation>;
+export type CreateExpenseMutationResult = Apollo.MutationResult<CreateExpenseMutation>;
+export type CreateExpenseMutationOptions = Apollo.BaseMutationOptions<CreateExpenseMutation, CreateExpenseMutationVariables>;
+export const UpdateExpenseDocument = gql`
+    mutation UpdateExpense($updateInput: UpdateExpensesInput!) {
+  updateExpense(updateInput: $updateInput) {
+    id
+  }
+}
+    `;
+export type UpdateExpenseMutationFn = Apollo.MutationFunction<UpdateExpenseMutation, UpdateExpenseMutationVariables>;
+
+/**
+ * __useUpdateExpenseMutation__
+ *
+ * To run a mutation, you first call `useUpdateExpenseMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateExpenseMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateExpenseMutation, { data, loading, error }] = useUpdateExpenseMutation({
+ *   variables: {
+ *      updateInput: // value for 'updateInput'
+ *   },
+ * });
+ */
+export function useUpdateExpenseMutation(baseOptions?: Apollo.MutationHookOptions<UpdateExpenseMutation, UpdateExpenseMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateExpenseMutation, UpdateExpenseMutationVariables>(UpdateExpenseDocument, options);
+      }
+export type UpdateExpenseMutationHookResult = ReturnType<typeof useUpdateExpenseMutation>;
+export type UpdateExpenseMutationResult = Apollo.MutationResult<UpdateExpenseMutation>;
+export type UpdateExpenseMutationOptions = Apollo.BaseMutationOptions<UpdateExpenseMutation, UpdateExpenseMutationVariables>;
+export const ExpensesDocument = gql`
+    query Expenses($orderBy: [FindExpensesOrderBy!], $where: FindExpensesWhere, $pagination: Pagination) {
+  Expenses(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    description
+    amount
+    expenseDate
+    invoiceNumber
+    category {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      description
+      status
+    }
+    isRecurring
+    nextDueDate
+    paymentMethod
+    referenceNumber
+    status
+    createdBy {
+      fullName
+      email
+      id
+      identificationNumber
+    }
+    autorizoBy {
+      fullName
+      email
+      id
+      identificationNumber
+    }
+    canceldBy {
+      fullName
+      email
+      id
+      identificationNumber
+    }
+  }
+  ExpensesCount(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    totalItems
+    itemsPerPage
+    totalPages
+    currentPage
+  }
+}
+    `;
+
+/**
+ * __useExpensesQuery__
+ *
+ * To run a query within a React component, call `useExpensesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useExpensesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useExpensesQuery({
+ *   variables: {
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *      pagination: // value for 'pagination'
+ *   },
+ * });
+ */
+export function useExpensesQuery(baseOptions?: Apollo.QueryHookOptions<ExpensesQuery, ExpensesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ExpensesQuery, ExpensesQueryVariables>(ExpensesDocument, options);
+      }
+export function useExpensesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ExpensesQuery, ExpensesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ExpensesQuery, ExpensesQueryVariables>(ExpensesDocument, options);
+        }
+export type ExpensesQueryHookResult = ReturnType<typeof useExpensesQuery>;
+export type ExpensesLazyQueryHookResult = ReturnType<typeof useExpensesLazyQuery>;
+export type ExpensesQueryResult = Apollo.QueryResult<ExpensesQuery, ExpensesQueryVariables>;
+export const ExpenseDocument = gql`
+    query Expense($expenseId: ID!) {
+  Expense(id: $expenseId) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    description
+    amount
+    expenseDate
+    invoiceNumber
+    category {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      description
+      status
+    }
+    isRecurring
+    nextDueDate
+    paymentMethod
+    referenceNumber
+    status
+    createdBy {
+      fullName
+      email
+      id
+      identificationNumber
+    }
+    autorizoBy {
+      fullName
+      email
+      id
+      identificationNumber
+    }
+    canceldBy {
+      fullName
+      email
+      id
+      identificationNumber
+    }
+  }
+}
+    `;
+
+/**
+ * __useExpenseQuery__
+ *
+ * To run a query within a React component, call `useExpenseQuery` and pass it any options that fit your needs.
+ * When your component renders, `useExpenseQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useExpenseQuery({
+ *   variables: {
+ *      expenseId: // value for 'expenseId'
+ *   },
+ * });
+ */
+export function useExpenseQuery(baseOptions: Apollo.QueryHookOptions<ExpenseQuery, ExpenseQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ExpenseQuery, ExpenseQueryVariables>(ExpenseDocument, options);
+      }
+export function useExpenseLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ExpenseQuery, ExpenseQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ExpenseQuery, ExpenseQueryVariables>(ExpenseDocument, options);
+        }
+export type ExpenseQueryHookResult = ReturnType<typeof useExpenseQuery>;
+export type ExpenseLazyQueryHookResult = ReturnType<typeof useExpenseLazyQuery>;
+export type ExpenseQueryResult = Apollo.QueryResult<ExpenseQuery, ExpenseQueryVariables>;
+export const CreateInvoiceDocument = gql`
+    mutation CreateInvoice($createInput: CreateInvoiceInput!) {
+  createInvoice(createInput: $createInput) {
+    id
+  }
+}
+    `;
+export type CreateInvoiceMutationFn = Apollo.MutationFunction<CreateInvoiceMutation, CreateInvoiceMutationVariables>;
+
+/**
+ * __useCreateInvoiceMutation__
+ *
+ * To run a mutation, you first call `useCreateInvoiceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateInvoiceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createInvoiceMutation, { data, loading, error }] = useCreateInvoiceMutation({
+ *   variables: {
+ *      createInput: // value for 'createInput'
+ *   },
+ * });
+ */
+export function useCreateInvoiceMutation(baseOptions?: Apollo.MutationHookOptions<CreateInvoiceMutation, CreateInvoiceMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateInvoiceMutation, CreateInvoiceMutationVariables>(CreateInvoiceDocument, options);
+      }
+export type CreateInvoiceMutationHookResult = ReturnType<typeof useCreateInvoiceMutation>;
+export type CreateInvoiceMutationResult = Apollo.MutationResult<CreateInvoiceMutation>;
+export type CreateInvoiceMutationOptions = Apollo.BaseMutationOptions<CreateInvoiceMutation, CreateInvoiceMutationVariables>;
 export const OrderRepairDocument = gql`
     query OrderRepair($orderRepairId: ID!) {
   orderRepair(id: $orderRepairId) {
@@ -3329,6 +4374,7 @@ export const OrderRepairDocument = gql`
       deletedAt
       name
       costEstimate
+      status
       fields {
         id
         createdAt
@@ -3361,6 +4407,7 @@ export const OrderRepairDocument = gql`
       valorFecha
       valorNumerico
       valorTextoLargo
+      valorSeletor
       valorFoto {
         id
         createdAt
@@ -3414,6 +4461,7 @@ export const OrderRepairsTypeDocument = gql`
     deletedAt
     name
     costEstimate
+    status
     fields {
       id
       createdAt
@@ -3424,6 +4472,13 @@ export const OrderRepairsTypeDocument = gql`
       isRequired
       minLength
       maxLength
+      selectorOptions {
+        value
+        id
+        repairField {
+          id
+        }
+      }
     }
   }
   orderRepairsTypeCount(orderBy: $orderBy, where: $where, pagination: $pagination) {
@@ -3492,6 +4547,7 @@ export const OrderRepairsDocument = gql`
       updatedAt
       deletedAt
       name
+      status
       costEstimate
       fields {
         id
@@ -3503,6 +4559,13 @@ export const OrderRepairsDocument = gql`
         isRequired
         minLength
         maxLength
+        selectorOptions {
+          value
+          id
+          repairField {
+            id
+          }
+        }
       }
     }
     fieldValues {
@@ -3528,11 +4591,19 @@ export const OrderRepairsDocument = gql`
         isRequired
         minLength
         maxLength
+        selectorOptions {
+          value
+          id
+          repairField {
+            id
+          }
+        }
       }
       valorTexto
       valorFecha
       valorNumerico
       valorTextoLargo
+      valorSeletor
       valorFoto {
         id
         createdAt
@@ -3679,6 +4750,7 @@ export const OrderRepairsDocument = gql`
           valorFecha
           valorNumerico
           valorTextoLargo
+          valorSeletor
           valorFoto {
             id
             createdAt
@@ -3826,6 +4898,630 @@ export function useCreateOrderRepairTypeMutation(baseOptions?: Apollo.MutationHo
 export type CreateOrderRepairTypeMutationHookResult = ReturnType<typeof useCreateOrderRepairTypeMutation>;
 export type CreateOrderRepairTypeMutationResult = Apollo.MutationResult<CreateOrderRepairTypeMutation>;
 export type CreateOrderRepairTypeMutationOptions = Apollo.BaseMutationOptions<CreateOrderRepairTypeMutation, CreateOrderRepairTypeMutationVariables>;
+export const CreateOrderRepairFullDocument = gql`
+    mutation CreateOrderRepairFull($createOrderRepairFullInput: CreateOrderRepairFullInput!) {
+  createOrderRepairFull(createOrderRepairFullInput: $createOrderRepairFullInput)
+}
+    `;
+export type CreateOrderRepairFullMutationFn = Apollo.MutationFunction<CreateOrderRepairFullMutation, CreateOrderRepairFullMutationVariables>;
+
+/**
+ * __useCreateOrderRepairFullMutation__
+ *
+ * To run a mutation, you first call `useCreateOrderRepairFullMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateOrderRepairFullMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createOrderRepairFullMutation, { data, loading, error }] = useCreateOrderRepairFullMutation({
+ *   variables: {
+ *      createOrderRepairFullInput: // value for 'createOrderRepairFullInput'
+ *   },
+ * });
+ */
+export function useCreateOrderRepairFullMutation(baseOptions?: Apollo.MutationHookOptions<CreateOrderRepairFullMutation, CreateOrderRepairFullMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateOrderRepairFullMutation, CreateOrderRepairFullMutationVariables>(CreateOrderRepairFullDocument, options);
+      }
+export type CreateOrderRepairFullMutationHookResult = ReturnType<typeof useCreateOrderRepairFullMutation>;
+export type CreateOrderRepairFullMutationResult = Apollo.MutationResult<CreateOrderRepairFullMutation>;
+export type CreateOrderRepairFullMutationOptions = Apollo.BaseMutationOptions<CreateOrderRepairFullMutation, CreateOrderRepairFullMutationVariables>;
+export const UpdateOrderRepairDocument = gql`
+    mutation UpdateOrderRepair($updateInput: UpdateOrderRepairInput!) {
+  updateOrderRepair(updateInput: $updateInput) {
+    id
+  }
+}
+    `;
+export type UpdateOrderRepairMutationFn = Apollo.MutationFunction<UpdateOrderRepairMutation, UpdateOrderRepairMutationVariables>;
+
+/**
+ * __useUpdateOrderRepairMutation__
+ *
+ * To run a mutation, you first call `useUpdateOrderRepairMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateOrderRepairMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateOrderRepairMutation, { data, loading, error }] = useUpdateOrderRepairMutation({
+ *   variables: {
+ *      updateInput: // value for 'updateInput'
+ *   },
+ * });
+ */
+export function useUpdateOrderRepairMutation(baseOptions?: Apollo.MutationHookOptions<UpdateOrderRepairMutation, UpdateOrderRepairMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateOrderRepairMutation, UpdateOrderRepairMutationVariables>(UpdateOrderRepairDocument, options);
+      }
+export type UpdateOrderRepairMutationHookResult = ReturnType<typeof useUpdateOrderRepairMutation>;
+export type UpdateOrderRepairMutationResult = Apollo.MutationResult<UpdateOrderRepairMutation>;
+export type UpdateOrderRepairMutationOptions = Apollo.BaseMutationOptions<UpdateOrderRepairMutation, UpdateOrderRepairMutationVariables>;
+export const UpdateOrderRepairTypeDocument = gql`
+    mutation UpdateOrderRepairType($updateInput: UpdateRepairTypeInput!) {
+  updateOrderRepairType(updateInput: $updateInput) {
+    id
+  }
+}
+    `;
+export type UpdateOrderRepairTypeMutationFn = Apollo.MutationFunction<UpdateOrderRepairTypeMutation, UpdateOrderRepairTypeMutationVariables>;
+
+/**
+ * __useUpdateOrderRepairTypeMutation__
+ *
+ * To run a mutation, you first call `useUpdateOrderRepairTypeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateOrderRepairTypeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateOrderRepairTypeMutation, { data, loading, error }] = useUpdateOrderRepairTypeMutation({
+ *   variables: {
+ *      updateInput: // value for 'updateInput'
+ *   },
+ * });
+ */
+export function useUpdateOrderRepairTypeMutation(baseOptions?: Apollo.MutationHookOptions<UpdateOrderRepairTypeMutation, UpdateOrderRepairTypeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateOrderRepairTypeMutation, UpdateOrderRepairTypeMutationVariables>(UpdateOrderRepairTypeDocument, options);
+      }
+export type UpdateOrderRepairTypeMutationHookResult = ReturnType<typeof useUpdateOrderRepairTypeMutation>;
+export type UpdateOrderRepairTypeMutationResult = Apollo.MutationResult<UpdateOrderRepairTypeMutation>;
+export type UpdateOrderRepairTypeMutationOptions = Apollo.BaseMutationOptions<UpdateOrderRepairTypeMutation, UpdateOrderRepairTypeMutationVariables>;
+export const CreateProductDocument = gql`
+    mutation CreateProduct($createInput: CreateProductInput!) {
+  createProduct(createInput: $createInput) {
+    id
+  }
+}
+    `;
+export type CreateProductMutationFn = Apollo.MutationFunction<CreateProductMutation, CreateProductMutationVariables>;
+
+/**
+ * __useCreateProductMutation__
+ *
+ * To run a mutation, you first call `useCreateProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProductMutation, { data, loading, error }] = useCreateProductMutation({
+ *   variables: {
+ *      createInput: // value for 'createInput'
+ *   },
+ * });
+ */
+export function useCreateProductMutation(baseOptions?: Apollo.MutationHookOptions<CreateProductMutation, CreateProductMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateProductMutation, CreateProductMutationVariables>(CreateProductDocument, options);
+      }
+export type CreateProductMutationHookResult = ReturnType<typeof useCreateProductMutation>;
+export type CreateProductMutationResult = Apollo.MutationResult<CreateProductMutation>;
+export type CreateProductMutationOptions = Apollo.BaseMutationOptions<CreateProductMutation, CreateProductMutationVariables>;
+export const UpdateProductDocument = gql`
+    mutation UpdateProduct($updateInput: UpdateProductsInput!) {
+  updateProduct(updateInput: $updateInput) {
+    id
+  }
+}
+    `;
+export type UpdateProductMutationFn = Apollo.MutationFunction<UpdateProductMutation, UpdateProductMutationVariables>;
+
+/**
+ * __useUpdateProductMutation__
+ *
+ * To run a mutation, you first call `useUpdateProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProductMutation, { data, loading, error }] = useUpdateProductMutation({
+ *   variables: {
+ *      updateInput: // value for 'updateInput'
+ *   },
+ * });
+ */
+export function useUpdateProductMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProductMutation, UpdateProductMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProductMutation, UpdateProductMutationVariables>(UpdateProductDocument, options);
+      }
+export type UpdateProductMutationHookResult = ReturnType<typeof useUpdateProductMutation>;
+export type UpdateProductMutationResult = Apollo.MutationResult<UpdateProductMutation>;
+export type UpdateProductMutationOptions = Apollo.BaseMutationOptions<UpdateProductMutation, UpdateProductMutationVariables>;
+export const ProductsDocument = gql`
+    query Products($orderBy: [FindProductsOrderBy!], $where: FindProductsWhere, $pagination: Pagination) {
+  Products(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    name
+    description
+    salePrice
+    costPrice
+    tax
+    unitOfMeasure
+    isActive
+    expirationDate
+    isShowPublic
+    minStock
+    stock {
+      id
+      entrada_producto
+      salida_producto
+      stock
+      name
+    }
+  }
+  ProductsCount(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    totalItems
+    itemsPerPage
+    totalPages
+    currentPage
+  }
+}
+    `;
+
+/**
+ * __useProductsQuery__
+ *
+ * To run a query within a React component, call `useProductsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProductsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProductsQuery({
+ *   variables: {
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *      pagination: // value for 'pagination'
+ *   },
+ * });
+ */
+export function useProductsQuery(baseOptions?: Apollo.QueryHookOptions<ProductsQuery, ProductsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProductsQuery, ProductsQueryVariables>(ProductsDocument, options);
+      }
+export function useProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProductsQuery, ProductsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProductsQuery, ProductsQueryVariables>(ProductsDocument, options);
+        }
+export type ProductsQueryHookResult = ReturnType<typeof useProductsQuery>;
+export type ProductsLazyQueryHookResult = ReturnType<typeof useProductsLazyQuery>;
+export type ProductsQueryResult = Apollo.QueryResult<ProductsQuery, ProductsQueryVariables>;
+export const ProductDocument = gql`
+    query Product($productId: ID!) {
+  Product(id: $productId) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    name
+    description
+    salePrice
+    costPrice
+    tax
+    unitOfMeasure
+    isActive
+    expirationDate
+    minStock
+    stock {
+      id
+      entrada_producto
+      salida_producto
+      stock
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useProductQuery__
+ *
+ * To run a query within a React component, call `useProductQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProductQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProductQuery({
+ *   variables: {
+ *      productId: // value for 'productId'
+ *   },
+ * });
+ */
+export function useProductQuery(baseOptions: Apollo.QueryHookOptions<ProductQuery, ProductQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProductQuery, ProductQueryVariables>(ProductDocument, options);
+      }
+export function useProductLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProductQuery, ProductQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProductQuery, ProductQueryVariables>(ProductDocument, options);
+        }
+export type ProductQueryHookResult = ReturnType<typeof useProductQuery>;
+export type ProductLazyQueryHookResult = ReturnType<typeof useProductLazyQuery>;
+export type ProductQueryResult = Apollo.QueryResult<ProductQuery, ProductQueryVariables>;
+export const CreateProductInflowDocument = gql`
+    mutation CreateProductInflow($createInput: CreateProductInflowInput!) {
+  createProductInflow(createInput: $createInput) {
+    id
+  }
+}
+    `;
+export type CreateProductInflowMutationFn = Apollo.MutationFunction<CreateProductInflowMutation, CreateProductInflowMutationVariables>;
+
+/**
+ * __useCreateProductInflowMutation__
+ *
+ * To run a mutation, you first call `useCreateProductInflowMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProductInflowMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProductInflowMutation, { data, loading, error }] = useCreateProductInflowMutation({
+ *   variables: {
+ *      createInput: // value for 'createInput'
+ *   },
+ * });
+ */
+export function useCreateProductInflowMutation(baseOptions?: Apollo.MutationHookOptions<CreateProductInflowMutation, CreateProductInflowMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateProductInflowMutation, CreateProductInflowMutationVariables>(CreateProductInflowDocument, options);
+      }
+export type CreateProductInflowMutationHookResult = ReturnType<typeof useCreateProductInflowMutation>;
+export type CreateProductInflowMutationResult = Apollo.MutationResult<CreateProductInflowMutation>;
+export type CreateProductInflowMutationOptions = Apollo.BaseMutationOptions<CreateProductInflowMutation, CreateProductInflowMutationVariables>;
+export const UpdateProductInflowDocument = gql`
+    mutation UpdateProductInflow($updateInput: UpdateProductsInflowInput!) {
+  updateProductInflow(updateInput: $updateInput) {
+    id
+  }
+}
+    `;
+export type UpdateProductInflowMutationFn = Apollo.MutationFunction<UpdateProductInflowMutation, UpdateProductInflowMutationVariables>;
+
+/**
+ * __useUpdateProductInflowMutation__
+ *
+ * To run a mutation, you first call `useUpdateProductInflowMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProductInflowMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProductInflowMutation, { data, loading, error }] = useUpdateProductInflowMutation({
+ *   variables: {
+ *      updateInput: // value for 'updateInput'
+ *   },
+ * });
+ */
+export function useUpdateProductInflowMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProductInflowMutation, UpdateProductInflowMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProductInflowMutation, UpdateProductInflowMutationVariables>(UpdateProductInflowDocument, options);
+      }
+export type UpdateProductInflowMutationHookResult = ReturnType<typeof useUpdateProductInflowMutation>;
+export type UpdateProductInflowMutationResult = Apollo.MutationResult<UpdateProductInflowMutation>;
+export type UpdateProductInflowMutationOptions = Apollo.BaseMutationOptions<UpdateProductInflowMutation, UpdateProductInflowMutationVariables>;
+export const ProductsInflowsDocument = gql`
+    query ProductsInflows($orderBy: [FindProductsInflowOrderBy!], $where: FindProductsInflowWhere, $pagination: Pagination) {
+  ProductsInflows(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    quantity
+    inflowDate
+    status
+    description
+    product {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      description
+      salePrice
+      costPrice
+      tax
+      unitOfMeasure
+      isActive
+      expirationDate
+    }
+    user {
+      email
+      fullName
+      id
+      identificationNumber
+    }
+  }
+  ProductsInflowsCount(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    currentPage
+    itemsPerPage
+    totalItems
+    totalPages
+  }
+}
+    `;
+
+/**
+ * __useProductsInflowsQuery__
+ *
+ * To run a query within a React component, call `useProductsInflowsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProductsInflowsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProductsInflowsQuery({
+ *   variables: {
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *      pagination: // value for 'pagination'
+ *   },
+ * });
+ */
+export function useProductsInflowsQuery(baseOptions?: Apollo.QueryHookOptions<ProductsInflowsQuery, ProductsInflowsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProductsInflowsQuery, ProductsInflowsQueryVariables>(ProductsInflowsDocument, options);
+      }
+export function useProductsInflowsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProductsInflowsQuery, ProductsInflowsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProductsInflowsQuery, ProductsInflowsQueryVariables>(ProductsInflowsDocument, options);
+        }
+export type ProductsInflowsQueryHookResult = ReturnType<typeof useProductsInflowsQuery>;
+export type ProductsInflowsLazyQueryHookResult = ReturnType<typeof useProductsInflowsLazyQuery>;
+export type ProductsInflowsQueryResult = Apollo.QueryResult<ProductsInflowsQuery, ProductsInflowsQueryVariables>;
+export const ProductInflowDocument = gql`
+    query ProductInflow($productInflowId: ID!) {
+  ProductInflow(id: $productInflowId) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    quantity
+    inflowDate
+    description
+    product {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      description
+      salePrice
+      costPrice
+      tax
+      unitOfMeasure
+      isActive
+      expirationDate
+    }
+    user {
+      email
+      fullName
+      id
+      identificationNumber
+    }
+  }
+}
+    `;
+
+/**
+ * __useProductInflowQuery__
+ *
+ * To run a query within a React component, call `useProductInflowQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProductInflowQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProductInflowQuery({
+ *   variables: {
+ *      productInflowId: // value for 'productInflowId'
+ *   },
+ * });
+ */
+export function useProductInflowQuery(baseOptions: Apollo.QueryHookOptions<ProductInflowQuery, ProductInflowQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProductInflowQuery, ProductInflowQueryVariables>(ProductInflowDocument, options);
+      }
+export function useProductInflowLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProductInflowQuery, ProductInflowQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProductInflowQuery, ProductInflowQueryVariables>(ProductInflowDocument, options);
+        }
+export type ProductInflowQueryHookResult = ReturnType<typeof useProductInflowQuery>;
+export type ProductInflowLazyQueryHookResult = ReturnType<typeof useProductInflowLazyQuery>;
+export type ProductInflowQueryResult = Apollo.QueryResult<ProductInflowQuery, ProductInflowQueryVariables>;
+export const CreateProductOutflowDocument = gql`
+    mutation CreateProductOutflow($createInput: CreateProductOutflowInput!) {
+  createProductOutflow(createInput: $createInput) {
+    id
+  }
+}
+    `;
+export type CreateProductOutflowMutationFn = Apollo.MutationFunction<CreateProductOutflowMutation, CreateProductOutflowMutationVariables>;
+
+/**
+ * __useCreateProductOutflowMutation__
+ *
+ * To run a mutation, you first call `useCreateProductOutflowMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProductOutflowMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProductOutflowMutation, { data, loading, error }] = useCreateProductOutflowMutation({
+ *   variables: {
+ *      createInput: // value for 'createInput'
+ *   },
+ * });
+ */
+export function useCreateProductOutflowMutation(baseOptions?: Apollo.MutationHookOptions<CreateProductOutflowMutation, CreateProductOutflowMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateProductOutflowMutation, CreateProductOutflowMutationVariables>(CreateProductOutflowDocument, options);
+      }
+export type CreateProductOutflowMutationHookResult = ReturnType<typeof useCreateProductOutflowMutation>;
+export type CreateProductOutflowMutationResult = Apollo.MutationResult<CreateProductOutflowMutation>;
+export type CreateProductOutflowMutationOptions = Apollo.BaseMutationOptions<CreateProductOutflowMutation, CreateProductOutflowMutationVariables>;
+export const UpdateProductOutflowDocument = gql`
+    mutation UpdateProductOutflow($updateInput: UpdateProductsOutflowInput!) {
+  updateProductOutflow(updateInput: $updateInput) {
+    id
+  }
+}
+    `;
+export type UpdateProductOutflowMutationFn = Apollo.MutationFunction<UpdateProductOutflowMutation, UpdateProductOutflowMutationVariables>;
+
+/**
+ * __useUpdateProductOutflowMutation__
+ *
+ * To run a mutation, you first call `useUpdateProductOutflowMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProductOutflowMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProductOutflowMutation, { data, loading, error }] = useUpdateProductOutflowMutation({
+ *   variables: {
+ *      updateInput: // value for 'updateInput'
+ *   },
+ * });
+ */
+export function useUpdateProductOutflowMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProductOutflowMutation, UpdateProductOutflowMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProductOutflowMutation, UpdateProductOutflowMutationVariables>(UpdateProductOutflowDocument, options);
+      }
+export type UpdateProductOutflowMutationHookResult = ReturnType<typeof useUpdateProductOutflowMutation>;
+export type UpdateProductOutflowMutationResult = Apollo.MutationResult<UpdateProductOutflowMutation>;
+export type UpdateProductOutflowMutationOptions = Apollo.BaseMutationOptions<UpdateProductOutflowMutation, UpdateProductOutflowMutationVariables>;
+export const ProductsOutflowsDocument = gql`
+    query ProductsOutflows($orderBy: [FindProductsOutflowOrderBy!], $where: FindProductsOutflowWhere, $pagination: Pagination) {
+  ProductsOutflows(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    inflowDate
+    description
+    paymentMethod
+    status
+    client {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      lastName
+      numberDocument
+      email
+      address
+      celular
+    }
+    invoiceProducts {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      quantity
+      unitPrice
+      subtotal
+      discount
+      tax
+      total
+      product {
+        costPrice
+        id
+        name
+        tax
+        salePrice
+      }
+    }
+  }
+  ProductsOutflowsCount(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    currentPage
+    itemsPerPage
+    totalItems
+    totalPages
+  }
+}
+    `;
+
+/**
+ * __useProductsOutflowsQuery__
+ *
+ * To run a query within a React component, call `useProductsOutflowsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProductsOutflowsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProductsOutflowsQuery({
+ *   variables: {
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *      pagination: // value for 'pagination'
+ *   },
+ * });
+ */
+export function useProductsOutflowsQuery(baseOptions?: Apollo.QueryHookOptions<ProductsOutflowsQuery, ProductsOutflowsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProductsOutflowsQuery, ProductsOutflowsQueryVariables>(ProductsOutflowsDocument, options);
+      }
+export function useProductsOutflowsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProductsOutflowsQuery, ProductsOutflowsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProductsOutflowsQuery, ProductsOutflowsQueryVariables>(ProductsOutflowsDocument, options);
+        }
+export type ProductsOutflowsQueryHookResult = ReturnType<typeof useProductsOutflowsQuery>;
+export type ProductsOutflowsLazyQueryHookResult = ReturnType<typeof useProductsOutflowsLazyQuery>;
+export type ProductsOutflowsQueryResult = Apollo.QueryResult<ProductsOutflowsQuery, ProductsOutflowsQueryVariables>;
 export const UsersDocument = gql`
     query Users($orderBy: [FindUsersOrderBy!], $where: FindUsersWhere, $pagination: Pagination) {
   users(orderBy: $orderBy, where: $where, pagination: $pagination) {

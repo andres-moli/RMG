@@ -92,7 +92,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ fields, formValues, errors, h
                 <input
                   type="date"
                   className={`border p-2 rounded-md ${error ? "border-red-500" : "border-gray-300"}`}
-                  value={value}
+                  value={value && typeof value === 'string' ? value.split('T')[0] : ''}
                   onChange={(e) => handleChange(field.id, e.target.value)}
                 />
               </div>
@@ -112,6 +112,24 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ fields, formValues, errors, h
               </div>
             );
 
+        case FieldTypeEnum.Selector:
+          return (
+            <div key={field.id} className="flex flex-col">
+              <label className="text-gray-700">{field.name} {field.isRequired && <span className="text-red-500">*</span>}</label>
+              <select
+                className={`border p-2 rounded-md ${error ? "border-red-500" : "border-gray-300"}`}
+                value={value}
+                onChange={(e) => handleChange(field.id, e.target.value)}
+              >
+                <option value="">Selecciona una opción</option>
+                {field.selectorOptions?.map((option) => (
+                  <option key={option.id} value={option.value}>
+                    {option.value}
+                  </option>
+                ))}
+              </select>
+            </div>
+          );
           default:
             return null;
         }

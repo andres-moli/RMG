@@ -8,10 +8,13 @@ import { OrderRepairTypeModule } from "../repairType/order-repair-type.module";
 import { CustomFieldValueModule } from "../customFieldValue/custom-field-value.module";
 import { RepairFieldForm } from "./entities/repairFieldTypeForm";
 import { FilesModule } from "src/general/files/files.module";
+import { PdfGeneratorController } from "./controller/pdf-generator.controller";
+import { PdfGeneratorService } from "./service/pdf-generator.service";
 
 
 @Module({
-  providers: [OrderRepairService,OrderRepairResolver],
+  providers: [OrderRepairService,OrderRepairResolver, PdfGeneratorService],
+  controllers: [PdfGeneratorController],
   imports:[
     TypeOrmModule.forFeature([OrderRepairty,RepairFieldForm ]),
     ClientModule,

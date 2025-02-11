@@ -16,9 +16,10 @@ export class CreateClientInput {
     @IsNotEmpty()
     @IsEnum(UserDocumentTypes)
     identificationType:UserDocumentTypes;
-    @Field(() => String)
-    @IsDate()
-    numberDocument:string;
+    @Field(() => String, {nullable: true})
+    @IsString()
+    @IsOptional()
+    numberDocument?:string;
 
     @Field(() => String)
     @IsString()

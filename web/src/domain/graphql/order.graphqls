@@ -26,6 +26,7 @@ query OrderRepair($orderRepairId: ID!) {
       deletedAt
       name
       costEstimate
+      status
       fields {
         id
         createdAt
@@ -58,6 +59,7 @@ query OrderRepair($orderRepairId: ID!) {
       valorFecha
       valorNumerico
       valorTextoLargo
+      valorSeletor
       valorFoto {
         id
         createdAt
@@ -82,6 +84,7 @@ query OrderRepairsType($where: FindOrderRepairTypeWhere, $orderBy: [FindOrderRep
     deletedAt
     name
     costEstimate
+    status
     fields {
       id
       createdAt
@@ -92,6 +95,13 @@ query OrderRepairsType($where: FindOrderRepairTypeWhere, $orderBy: [FindOrderRep
       isRequired
       minLength
       maxLength
+      selectorOptions {
+        value
+        id
+        repairField {
+          id
+        }
+      }
     }
   }
   orderRepairsTypeCount(orderBy: $orderBy, where: $where, pagination: $pagination) {
@@ -128,6 +138,7 @@ query OrderRepairs($orderBy: [FindOrderRepairOrderBy!], $where: FindOrderRepairW
       updatedAt
       deletedAt
       name
+      status
       costEstimate
       fields {
         id
@@ -139,6 +150,13 @@ query OrderRepairs($orderBy: [FindOrderRepairOrderBy!], $where: FindOrderRepairW
         isRequired
         minLength
         maxLength
+        selectorOptions {
+        value
+        id
+        repairField {
+          id
+        }
+      }
       }
     }
     fieldValues {
@@ -164,11 +182,19 @@ query OrderRepairs($orderBy: [FindOrderRepairOrderBy!], $where: FindOrderRepairW
         isRequired
         minLength
         maxLength
+        selectorOptions {
+        value
+        id
+        repairField {
+          id
+        }
+      }
       }
       valorTexto
       valorFecha
       valorNumerico
       valorTextoLargo
+      valorSeletor
       valorFoto {
         id
         createdAt
@@ -315,6 +341,7 @@ query OrderRepairs($orderBy: [FindOrderRepairOrderBy!], $where: FindOrderRepairW
           valorFecha
           valorNumerico
           valorTextoLargo
+          valorSeletor
           valorFoto {
             id
             createdAt
@@ -370,6 +397,19 @@ query genrateQrByRepair($idRepair: String!) {
 }
 mutation CreateOrderRepairType($createInput: CreateRepairTypeInput!) {
   createOrderRepairType(createInput: $createInput) {
+    id
+  }
+}
+mutation CreateOrderRepairFull($createOrderRepairFullInput: CreateOrderRepairFullInput!) {
+  createOrderRepairFull(createOrderRepairFullInput: $createOrderRepairFullInput) 
+}
+mutation UpdateOrderRepair($updateInput: UpdateOrderRepairInput!) {
+  updateOrderRepair(updateInput: $updateInput) {
+    id
+  }
+}
+mutation UpdateOrderRepairType($updateInput: UpdateRepairTypeInput!) {
+  updateOrderRepairType(updateInput: $updateInput) {
     id
   }
 }

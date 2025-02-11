@@ -6,6 +6,7 @@ export enum FieldTypeEnum {
   NUMBER = 'NUMBER',
   DATE = 'DATE',
   IMAGE = 'IMAGE',
+  SELECTOR = 'SELECTOR'
 }
 
 registerEnumType(FieldTypeEnum, { name: 'FieldTypeEnum' });

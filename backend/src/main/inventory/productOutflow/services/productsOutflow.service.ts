@@ -13,6 +13,8 @@ import { UsersService } from 'src/security/users/services/users.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { InvoiceProduct } from '../entities/InvoiceProduct.entity';
 import { StatusInvoice } from '../../invoice/emun/invoice.emun';
+import { ClientService } from 'src/main/rmg/client/services/client.service';
+import { StatisticService } from 'src/main/statistic/service/statistic.service';
 
 export const serviceStructure = CrudServiceStructure({
   entityType: ProductOutflow,
@@ -26,8 +28,10 @@ export const serviceStructure = CrudServiceStructure({
 export class ProductsOutflowService extends CrudServiceFrom(serviceStructure) {
   constructor(
     private readonly companyService: CompanyService,
+    private readonly clientService: ClientService,
     private readonly userService: UsersService,
     private readonly productService: ProductsService,
+    private readonly statisticaService: StatisticService,
     @InjectRepository(InvoiceProduct)
     private readonly invoiceProductRepository: Repository<InvoiceProduct>
   ){ super(); }
@@ -35,7 +39,7 @@ export class ProductsOutflowService extends CrudServiceFrom(serviceStructure) {
   async beforeCreate(context: IContext, repository: Repository<ProductOutflow>, entity: ProductOutflow, createInput: CreateProductOutflowInput): Promise<void> {
     await this.valideDetailInvoiceStock(context,createInput,entity)
     // entity.company = await this.companyService.findOne(context,createInput.companyId,true);
-    entity.user = await this.userService.findOne(context,createInput.userId,true);
+    entity.client = await this.clientService.findOne(context,createInput.clientId,true);
     entity.status = StatusInvoice.PAGADA
   }
   async afterCreate(context: IContext, repository: Repository<ProductOutflow>, entity: ProductOutflow, createInput: CreateProductOutflowInput): Promise<void> {
@@ -64,12 +68,12 @@ export class ProductsOutflowService extends CrudServiceFrom(serviceStructure) {
     }
   }
   async valideDetailInvoiceStock(context: IContext,createInput: CreateProductOutflowInput, entity: ProductOutflow){
-    // for(const prod of createInput.invoiceProducts){
-    //   const stock = await this.statisticaService.getStockProducts(prod.productId)
-    //   if(prod.quantity > stock.stock){
-    //     const product = await this.productService.findOne(context,prod.productId,true)
-    //     throw new Error('El stock del producto (' + product.name + ") no hay suficiente ( " + stock.stock + ") UND")
-    //   }
-    // }
+    for(const prod of createInput.invoiceProducts){
+      const stock = await this.statisticaService.getStockProducts(prod.productId)
+      if(prod.quantity > stock.stock){
+        // const product = await this.productService.findOne(context,prod.productId,true)
+        throw new Error('El stock del producto (' + stock.name + ") no hay suficiente ( " + stock.stock + ") UND")
+      }
+    }
   }
 }

@@ -55,7 +55,7 @@ export class CreateProductInput {
   @IsString()
   @IsOptional()
   fileId?: string
-  @IsString()
-  @Field(() => ID)
-  companyId: string;  // Assuming you would be referencing the `Company` by its ID
+  // @IsString()
+  // @Field(() => ID)
+  // companyId: string;  // Assuming you would be referencing the `Company` by its ID
 }

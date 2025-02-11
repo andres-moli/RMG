@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useCreateUserMutation, UserDocumentTypes, UserTypes } from "../../../domain/graphql";
+import { useCreateClientMutation, useCreateUserMutation, UserDocumentTypes, UserTypes } from "../../../domain/graphql";
 import { toast } from "sonner";
 import { ToastyErrorGraph } from "../../../lib/utils";
 import { apolloClient } from "../../../main.config";
@@ -27,7 +27,7 @@ const typeDocumentsOptions: { key: string; value: string | number }[] = [
   },
 ]
 const RegisterClientModal: React.FC<RegisterModalProps> = ({ isOpen, onClose }) => {
-  const [createUser] = useCreateUserMutation()
+  const [createUser] = useCreateClientMutation()
   const [formData, setFormData] = useState({
     name: "",
     lastName: "",
@@ -35,7 +35,7 @@ const RegisterClientModal: React.FC<RegisterModalProps> = ({ isOpen, onClose }) 
     address: "",
     phoneNumber: "",
     identificationNumber: "",
-    identificationType: "", 
+    identificationType: UserDocumentTypes.CitizenshipCard, 
   });
 
   const [errors, setErrors] = useState({
@@ -69,10 +69,10 @@ const RegisterClientModal: React.FC<RegisterModalProps> = ({ isOpen, onClose }) 
 
     if (!formData.name) formErrors.name = "Este campo es obligatorio";
     if (!formData.lastName) formErrors.lastName = "Este campo es obligatorio";
-    if (!emailPattern.test(formData.email)) formErrors.email = "Correo electrónico no válido";
-    if (!formData.address) formErrors.address = "Este campo es obligatorio";
+    if (formData.email && !emailPattern.test(formData.email)) formErrors.email = "Correo electrónico no válido";
+    // if (!formData.address) formErrors.address = "Este campo es obligatorio";
     if (!formData.phoneNumber || !phonePattern.test(formData.phoneNumber)) formErrors.phoneNumber = "Número de teléfono inválido";
-    if (!formData.identificationNumber || !phonePattern.test(formData.identificationNumber)) formErrors.identificationNumber = "Número de identificación inválido";
+    // if (!formData.identificationNumber || !phonePattern.test(formData.identificationNumber)) formErrors.identificationNumber = "Número de identificación inválido";
     if (!formData.identificationType) formErrors.identificationType = "Este campo es obligatorio";
 
     return formErrors;
@@ -91,7 +91,13 @@ const RegisterClientModal: React.FC<RegisterModalProps> = ({ isOpen, onClose }) 
       const res = await createUser({
         variables: {
           createInput: {
-            ...formData,
+            celular: formData.phoneNumber,
+            numberDocument: formData.identificationNumber,
+            identificationType: formData.identificationType as UserDocumentTypes,
+            address: formData.address,
+            email: formData.email,
+            lastName: formData.lastName,
+            name: formData.name
           }
         }
       })
@@ -101,7 +107,7 @@ const RegisterClientModal: React.FC<RegisterModalProps> = ({ isOpen, onClose }) 
         return
       }
       toast.success('Usuario creado...');
-      apolloClient.cache.evict({ fieldName: "Clients" })
+      apolloClient.cache.evict({ fieldName: "clients" })
     } catch (err) {
         ToastyErrorGraph(err as any)
     } finally {
@@ -114,7 +120,7 @@ const RegisterClientModal: React.FC<RegisterModalProps> = ({ isOpen, onClose }) 
       address: "",
       phoneNumber: "",
       identificationNumber: "",
-      identificationType: "",
+      identificationType: UserDocumentTypes.CitizenshipCard,
     });
     onClose(); // Cerrar el modal después de enviar
   };

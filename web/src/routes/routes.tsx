@@ -9,6 +9,12 @@ import TimeRealPage from '../pages/timeReal';
 import PreviewPage from '../pages/Form/PreviewPage';
 import ClientPage from '../pages/client';
 import ServicePage from '../pages/service';
+import StepProgressPage from '../components/modals/modal-categories/modal-add-categories';
+import ProductsPage from '../pages/products';
+import ProductsEntryPage from '../pages/entry-products';
+import ProductsOutPage from '../pages/out-products';
+import CategoriaEgresosPage from '../pages/egresos/categoria';
+import EgresosPage from '../pages/egresos/egresos';
 
 const AppRoutes: React.FC = () => {
   return (
@@ -48,7 +54,42 @@ const AppRoutes: React.FC = () => {
             <ProtectedRoute element={<ServicePage />} />
           }
         />
-        
+        <Route
+          path="/create-repair"
+          element={
+            <ProtectedRoute element={<StepProgressPage />} />
+          }
+        />
+        <Route
+          path="/product"
+          element={
+            <ProtectedRoute element={<ProductsPage />} />
+          }
+        />
+        <Route
+          path="/entry-products"
+          element={
+            <ProtectedRoute element={<ProductsEntryPage />} />
+          }
+        />
+        <Route
+          path="/out-products"
+          element={
+            <ProtectedRoute element={<ProductsOutPage />} />
+          }
+        />
+        <Route
+          path="/expenses-category"
+          element={
+            <ProtectedRoute element={<CategoriaEgresosPage />} />
+          }
+        />
+        <Route
+          path="/expenses"
+          element={
+            <ProtectedRoute element={<EgresosPage />} />
+          }
+        />
       </Routes>
     </Router>
   );

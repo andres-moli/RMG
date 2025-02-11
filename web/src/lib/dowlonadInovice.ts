@@ -1,7 +1,7 @@
 import html2pdf from "html2pdf.js";
 import { Invoice } from "../domain/graphql";
 import dayjs from "dayjs";
-
+import 'dayjs/locale/es' 
 export const downloadAndShareInvoice = (invoiceData: Invoice) => {
   // Formatear la fecha correctamente
   dayjs.locale("es");
@@ -73,7 +73,7 @@ export const downloadAndShareInvoice = (invoiceData: Invoice) => {
         <div class="invoice-header">
           <div class="invoice-logo">RMG</div>
           <address>
-            Calle 42 #22<br>
+            Calle 42 #33-26<br>
             Barranquilla
           </address>
         </div>
@@ -90,7 +90,8 @@ export const downloadAndShareInvoice = (invoiceData: Invoice) => {
         <div class="invoice-details">
           <div class="invoice-num">
             <strong>Número de Recibo:</strong> ${invoiceData.invoiceNumber}<br>
-            <strong>Fecha:</strong> ${dayjs(invoiceData.createdAt).format('YYYY-MM-DD HH:mm:ss')}
+            <strong>Metodo de pago:</strong> ${invoiceData.paymentMethod}<br>
+            <strong>Fecha:</strong> ${dayjs(invoiceData.createdAt).locale('es').format('YYYY-MMMM-DD HH:mm:ss')}
           </div>
         </div>
 
@@ -139,7 +140,7 @@ export const downloadAndShareInvoice = (invoiceData: Invoice) => {
         </div>
 
         <div class="invoice-footer">
-          Generado a las ${dayjs().format("HH:mm")} del día ${dayjs().format("DD")} de ${dayjs().format("MMMM")} de ${dayjs().format("YYYY")}.
+          Generado a las ${dayjs().format("HH:mm")} del día ${dayjs().format("DD")} de ${dayjs().locale('es').format("MMMM")} de ${dayjs().format("YYYY")}.
         </div>
       </div>
     </body>

@@ -1,0 +1,161 @@
+mutation CreateCategoryExpense($createInput: CreateCategoryExpensesInput!) {
+  createCategoryExpense(createInput: $createInput) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    name
+    description
+    status
+  }
+}
+mutation UpdateCategoryExpense($updateInput: UpdateCategoryExpensesInput!) {
+  updateCategoryExpense(updateInput: $updateInput) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    name
+    description
+    status
+  }
+}
+
+query CategoryExpenses($orderBy: [FindCategoryExpensesOrderBy!], $where: FindCategoryExpensesWhere, $pagination: Pagination) {
+  CategoryExpenses(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    name
+    description
+    status
+    isDefualtCategory
+  }
+  CategoryExpensesCount(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    totalItems
+    itemsPerPage
+    totalPages
+    currentPage
+  }
+}
+
+query CategoryExpense($categoryExpenseId: ID!) {
+  CategoryExpense(id: $categoryExpenseId) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    name
+    description
+    status
+  }
+}
+
+mutation CreateExpense($createInput: CreateExpensesInput!) {
+  createExpense(createInput: $createInput) {
+    id
+  }
+}
+
+mutation UpdateExpense($updateInput: UpdateExpensesInput!) {
+  updateExpense(updateInput: $updateInput) {
+    id
+  }
+}
+
+query Expenses($orderBy: [FindExpensesOrderBy!], $where: FindExpensesWhere, $pagination: Pagination) {
+  Expenses(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    description
+    amount
+    expenseDate
+    invoiceNumber
+    category {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      description
+      status
+    }
+    isRecurring
+    nextDueDate
+    paymentMethod
+    referenceNumber
+    status
+    createdBy {
+      fullName
+      email
+      id
+      identificationNumber
+    }
+    autorizoBy {
+      fullName
+      email
+      id
+      identificationNumber
+    }
+    canceldBy {
+      fullName
+      email
+      id
+      identificationNumber
+    }
+  }
+  ExpensesCount(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    totalItems
+    itemsPerPage
+    totalPages
+    currentPage
+  }
+}
+
+query Expense($expenseId: ID!) {
+  Expense(id: $expenseId) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    description
+    amount
+    expenseDate
+    invoiceNumber
+    category {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      description
+      status
+    }
+    isRecurring
+    nextDueDate
+    paymentMethod
+    referenceNumber
+    status
+    createdBy {
+      fullName
+      email
+      id
+      identificationNumber
+    }
+    autorizoBy {
+      fullName
+      email
+      id
+      identificationNumber
+    }
+    canceldBy {
+      fullName
+      email
+      id
+      identificationNumber
+    }
+  }
+}

@@ -1,13 +1,16 @@
-import { BiLogOut } from "react-icons/bi";
-import { FaHome, FaStore, FaBox, FaTags, FaClipboardList, FaUser, FaUsers } from "react-icons/fa";
+import { BiLogOut, BiSolidCategory } from "react-icons/bi";
+import { FaHome, FaStore, FaBox, FaTags, FaClipboardList, FaUser, FaUsers, FaPlusSquare, FaCashRegister } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
 import { FaMapLocation } from "react-icons/fa6";
-import { FiMapPin } from "react-icons/fi";
+import { FiMapPin, FiPlusSquare } from "react-icons/fi";
 import { BsFillPinMapFill, BsTools } from "react-icons/bs";
 import { PiMapPinLineFill } from "react-icons/pi";
-import { GrServices, GrUserSettings } from "react-icons/gr";
-import { MdMiscellaneousServices } from "react-icons/md";
+import { GrDocumentText, GrServices, GrUserSettings } from "react-icons/gr";
+import { MdAssignmentReturn, MdMiscellaneousServices } from "react-icons/md";
+import { CiShoppingCart } from "react-icons/ci";
+import { IoBarChartSharp, IoDocumentText } from "react-icons/io5";
+import { RiShoppingBag3Fill } from "react-icons/ri";
 
 const SideBar = () => {
   const navigate = useNavigate()
@@ -43,6 +46,15 @@ const SideBar = () => {
           </li>
           <li>
             <a
+              href="/create-repair"
+              className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+            >
+              <FaPlusSquare  className="w-5 h-5 text-gray-500 mr-3" />
+              Crear reparación
+            </a>
+          </li>
+          <li>
+            <a
               href="/service"
               className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
             >
@@ -51,7 +63,7 @@ const SideBar = () => {
             </a>
           </li>
         </ul>
-        <h2 className="mt-6 text-xs font-bold text-gray-800">CLIENTES</h2>
+        <h2 className="mt-6 text-xs font-bold text-gray-800">USUARIOS</h2>
         <ul className="mt-4 space-y-2">
           <li>
             <a
@@ -62,9 +74,6 @@ const SideBar = () => {
               Clientes
             </a>
           </li>
-        </ul>
-        <h2 className="mt-6 text-xs font-bold text-gray-800">USUARIOS </h2>
-        <ul className="mt-4 space-y-2">
           <li>
             <a
               href="/user"
@@ -72,6 +81,66 @@ const SideBar = () => {
             >
               <FaUser  className="w-5 h-5 text-gray-500 mr-3" />
               Usuarios
+            </a>
+          </li>
+        </ul>
+        <h2 className="mt-6 text-xs font-bold text-gray-800">PRODUCTOS </h2>
+        <ul className="mt-4 space-y-2">
+          <li>
+            <a
+              href="/product"
+              className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+            >
+              <RiShoppingBag3Fill  className="w-5 h-5 text-gray-500 mr-3" />
+              Mis Productos
+            </a>
+          </li>
+          <li>
+            <a
+              href="/entry-products"
+              className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+            >
+              <MdAssignmentReturn   className="w-5 h-5 text-gray-500 mr-3" />
+              Entrada de producto
+            </a>
+          </li>
+          <li>
+            <a
+              href="/out-products"
+              className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+            >
+              <IoDocumentText       className="w-5 h-5 text-gray-500 mr-3" />
+              Recibo de pago producto
+            </a>
+          </li>
+        </ul>
+        <h2 className="mt-6 text-xs font-bold text-gray-800">EGRESOS </h2>
+        <ul className="mt-4 space-y-2">
+          <li>
+            <a
+              href="/expenses"
+              className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+            >
+              <FaCashRegister   className="w-5 h-5 text-gray-500 mr-3" />
+              Mis Egresos
+            </a>
+          </li>
+          <li>
+            <a
+              href="/expenses-category"
+              className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+            >
+              <BiSolidCategory    className="w-5 h-5 text-gray-500 mr-3" />
+              Categoria
+            </a>
+          </li>
+          <li>
+            <a
+              href="/out-products"
+              className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+            >
+              <IoBarChartSharp        className="w-5 h-5 text-gray-500 mr-3" />
+              Estadisticas
             </a>
           </li>
         </ul>

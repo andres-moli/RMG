@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { BiPencil } from 'react-icons/bi';
-import { Client, MetadataPagination, useClientsQuery, User, UserStatusTypes, useUsersQuery } from '../../../domain/graphql';
+import { Client, MetadataPagination, OrderTypes, useClientsQuery, User, UserStatusTypes, useUsersQuery } from '../../../domain/graphql';
 import { PaginationTable } from '../../table/PaginationTable';
 import Card from '../../cards/Card';
 import EditUserModal from '../../modals/modal-user/modal-edit-user';
 import TableSkeleton from '../../esqueleto/table';
+import EditClientModal from '../../modals/modal-client/modal-edit-user';
 
 const ClientTable: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -25,6 +26,9 @@ const ClientTable: React.FC = () => {
       pagination: {
         skip,
         take: takeValue
+      },
+      orderBy: {
+        createdAt: OrderTypes.Desc
       }
     }
   })
@@ -140,7 +144,7 @@ const ClientTable: React.FC = () => {
       <Card className="w-50 md:w-30 lg:w-50">
         <PaginationTable skipState={{ value: skip, setValue: setSkip }} metaDataPagination={data?.clientsCount as MetadataPagination} takeValue={takeValue} />
       </Card>
-      <EditUserModal
+      <EditClientModal
         isOpen={isRegisterModalOpen}
         onClose={closeRegisterModal}
         user={user}

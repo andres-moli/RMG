@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useCreateUserMutation, User, UserDocumentTypes, UserStatusTypes, UserTypes, useUpdateUserMutation } from "../../../domain/graphql";
+import { Client, useCreateUserMutation, User, UserDocumentTypes, UserStatusTypes, UserTypes, useUpdateClientMutation, useUpdateUserMutation } from "../../../domain/graphql";
 import { toast } from "sonner";
 import { ToastyErrorGraph } from "../../../lib/utils";
 import { apolloClient } from "../../../main.config";
@@ -7,7 +7,7 @@ import { apolloClient } from "../../../main.config";
 interface RegisterModalProps {
   isOpen: boolean;
   onClose: () => void;
-  user: User | undefined
+  user: Client | undefined
 }
 const typeDocumentsOptions: { key: string; value: string | number }[] = [
   {
@@ -41,18 +41,17 @@ const typeStatusOptions: { key: string; value: string | number }[] = [
     value: "Inactivo"
   }
 ]
-const EditUserModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, user }) => {
+const EditClientModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, user }) => {
   if(!user) return null
-  const [update] = useUpdateUserMutation()
+  const [update] = useUpdateClientMutation()
   const [formData, setFormData] = useState({
     name: user?.name || '',
     lastName: user?.lastName || '',
     email: user?.email || '',
     address: user?.address || '',
-    phoneNumber: user?.phoneNumber || '',
-    identificationNumber: user?.identificationNumber || '',
-    identificationType: user?.identificationType || '', 
-    status: user.status
+    celular: user?.celular || '',
+    numberDocument: user?.numberDocument || '',
+    identificationType: user?.identificationType || ''
   });
 
   const [errors, setErrors] = useState({
@@ -60,10 +59,9 @@ const EditUserModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, user }) 
     lastName: "",
     email: "",
     address: "",
-    phoneNumber: "",
-    identificationNumber: "",
-    identificationType: "",
-    status: "",
+    celular: "",
+    numberDocument: "",
+    identificationType: ""
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -89,8 +87,8 @@ const EditUserModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, user }) 
     if (!formData.lastName) formErrors.lastName = "Este campo es obligatorio";
     if (!formData.email || !emailPattern.test(formData.email)) formErrors.email = "Correo electrónico no válido";
     if (!formData.address) formErrors.address = "Este campo es obligatorio";
-    if (!formData.phoneNumber || !phonePattern.test(formData.phoneNumber)) formErrors.phoneNumber = "Número de teléfono inválido";
-    if (!formData.identificationNumber || !phonePattern.test(formData.identificationNumber)) formErrors.identificationNumber = "Número de identificación inválido";
+    if (!formData.celular || !phonePattern.test(formData.celular)) formErrors.phoneNumber = "Número de teléfono inválido";
+    if (!formData.numberDocument || !phonePattern.test(formData.numberDocument)) formErrors.identificationNumber = "Número de identificación inválido";
     if (!formData.identificationType) formErrors.identificationType = "Este campo es obligatorio";
 
     return formErrors;
@@ -111,10 +109,7 @@ const EditUserModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, user }) 
           updateInput: {
             ...formData,
             id: user.id,
-            type: UserTypes.User,
-            identificationType: formData.identificationType as UserDocumentTypes,
-            password: formData.identificationNumber,
-            status: formData.status as UserStatusTypes
+            identificationType: formData.identificationType as UserDocumentTypes
           }
         }
       })
@@ -124,7 +119,7 @@ const EditUserModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, user }) 
         return
       }
       toast.success('Usuario Actualizado...');
-      apolloClient.cache.evict({ fieldName: "users" })
+      apolloClient.cache.evict({ fieldName: "clients" })
     } catch (err) {
         ToastyErrorGraph(err as any)
     } finally {
@@ -138,7 +133,7 @@ const EditUserModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, user }) 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white p-6 rounded-lg w-[800px] shadow-lg max-h-[80vh] overflow-y-auto">
-        <h2 className="text-2xl font-bold mb-4">Editar de Usuario</h2>
+        <h2 className="text-2xl font-bold mb-4">Editar de Cliente</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label htmlFor="name" className="block text-sm font-medium">Nombres</label>
@@ -198,11 +193,11 @@ const EditUserModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, user }) 
               type="text"
               id="identificationNumber"
               name="identificationNumber"
-              value={formData.identificationNumber}
+              value={formData.numberDocument}
               onChange={handleChange}
-              className={`mt-1 block w-full p-2 border ${errors.identificationNumber ? 'border-red-500' : 'border-gray-300'} rounded-md`}
+              className={`mt-1 block w-full p-2 border ${errors.numberDocument ? 'border-red-500' : 'border-gray-300'} rounded-md`}
             />
-            {errors.identificationNumber && <span className="text-red-500 text-sm">{errors.identificationNumber}</span>}
+            {errors.numberDocument && <span className="text-red-500 text-sm">{errors.numberDocument}</span>}
           </div>
 
           <div className="mb-4">
@@ -232,13 +227,13 @@ const EditUserModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, user }) 
               type="text"
               id="phoneNumber"
               name="phoneNumber"
-              value={formData.phoneNumber}
+              value={formData.celular}
               onChange={handleChange}
-              className={`mt-1 block w-full p-2 border ${errors.phoneNumber ? 'border-red-500' : 'border-gray-300'} rounded-md`}
+              className={`mt-1 block w-full p-2 border ${errors.celular ? 'border-red-500' : 'border-gray-300'} rounded-md`}
             />
-            {errors.phoneNumber && <span className="text-red-500 text-sm">{errors.phoneNumber}</span>}
+            {errors.celular && <span className="text-red-500 text-sm">{errors.celular}</span>}
           </div>
-          <div className="mb-4">
+          {/* <div className="mb-4">
             <label htmlFor="status" className="block text-sm font-medium">Estado</label>
             <select
               id="status"
@@ -257,7 +252,7 @@ const EditUserModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, user }) 
               }
             </select>
             {errors.status && <span className="text-red-500 text-sm">{errors.status}</span>}
-          </div>
+          </div> */}
 
           <div className="flex justify-end space-x-2">
             <button
@@ -280,4 +275,4 @@ const EditUserModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, user }) 
   );
 };
 
-export default EditUserModal;
+export default EditClientModal;

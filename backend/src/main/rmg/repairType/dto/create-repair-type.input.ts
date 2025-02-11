@@ -4,6 +4,11 @@ import { Type } from 'class-transformer';
 import { FieldTypeEnum } from '../emun/FieldTypeEnum';
 
 @InputType()
+export class SelectorOptionDto {
+  @Field(() => String)
+  value: string; // El valor de la opción
+}
+@InputType()
 export class CreateRepairFieldInput {
   @Field(() => String)
   @IsString()
@@ -27,6 +32,10 @@ export class CreateRepairFieldInput {
   @IsNumber()
   @IsOptional()
   maxLength?: number;
+
+  @Field(() => [SelectorOptionDto], { nullable: true })
+  @IsArray()
+  selectorOptions?: SelectorOptionDto[]; // Opciones dinámicas para el selector
 }
 
 @InputType()

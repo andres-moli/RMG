@@ -5,6 +5,7 @@ import { ProductsService } from './services/products.service';
 import { ProductsResolver } from './resolvers/products.resolver';
 import { CompanyModule } from 'src/main/company/company.module';
 import { FilesModule } from 'src/general/files/files.module';
+import { StatisticCardsModule } from 'src/main/statistic/statistic.module';
 
 
 @Module({
@@ -12,7 +13,8 @@ import { FilesModule } from 'src/general/files/files.module';
   imports:[
     TypeOrmModule.forFeature([Products]),
     CompanyModule,
-    FilesModule
+    FilesModule,
+    StatisticCardsModule
   ],
   exports: [ProductsService]
 })

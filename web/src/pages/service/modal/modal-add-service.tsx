@@ -23,20 +23,38 @@ const RegisterServiceModal: React.FC<RegisterModalProps> = ({ isOpen, onClose })
   const [createOrderRepair] = useCreateOrderRepairTypeMutation();
   const [formData, setFormData] = useState({ name: "", costEstimate: 0 });
   const [errors, setErrors] = useState({ name: "", costEstimate: "" });
-
+  const [selectorOptions, setSelectorOptions] = useState<string[]>([]);
+  const [newOption, setNewOption] = useState("");
+  
+  const addOption = () => {
+    if (newOption.trim()) {
+      setSelectorOptions([...selectorOptions, newOption.trim()]);
+      setNewOption("");
+    }
+  };
+  
+  const removeOption = (index: number) => {
+    setSelectorOptions(selectorOptions.filter((_, i) => i !== index));
+  };
+  
   const handleChangeField = (id: string, value: string | File) => {
     setFormValues({ ...formValues, [id]: value });
   };
 
   const addOrEditField = () => {
     if (!newFieldName.trim()) return;
-
+    const Options = newFieldType === FieldTypeEnum.Selector ? selectorOptions.map((x)=>{
+      return {
+        value: x
+      }
+    }) : undefined
     const newField: RepairField = {
       name: newFieldName,
       type: newFieldType,
       isRequired: isRequired,
       minLength: minValue || undefined, // Solo se establece si el valor no es vacío
       maxLength: maxValue || undefined, // Solo se establece si el valor no es vacío
+      selectorOptions: Options 
     };
 
     if (editIndex !== null) {
@@ -53,6 +71,7 @@ const RegisterServiceModal: React.FC<RegisterModalProps> = ({ isOpen, onClose })
     setNewFieldName("");
     setMinValue(undefined);
     setMaxValue(undefined);
+    setSelectorOptions([])
     setIsRequired(false); // Resetear
   };
 
@@ -86,9 +105,7 @@ const RegisterServiceModal: React.FC<RegisterModalProps> = ({ isOpen, onClose })
       setErrors(formErrors);
       return;
     }
-
     const toastId = toast.loading("Creando servicio...");
-    
     try {
       const res = await createOrderRepair({
         variables: { createInput: { ...formData, costEstimate: Number(formData.costEstimate) ,fields: fields } }
@@ -173,7 +190,39 @@ const RegisterServiceModal: React.FC<RegisterModalProps> = ({ isOpen, onClose })
               </option>
             ))}
           </select>
-                  {/* Agregar "Requerido", "Min" y "Max" en una sola línea */}
+          <div className="flex flex-col space-y-2 mb-4">
+            {newFieldType === FieldTypeEnum.Selector && (
+              <div>
+                <h3 className="text-md font-medium">Opciones del Selector</h3>
+                <div className="flex space-x-2">
+                  <input
+                    type="text"
+                    value={newOption}
+                    onChange={(e) => setNewOption(e.target.value)}
+                    placeholder="Nueva opción"
+                    className="border p-2 rounded-md w-full"
+                  />
+                  <button onClick={addOption} className="bg-green-500 text-white px-4 py-2 rounded-md">
+                    Agregar
+                  </button>
+                </div>
+                <ul className="mt-2 space-y-1">
+                  {selectorOptions.map((option, index) => (
+                    <li key={index} className="flex justify-between items-center bg-gray-200 p-2 rounded-md">
+                      <span>{option}</span>
+                      <button
+                        onClick={() => removeOption(index)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        ✕
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+
         <div className="flex space-x-4 mb-4">
           <div className="flex items-center">
             <input

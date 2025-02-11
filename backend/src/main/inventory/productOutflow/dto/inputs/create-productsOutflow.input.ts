@@ -5,11 +5,6 @@ import {paymentMethodEnum, StatusInvoice } from 'src/main/inventory/invoice/emun
 @InputType()
 export class CreateProductOutflowInput {
 
-  @Field(() => ID)
-  @IsNotEmpty()
-  companyId: number;
-
-
   @Field(()=> StatusInvoice)
   @IsEnum(StatusInvoice)
   status: StatusInvoice;
@@ -20,7 +15,7 @@ export class CreateProductOutflowInput {
   @Field(() => paymentMethodEnum)
   paymentMethod?:paymentMethodEnum;
   @Field(() => String)
-  userId: string;
+  clientId: string;
 
   @Field(() => String, { nullable: true })
   @IsOptional()

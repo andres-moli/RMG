@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { CustomFieldValue, OrderRepairty, useCreateUserMutation, User, UserDocumentTypes, UserTypes, useUpdateUserMutation } from "../../../domain/graphql";
+import { CustomFieldValue, OrderRepairty, OrderStatusEnum, useCreateUserMutation, User, UserDocumentTypes, UserTypes, useUpdateOrderRepairMutation, useUpdateUserMutation } from "../../../domain/graphql";
 import { toast } from "sonner";
 import { ToastyErrorGraph } from "../../../lib/utils";
 import { apolloClient } from "../../../main.config";
@@ -35,59 +35,72 @@ const convertToKeyValue = (fieldValues: CustomFieldValue[]): { [key: string]: an
 
   return keyValueObject;
 };
+const obtenerHabilitacionBotones = (estado: OrderStatusEnum | undefined)   => {
+  switch (estado) {
+    case OrderStatusEnum.Canceled:
+      return {  finalizar: false, cancelar: false, facturar: false };
+
+    case OrderStatusEnum.InProgress:
+      return {  finalizar: true, cancelar: false, facturar: false };
+
+    case OrderStatusEnum.Completed:
+      return {  finalizar: false, cancelar: false, facturar: true };
+    case OrderStatusEnum.Pending:
+      return { finalizar: true, cancelar: true, facturar: false };
+
+      default:
+      return { finalizar: false, cancelar: false, facturar: false };
+  }
+};
 const ViewActivityModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, visit }) => {
   if(!visit) return null
 
 
-//   const handleSubmit = async (e: React.FormEvent) => {
-//     e.preventDefault();
-
-//     const formErrors = validateForm();
-//     if (Object.keys(formErrors).length > 0) {
-//       setErrors(formErrors);
-//       return;
-//     }
-//     const toatsId = toast.loading('Actualizando usuario..')
-//     try {
-//       const res = await update({
-//         variables: {
-//           updateInput: {
-//             ...formData,
-//             id: user.id,
-//             type: UserTypes.User,
-//             identificationType: formData.identificationType as UserDocumentTypes,
-//             password: formData.identificationNumber
-//           }
-//         }
-//       })
-//       if(res.errors){
-//         toast.error(res.errors[0].message);
-//         toast.dismiss(toatsId)
-//         return
-//       }
-//       toast.success('Usuario Actualizado...');
-//       apolloClient.cache.evict({ fieldName: "users" })
-//     } catch (err) {
-//         ToastyErrorGraph(err as any)
-//     } finally {
-//       toast.dismiss(toatsId)
-//     }
-//     onClose(); // Cerrar el modal después de enviar
-//   };
-// const startTime = dayjs(visit.visitItem.find((x) => x.type === VisitComentTypeEnum.Inicio)?.dateFull || new Date())
-// const endTime = dayjs(visit.visitItem.find((x) => x.type === VisitComentTypeEnum.Fin)?.dateFull || new Date())
-
-// const totalMinutos = endTime.diff(startTime, 'minutes')
   if (!isOpen) return null;
-  const formValues = visit.fieldValues
-  const handleChangeField = () => {
-
+  // const formValues = visit.fieldValues
+  const [formValues,setFormValues] = useState(convertToKeyValue(visit.fieldValues || []))
+  const [updateStatus] = useUpdateOrderRepairMutation()
+  const handleChangeField = (id: string, value: string | File) => {
+    // const fielValue = visit.repairType.fields?.find((value) => value.id === id)
+    setFormValues((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
   }
+  const changeStatus = async (status: OrderStatusEnum) => {
+    if(confirm('¿Estas seguro que quieres actulizar el estado de la repación')){
+      const toastId = toast.loading('Actualizando estado de la repación')
+      try {
+        const res = await updateStatus({
+          variables: {
+            updateInput: {
+              id: visit.id,
+              status: status
+            }
+          }
+        })
+        if(res.errors){
+          ToastyErrorGraph(res.errors)
+          return
+        }
+        toast.success('Reparación actualizada con éxito')
+        apolloClient.cache.evict({ fieldName: "orderRepairs" })
+        onClose()
+      }catch(err){
+        ToastyErrorGraph(err as any)
+      }finally {
+        toast.dismiss(toastId)
+      }
+    }
+  }
+  const handleUpdate = () => {
+    console.log(formValues)
+  }
+  const { finalizar, cancelar, facturar } = obtenerHabilitacionBotones(visit.status);
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white p-6 rounded-lg w-[800px] shadow-lg max-h-[80vh] overflow-y-auto">
         <h2 className="text-2xl font-bold mb-4">Información de la reparacion</h2>
-        <form>
           <div className="mb-4">
             <label htmlFor="dateVisit" className="block text-sm font-medium">Nombres del cliente</label>
             <input
@@ -138,25 +151,74 @@ const ViewActivityModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, visi
             </div>
             {/* {} */}
             <h2 className="text-lg font-semibold mt-4">Formulario</h2>
-            <DynamicForm fields={visit.repairType.fields || []} errors={{}} formValues={convertToKeyValue(visit.fieldValues || [])} handleChange={handleChangeField} />
+            <DynamicForm fields={visit.repairType.fields || []} errors={{}} formValues={formValues} handleChange={handleChangeField} />
             <br />
+            <div className="flex justify-start space-x-2">
+              {
+                finalizar 
+                && 
+                (
+                  <button
+                  type="button"
+                  onClick={()=> changeStatus(OrderStatusEnum.Completed)}
+                  className="bg-green-500 text-white px-4 py-2 rounded-md"
+                >
+                  Finalizar
+                </button>
+                )
+              }
+              {
+                cancelar 
+                && 
+                (
+                  <button
+                  type="button"
+                  onClick={()=> changeStatus(OrderStatusEnum.Canceled)}
+                  className="bg-red-500 text-white px-4 py-2 rounded-md"
+                >
+                  Cancelar
+                </button>
+                )
+              }
+              {
+                facturar 
+                && 
+                (
+                  <button
+                  type="button"
+                  onClick={onClose}
+                  className="bg-orange-500 text-white px-4 py-2 rounded-md"
+                >
+                  Recibo de pago
+                </button>
+                )
+              }
+            </div>
             <div className="flex justify-end space-x-2">
               <button
                 type="button"
                 onClick={onClose}
                 className="bg-red-500 text-white px-4 py-2 rounded-md"
               >
-                Cancelar
+                Cerrar Ventana
               </button>
-              <button
-                type="submit"
-                className="bg-blue-500 text-white px-4 py-2 rounded-md"
-              >
-                Actualizar
-              </button>
+              {
+                visit.status === OrderStatusEnum.Pending
+                &&
+                (
+                  <button
+                  type="button"
+                  className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                  onClick={handleUpdate}
+                  // disabled={cancelar}
+                >
+                  Actualizar
+                </button>
+                )
+              }
             </div>
           </div>
-        </form>
+     
       </div>
     </div>
   );

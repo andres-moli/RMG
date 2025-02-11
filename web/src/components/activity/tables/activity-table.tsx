@@ -17,6 +17,9 @@ import ClientSelect from "../../users/select/client-select";
 import { FaCashRegister } from "react-icons/fa";
 import { downloadAndShareInvoice } from "../../../lib/dowlonadInovice";
 import { PiCashRegisterBold, PiCashRegisterDuotone } from "react-icons/pi";
+import generatePDF from "../../../lib/generatePdfReciv";
+import { GrDocumentDownload } from "react-icons/gr";
+import CreateInovice from "../modal/create-invoice";
 export const getRandomColor = (status: OrderStatusEnum) => {
   if (status === OrderStatusEnum.Pending) {
     return 'orange'; // Naranja claro
@@ -334,6 +337,9 @@ const ActivityTable = () => {
                         <td>
                           <BsQrCode className="w-5 h-8 text-gray-500 mr-3 cursor-pointer" title="Ver QR" onClick={()=> downloadQr(repair.id)}/>
                         </td>
+                        <td>
+                        <GrDocumentDownload className="w-5 h-8 text-gray-500 mr-3 cursor-pointer" title="Descargar archivo de entrega" onClick={()=> generatePDF(repair)}/>
+                        </td>
                         {
                           repair.invoice &&(
                             <td>
@@ -344,7 +350,7 @@ const ActivityTable = () => {
                         {
                           (repair.invoice == null && repair.status === OrderStatusEnum.Completed) &&(
                             <td>
-                            <PiCashRegisterDuotone className="w-5 h-8 text-gray-500 mr-3 cursor-pointer" title="Crear recibo de pago" onClick={()=> alert('Crear')}/>
+                            <PiCashRegisterDuotone className="w-5 h-8 text-gray-500 mr-3 cursor-pointer" title="Crear recibo de pago" onClick={openMapCommentModal}/>
                             </td>
                           )
                         }
@@ -366,6 +372,12 @@ const ActivityTable = () => {
         isOpen={isRegisterModalOpen}
         onClose={closeRegisterModal}
         visit={repair}
+        key={repair?.id}
+      />
+      <CreateInovice 
+        isOpen={isCommentMapModalOpen}
+        onClose={closeMapCommentModal}
+        orderRepair={repair}
         key={repair?.id}
       />
     </>

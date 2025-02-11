@@ -6,6 +6,7 @@ import { Products } from '../../products/entities/products.entity';
 import { User } from 'src/security/users/entities/user.entity';
 import { InvoiceProduct } from './InvoiceProduct.entity';
 import { StatusInvoice, paymentMethodEnum} from '../../invoice/emun/invoice.emun';
+import { Client } from 'src/main/rmg/client/entities/client.entity';
 @Entity({ name: 'com_productOutFlow' })
 @ObjectType()
 export class ProductOutflow extends CrudEntity {
@@ -32,9 +33,9 @@ export class ProductOutflow extends CrudEntity {
   // @Field(() => Company)
   // company: Company;
 
-  @ManyToOne(() => User, undefined, { lazy: true })
-  @Field(() => User)
-  user: User;
+  @ManyToOne(() => Client, undefined, { lazy: true })
+  @Field(() => Client)
+  client: Client;
 
   @OneToMany(() => InvoiceProduct, (invoiceProduct) => invoiceProduct.productOutflow, { lazy: true })
   @Field(() => [InvoiceProduct])
