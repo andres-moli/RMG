@@ -18,6 +18,7 @@ import * as QRCode from 'qrcode';
 import { RepairStatusView } from '../entities/vStatusRepair.view.entity';
 import { FieldTypeEnum } from '../../repairType/emun/FieldTypeEnum';
 import { FilesService } from 'src/general/files/services/files.service';
+import { StatusInvoice } from 'src/main/inventory/invoice/emun/invoice.emun';
 
 export const serviceStructure = CrudServiceStructure({
   entityType: OrderRepairty,
@@ -92,5 +93,15 @@ export class OrderRepairService extends CrudServiceFrom(serviceStructure) {
   async statictsByStatusRepair(){
     const data = await this.dataSource.query<RepairStatusView[]>('SELECT * FROM V_repair_status')
     return data?.[0]
+  }
+  async anularInovoiceByRepair(context: IContext, id: string){
+    const repair = await this.findOne(context,id,true);
+    const inovice = await repair.invoice;
+    const manager = this.getRepository(context).manager;
+    inovice.status = StatusInvoice.ANULADA;
+    await manager.save(inovice);
+    repair.invoice = null;
+    manager.save(repair)
+    return 'Success'
   }
 }

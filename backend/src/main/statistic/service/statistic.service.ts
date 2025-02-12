@@ -6,8 +6,8 @@ import { TotalSalesByCompany } from '../entity/TotalSalesByCompany';
 import { TotalAppointmentsByStatusPerCompany } from '../entity/status-cita';
 import { StockProductView } from '../entity/stock-products';
 import { EstadoFinancieroView } from '../entity/cards-saldo-contabilidad';
-import { BalanceResponse, FacturadoPorTrabajador, StockProductsFilterDay, TopProductosVendidos } from '../Model';
-import { GetFacturadoPorTrabajadorInput } from '../inputs';
+import { Balance, BalanceResponse, FacturadoPorTrabajador, OrderRepair, StockProductsFilterDay, SumGastos, TopProductosVendidos } from '../Model';
+import { DateRangeInput, GetFacturadoPorTrabajadorInput } from '../inputs';
 
 @Injectable()
 export class StatisticService {
@@ -20,8 +20,8 @@ export class StatisticService {
         // private readonly totalAppointmentsByStatusPerCompanyRepository: TotalAppointmentsByStatusPerCompanyRepository,
         @InjectRepository(StockProductView)
         private readonly stockProductViewRepository: StockProductViewRepository,
-        // @InjectRepository(EstadoFinancieroView)
-        // private readonly estadoFinancieroViewRepository: EstadoFinancieroViewRepository
+        @InjectRepository(EstadoFinancieroView)
+        private readonly estadoFinancieroViewRepository: EstadoFinancieroViewRepository
         
         
         
@@ -56,14 +56,12 @@ export class StatisticService {
     //         }
     //     })
     // }
-    // async getEstadoCuentaByCompany(id: string){
-    //     const findEstado = await this.estadoFinancieroViewRepository.findOne({
-    //         where: {
-    //             id: id
-    //         }
-    //     })
-    //     return findEstado
-    // }
+    async getEstadoCuentaByCompany(id: string){
+        const findEstado = await this.estadoFinancieroViewRepository.findOne({
+            
+        })
+        return findEstado
+    }
     async getStockProducts(id: string){
         const stockProduct = await this.stockProductViewRepository.findOne({
             where: {
@@ -112,6 +110,119 @@ export class StatisticService {
         `;
         const result = await this.stockProductViewRepository.manager.query<TopProductosVendidos[]>(query, [fechaInicio, fechaFin,companyId]);
         return result;
+    }
+    async getOrdersByDateRange(dateRange: DateRangeInput): Promise<OrderRepair[]> {
+        const { startDate, endDate } = dateRange;
+    
+        return this.stockProductViewRepository.manager.query(`
+            SELECT 
+                t.status,
+                COUNT(*) AS total_por_estado
+            FROM 
+                public.cyt_order_repair AS t
+            WHERE 
+                t."createdAt" BETWEEN $1 AND $2
+            GROUP BY 
+                t.status
+                UNION ALL
+            SELECT
+            'SIN_RECIBO' AS status,
+            SUM(
+                CASE
+                    WHEN t."invoiceId" IS NULL THEN 1
+                    ELSE 0
+                END) AS total_por_estado
+            FROM 
+                public.cyt_order_repair AS t
+            WHERE 
+                t.status = 'COMPLETED'
+                AND
+                t."createdAt" BETWEEN $1 AND $2
+            GROUP BY 
+            t.status
+        `, [startDate, endDate]);
+      }
+    
+    async getGastosByDateRange(dateRange: DateRangeInput): Promise<SumGastos[]> {
+        const { startDate, endDate } = dateRange;
+
+        return this.stockProductViewRepository.query(`
+        SELECT 
+            total,
+            dia AS day,
+            mes AS month,
+            ano AS year
+        FROM 
+            public.v_sum_gastos
+        WHERE 
+            TO_DATE(ano || '-' || mes || '-' || dia, 'YYYY-MM-DD') 
+            BETWEEN $1 AND $2
+        `, [startDate, endDate]);
+    }
+    async getBalanceByDateRange(dateRange: DateRangeInput): Promise<Balance> {
+        const { startDate, endDate } = dateRange;
+    
+        const result = await this.stockProductViewRepository.query(
+          `
+          SELECT 
+              COALESCE(pv.total_vendido_producto, 0::double precision) AS total_vendido_producto,
+              COALESCE(fc.total_vendido_servicio, 0::bigint) AS total_vendido_servicio,
+              COALESCE(gt.total_gasto, 0::bigint) AS total_gasto,
+              COALESCE(fc.total_vendido_servicio, 0::bigint)::double precision + COALESCE(pv.total_vendido_producto, 0::double precision) AS total_recaudado,
+              COALESCE(pv.total_vendido_producto, 0::double precision) + COALESCE(fc.total_vendido_servicio, 0::bigint)::double precision - COALESCE(gt.total_gasto, 0::bigint)::double precision AS saldo
+          FROM 
+              (SELECT SUM(fd.total) AS total_vendido_producto
+              FROM "com_productOutFlow" f
+              JOIN "com_productInvoice" fd ON f.id = fd."productOutflowId"
+              WHERE f.status = 'PAGADA'
+              AND f."createdAt" BETWEEN $1 AND $2) pv
+          CROSS JOIN 
+              (SELECT SUM(f.total) AS total_vendido_servicio
+              FROM ag_invoice f
+              WHERE f.status = 'PAGADA'
+              AND f."createdAt" BETWEEN $1 AND $2) fc
+          CROSS JOIN 
+              (SELECT SUM(f.amount) AS total_gasto
+              FROM com_expenses f
+              WHERE f.status = 'PAGADA'
+              AND f."createdAt" BETWEEN $1 AND $2) gt;
+          `,
+          [startDate, endDate],
+        );
+    
+        return result[0]; // Retornar solo el primer resultado
+    }
+    async getProductByDateRange(dateRange: DateRangeInput): Promise<SumGastos[]> {
+        const { startDate, endDate } = dateRange;
+
+        return this.stockProductViewRepository.query(`
+        SELECT 
+            total,
+            dia AS day,
+            mes AS month,
+            ano AS year
+        FROM 
+            public.v_sum_productos
+        WHERE 
+            TO_DATE(ano || '-' || mes || '-' || dia, 'YYYY-MM-DD') 
+            BETWEEN $1 AND $2
+        `, [startDate, endDate]);
+    }
+    async getServiceByDateRange(dateRange: DateRangeInput): Promise<SumGastos[]> {
+        const { startDate, endDate } = dateRange;
+
+        return this.stockProductViewRepository.query(`
+        SELECT 
+            total,
+            dia AS day,
+            mes AS month,
+            ano AS year
+        FROM 
+            public.v_sum_service
+        WHERE 
+            TO_DATE(ano || '-' || mes || '-' || dia, 'YYYY-MM-DD') 
+            BETWEEN $1 AND $2
+        `, [startDate, endDate]);
     }
     private getMonthName(month: number): string {
         const monthNames = [

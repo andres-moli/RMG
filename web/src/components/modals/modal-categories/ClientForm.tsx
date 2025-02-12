@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useFindOneByNumberPhoneLazyQuery,useFindOneByDocumentNumberLazyQuery, UserDocumentTypes  } from "../../../domain/graphql";
+import SelectClientFind from "../../SelectFind/select-user";
 useFindOneByNumberPhoneLazyQuery
 const typeDocumentsOptions = [
   { key: UserDocumentTypes.CitizenshipCard, value: "Cédula de ciudadanía" },
@@ -169,13 +170,26 @@ const ClientForm: React.FC<ClientFormProps> = ({ clientData, setClientData }) =>
   
         <div className="mb-6">
           <label className="block text-gray-700 font-semibold">Nombres</label>
-          <input
+          <SelectClientFind
+          onSelect={(client) =>{
+            setClientData({
+              nombre: client.name,
+              apellido: client.lastName || "",
+              email: client.email,
+              telefono: client.celular,
+              numberDocumento: client.numberDocument,
+              typeNumberDocument: client.identificationType || "",
+              address: client.address || "",
+            });
+          }}
+          />
+          {/* <input
             className="w-full px-4 py-3 border border-gray-300 rounded-md"
             type="text"
             value={clientData.nombre}
             placeholder="Nombres"
             onChange={(e) => handleInputChange("nombre", e.target.value)}
-          />
+          /> */}
         </div>
   
         <div className="mb-6">

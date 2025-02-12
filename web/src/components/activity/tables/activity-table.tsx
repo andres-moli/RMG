@@ -20,6 +20,7 @@ import { PiCashRegisterBold, PiCashRegisterDuotone } from "react-icons/pi";
 import generatePDF from "../../../lib/generatePdfReciv";
 import { GrDocumentDownload } from "react-icons/gr";
 import CreateInovice from "../modal/create-invoice";
+import { downloadFromEntry } from "../../../lib/dowlonadFormEntry";
 export const getRandomColor = (status: OrderStatusEnum) => {
   if (status === OrderStatusEnum.Pending) {
     return 'orange'; // Naranja claro
@@ -73,7 +74,10 @@ const ActivityTable = () => {
   const openCommentModal = () => setIsCommentModalOpen(true);
   const closeCommentModal = () => setIsCommentModalOpen(false);
 
-  const openMapCommentModal = () => setIsCommentMapModalOpen(true);
+  const openMapCommentModal = (visit: OrderRepairty) => {
+    setRepair(visit)
+    setIsCommentMapModalOpen(true);
+  }
   const closeMapCommentModal = () => setIsCommentMapModalOpen(false);
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -316,6 +320,7 @@ const ActivityTable = () => {
                     data?.orderRepairs?.map((repair)=> {
                       return (
                         <tr className="border-b dark:border-neutral-500">
+                        {/* <td>{repair.id}</td> */}
                         <td className="whitespace-nowrap px-6 py-4">{repair.client.name + ' ' + repair.client.lastName}</td>
                         <td className="whitespace-nowrap px-6 py-4">{dayjs(repair.createdAt).format('YYYY-MM-DD HH:mm:ss')}</td>
                         {/* <td>
@@ -338,7 +343,7 @@ const ActivityTable = () => {
                           <BsQrCode className="w-5 h-8 text-gray-500 mr-3 cursor-pointer" title="Ver QR" onClick={()=> downloadQr(repair.id)}/>
                         </td>
                         <td>
-                        <GrDocumentDownload className="w-5 h-8 text-gray-500 mr-3 cursor-pointer" title="Descargar archivo de entrega" onClick={()=> generatePDF(repair)}/>
+                        <GrDocumentDownload className="w-5 h-8 text-gray-500 mr-3 cursor-pointer" title="Descargar archivo de entrega" onClick={()=> downloadFromEntry(repair)}/>
                         </td>
                         {
                           repair.invoice &&(
@@ -350,7 +355,7 @@ const ActivityTable = () => {
                         {
                           (repair.invoice == null && repair.status === OrderStatusEnum.Completed) &&(
                             <td>
-                            <PiCashRegisterDuotone className="w-5 h-8 text-gray-500 mr-3 cursor-pointer" title="Crear recibo de pago" onClick={openMapCommentModal}/>
+                            <PiCashRegisterDuotone className="w-5 h-8 text-gray-500 mr-3 cursor-pointer" title="Crear recibo de pago" onClick={()=> openMapCommentModal(repair)}/>
                             </td>
                           )
                         }

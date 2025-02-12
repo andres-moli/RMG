@@ -1,0 +1,31 @@
+query GetReport($dateRange: DateRangeInput!){
+  getOrdersByDateRange(dateRange: $dateRange) {
+    status
+    total_por_estado
+  }
+    getBalanceByDateRange(dateRange: $dateRange) {
+    total_vendido_producto
+    total_vendido_servicio
+    total_gasto
+    total_recaudado
+    saldo
+  }
+  getGastosByDateRange(dateRange: $dateRange)  {
+    total
+    day
+    month
+    year
+  }
+  getProductByDateRange(dateRange: $dateRange){
+    total
+    day
+    month
+    year
+  }
+  getServiceByDateRange(dateRange: $dateRange){
+    total
+    day
+    month
+    year
+  }
+}

@@ -15,6 +15,7 @@ import { InvoiceProduct } from '../entities/InvoiceProduct.entity';
 import { StatusInvoice } from '../../invoice/emun/invoice.emun';
 import { ClientService } from 'src/main/rmg/client/services/client.service';
 import { StatisticService } from 'src/main/statistic/service/statistic.service';
+import { CreateInvoiceProductInput } from '../dto/inputs/CreateInvoiceProduct.input';
 
 export const serviceStructure = CrudServiceStructure({
   entityType: ProductOutflow,
@@ -38,6 +39,7 @@ export class ProductsOutflowService extends CrudServiceFrom(serviceStructure) {
 
   async beforeCreate(context: IContext, repository: Repository<ProductOutflow>, entity: ProductOutflow, createInput: CreateProductOutflowInput): Promise<void> {
     await this.valideDetailInvoiceStock(context,createInput,entity)
+    entity.invoiceNumber = await this.generateInvoiceNumber(repository,createInput)
     // entity.company = await this.companyService.findOne(context,createInput.companyId,true);
     entity.client = await this.clientService.findOne(context,createInput.clientId,true);
     entity.status = StatusInvoice.PAGADA
@@ -76,4 +78,32 @@ export class ProductsOutflowService extends CrudServiceFrom(serviceStructure) {
       }
     }
   }
+    async generateInvoiceNumber(repository: Repository<ProductOutflow>, createInput: CreateProductOutflowInput) {
+      const currentDate = new Date();
+      const year = currentDate.getFullYear();
+      const month = ('0' + (currentDate.getMonth() + 1)).slice(-2);  // Mes con dos dígitos
+      const day = ('0' + currentDate.getDate()).slice(-2);  // Día con dos dígitos
+  
+      // Formato base: INVYYYYMMDD
+      const baseInvoiceNumber = `INV${year}${month}${day}`;
+  
+      // Obtener el último número de factura generado para el mismo día
+      const lastFactura = await repository
+        .createQueryBuilder('factura')
+        .where('factura.invoiceNumber LIKE :baseInvoiceNumber', { baseInvoiceNumber: `${baseInvoiceNumber}%` })
+        // .andWhere('factura.company = :companyId', {companyId: createInput.companyId})
+        .orderBy('factura.invoiceNumber', 'DESC')
+        .getOne();
+  
+      let sequenceNumber = '000001';  // Si no hay facturas previas, empezamos en 000001
+  
+      if (lastFactura) {
+        // Obtener el número de secuencia de la última factura del día
+        const lastSequence = parseInt(lastFactura.invoiceNumber.split('-')[1], 10);
+        sequenceNumber = ('000000' + (lastSequence + 1)).slice(-6);  // Aumentar el número y asegurarse de que tenga 6 dígitos
+      }
+  
+      // Asignar el número de factura final
+      return `${baseInvoiceNumber}-${sequenceNumber}`;
+    }
 }

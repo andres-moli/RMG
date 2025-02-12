@@ -33,7 +33,8 @@ export class InvoiceService extends CrudServiceFrom(serviceStructure) {
 
   ){ super(); }
   async beforeCreate(context: IContext, repository: Repository<Invoice>, entity: Invoice, createInput: CreateInvoiceInput): Promise<void> {
-    if(await entity.orrderReapirty) throw new Error('Ya existe una factura para esta reparación')
+    const orderRepair = await this.orderRepairService.findOne(context,createInput.orderRepairId,true);
+    if(await orderRepair.invoice) throw new Error('Ya existe una factura para esta reparación')
     const invoiceNumber = await this.generateInvoiceNumber(repository,createInput);
     entity.invoiceNumber = invoiceNumber;
     entity =  await this.completeData(context,entity,repository,createInput)
@@ -41,7 +42,7 @@ export class InvoiceService extends CrudServiceFrom(serviceStructure) {
   async afterCreate(context: IContext, repository: Repository<Invoice>, entity: Invoice, createInput: CreateInvoiceInput): Promise<void> {
     await this.relationCitaByInvoice(context,entity,createInput);
     if(entity.status === StatusInvoice.PAGADA){
-      this.sendEmail(entity)
+      // this.sendEmail(entity)
     }
   }
   async afterUpdate(
@@ -106,6 +107,7 @@ export class InvoiceService extends CrudServiceFrom(serviceStructure) {
     if(createInput.clienteId){
       entity.cliente = await orderRepair.client;
     }
+    entity.status = StatusInvoice.PAGADA
     // if(createInput.companyId){
     //   entity.company = await this.companyService.findOne(context,createInput.companyId,true);
     // }

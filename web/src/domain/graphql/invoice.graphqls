@@ -3,3 +3,6 @@ mutation CreateInvoice($createInput: CreateInvoiceInput!) {
     id
   }
 }
+mutation AnularInovoiceByRepair($idRepair: String!) {
+  anularInovoiceByRepair(idRepair: $idRepair)
+}

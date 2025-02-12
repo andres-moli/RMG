@@ -169,6 +169,7 @@ query ProductsOutflows($orderBy: [FindProductsOutflowOrderBy!], $where: FindProd
     description
     paymentMethod
     status
+    invoiceNumber
     client {
       id
       createdAt

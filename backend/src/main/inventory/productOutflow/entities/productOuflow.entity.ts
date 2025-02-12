@@ -11,10 +11,10 @@ import { Client } from 'src/main/rmg/client/entities/client.entity';
 @ObjectType()
 export class ProductOutflow extends CrudEntity {
 
-  // @Column()
-  // @Index()
-  // @Field(() => String)
-  // invoiceNumber: string;  
+  @Column()
+  @Index()
+  @Field(() => String)
+  invoiceNumber: string;  
   @Column()
   @Field(() => Date)
   inflowDate: Date;

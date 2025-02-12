@@ -50,7 +50,7 @@ const CreateInovice: React.FC<CommentModalProps> = ({ isOpen, onClose, orderRepa
       toast.info('Debes selecionar un metodo de pago')
       return
     }
-    if(confirm('¿Estas seguro que quieres actulizar el estado de la repación')){
+    if(confirm('¿Estas seguro que quieres crear el recibo de la repación?')){
       const toastId = toast.loading('Creando recibo de pago')
       try {
         const res = await createInovice({

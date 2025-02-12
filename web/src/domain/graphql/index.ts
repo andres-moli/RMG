@@ -33,6 +33,15 @@ export type AuthResponse = {
   user: User;
 };
 
+export type Balance = {
+  __typename?: 'Balance';
+  saldo: Scalars['Float'];
+  total_gasto: Scalars['Float'];
+  total_recaudado: Scalars['Float'];
+  total_vendido_producto: Scalars['Float'];
+  total_vendido_servicio: Scalars['Float'];
+};
+
 export type BalanceInput = {
   companyId: Scalars['String'];
   fechaFin: Scalars['String'];
@@ -467,6 +476,11 @@ export type DateFilter = {
   _notbetween?: InputMaybe<Array<Scalars['DateTime']>>;
 };
 
+export type DateRangeInput = {
+  endDate: Scalars['String'];
+  startDate: Scalars['String'];
+};
+
 export type Department = {
   __typename?: 'Department';
   code: Scalars['Int'];
@@ -653,8 +667,8 @@ export type FindClientOrderBy = {
 export type FindClientWhere = {
   _and?: InputMaybe<Array<FindClientWhere>>;
   _or?: InputMaybe<Array<FindClientWhere>>;
-  city?: InputMaybe<StringFilter>;
   department?: InputMaybe<StringFilter>;
+  lastName?: InputMaybe<StringFilter>;
   name?: InputMaybe<StringFilter>;
   numberDocument?: InputMaybe<StringFilter>;
   user?: InputMaybe<StringFilter>;
@@ -979,6 +993,7 @@ export type MultikeyRegisterIdInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   addUserRole: User;
+  anularInovoiceByRepair: Scalars['String'];
   codeConfirmation: User;
   create: RoleFx;
   createCategoryExpense: CategoryExpenses;
@@ -1085,6 +1100,11 @@ export type Mutation = {
 
 export type MutationAddUserRoleArgs = {
   addAndRemoveRoleInput: AddAndRemoveRoleInput;
+};
+
+
+export type MutationAnularInovoiceByRepairArgs = {
+  idRepair: Scalars['String'];
 };
 
 
@@ -1647,6 +1667,12 @@ export type NumberFilter = {
   _notbetween?: InputMaybe<Array<Scalars['Float']>>;
 };
 
+export type OrderRepair = {
+  __typename?: 'OrderRepair';
+  status: Scalars['String'];
+  total_por_estado: Scalars['Float'];
+};
+
 export type OrderRepairty = {
   __typename?: 'OrderRepairty';
   client: Client;
@@ -1748,6 +1774,7 @@ export type ProductOutflow = {
   description?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   inflowDate: Scalars['DateTime'];
+  invoiceNumber: Scalars['String'];
   invoiceProducts: Array<InvoiceProduct>;
   paymentMethod: PaymentMethodEnum;
   status: StatusInvoice;
@@ -1854,6 +1881,11 @@ export type Query = {
   findOneByNumberPhone?: Maybe<Client>;
   functionalities: FunctionalityModel;
   genrateQrByRepair: Scalars['String'];
+  getBalanceByDateRange: Balance;
+  getGastosByDateRange: Array<SumGastos>;
+  getOrdersByDateRange: Array<OrderRepair>;
+  getProductByDateRange: Array<SumGastos>;
+  getServiceByDateRange: Array<SumGastos>;
   getStockProduct: StockProductView;
   group: Group;
   groups: Array<Group>;
@@ -2247,6 +2279,31 @@ export type QueryFindOneByNumberPhoneArgs = {
 
 export type QueryGenrateQrByRepairArgs = {
   idRepair: Scalars['String'];
+};
+
+
+export type QueryGetBalanceByDateRangeArgs = {
+  dateRange: DateRangeInput;
+};
+
+
+export type QueryGetGastosByDateRangeArgs = {
+  dateRange: DateRangeInput;
+};
+
+
+export type QueryGetOrdersByDateRangeArgs = {
+  dateRange: DateRangeInput;
+};
+
+
+export type QueryGetProductByDateRangeArgs = {
+  dateRange: DateRangeInput;
+};
+
+
+export type QueryGetServiceByDateRangeArgs = {
+  dateRange: DateRangeInput;
 };
 
 
@@ -2689,8 +2746,10 @@ export enum StatusInvoice {
 
 export type StockProductView = {
   __typename?: 'StockProductView';
+  description: Scalars['String'];
   entrada_producto: Scalars['Float'];
   id: Scalars['ID'];
+  isActive: Scalars['Boolean'];
   name: Scalars['String'];
   salida_producto: Scalars['Float'];
   stock: Scalars['Float'];
@@ -2708,6 +2767,14 @@ export type StringFilter = {
   _notlike?: InputMaybe<Scalars['String']>;
   _notstartswith?: InputMaybe<Scalars['String']>;
   _startswith?: InputMaybe<Scalars['String']>;
+};
+
+export type SumGastos = {
+  __typename?: 'SumGastos';
+  day: Scalars['Float'];
+  month: Scalars['Float'];
+  total: Scalars['Float'];
+  year: Scalars['Float'];
 };
 
 export type TopProductosVendidos = {
@@ -3250,6 +3317,13 @@ export type CreateInvoiceMutationVariables = Exact<{
 
 export type CreateInvoiceMutation = { __typename?: 'Mutation', createInvoice: { __typename?: 'Invoice', id: string } };
 
+export type AnularInovoiceByRepairMutationVariables = Exact<{
+  idRepair: Scalars['String'];
+}>;
+
+
+export type AnularInovoiceByRepairMutation = { __typename?: 'Mutation', anularInovoiceByRepair: string };
+
 export type OrderRepairQueryVariables = Exact<{
   orderRepairId: Scalars['ID'];
 }>;
@@ -3391,7 +3465,14 @@ export type ProductsOutflowsQueryVariables = Exact<{
 }>;
 
 
-export type ProductsOutflowsQuery = { __typename?: 'Query', ProductsOutflows: Array<{ __typename?: 'ProductOutflow', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, inflowDate: any, description?: string | null, paymentMethod: PaymentMethodEnum, status: StatusInvoice, client: { __typename?: 'Client', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, lastName?: string | null, numberDocument?: string | null, email?: string | null, address?: string | null, celular: string }, invoiceProducts: Array<{ __typename?: 'InvoiceProduct', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, quantity: number, unitPrice: number, subtotal: number, discount?: number | null, tax?: number | null, total: number, product: { __typename?: 'Products', costPrice?: number | null, id: string, name: string, tax?: number | null, salePrice: number } }> }>, ProductsOutflowsCount: { __typename?: 'MetadataPagination', currentPage?: number | null, itemsPerPage?: number | null, totalItems?: number | null, totalPages?: number | null } };
+export type ProductsOutflowsQuery = { __typename?: 'Query', ProductsOutflows: Array<{ __typename?: 'ProductOutflow', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, inflowDate: any, description?: string | null, paymentMethod: PaymentMethodEnum, status: StatusInvoice, invoiceNumber: string, client: { __typename?: 'Client', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, lastName?: string | null, numberDocument?: string | null, email?: string | null, address?: string | null, celular: string }, invoiceProducts: Array<{ __typename?: 'InvoiceProduct', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, quantity: number, unitPrice: number, subtotal: number, discount?: number | null, tax?: number | null, total: number, product: { __typename?: 'Products', costPrice?: number | null, id: string, name: string, tax?: number | null, salePrice: number } }> }>, ProductsOutflowsCount: { __typename?: 'MetadataPagination', currentPage?: number | null, itemsPerPage?: number | null, totalItems?: number | null, totalPages?: number | null } };
+
+export type GetReportQueryVariables = Exact<{
+  dateRange: DateRangeInput;
+}>;
+
+
+export type GetReportQuery = { __typename?: 'Query', getOrdersByDateRange: Array<{ __typename?: 'OrderRepair', status: string, total_por_estado: number }>, getBalanceByDateRange: { __typename?: 'Balance', total_vendido_producto: number, total_vendido_servicio: number, total_gasto: number, total_recaudado: number, saldo: number }, getGastosByDateRange: Array<{ __typename?: 'SumGastos', total: number, day: number, month: number, year: number }>, getProductByDateRange: Array<{ __typename?: 'SumGastos', total: number, day: number, month: number, year: number }>, getServiceByDateRange: Array<{ __typename?: 'SumGastos', total: number, day: number, month: number, year: number }> };
 
 export type UsersQueryVariables = Exact<{
   orderBy?: InputMaybe<Array<FindUsersOrderBy> | FindUsersOrderBy>;
@@ -4346,6 +4427,37 @@ export function useCreateInvoiceMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateInvoiceMutationHookResult = ReturnType<typeof useCreateInvoiceMutation>;
 export type CreateInvoiceMutationResult = Apollo.MutationResult<CreateInvoiceMutation>;
 export type CreateInvoiceMutationOptions = Apollo.BaseMutationOptions<CreateInvoiceMutation, CreateInvoiceMutationVariables>;
+export const AnularInovoiceByRepairDocument = gql`
+    mutation AnularInovoiceByRepair($idRepair: String!) {
+  anularInovoiceByRepair(idRepair: $idRepair)
+}
+    `;
+export type AnularInovoiceByRepairMutationFn = Apollo.MutationFunction<AnularInovoiceByRepairMutation, AnularInovoiceByRepairMutationVariables>;
+
+/**
+ * __useAnularInovoiceByRepairMutation__
+ *
+ * To run a mutation, you first call `useAnularInovoiceByRepairMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAnularInovoiceByRepairMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [anularInovoiceByRepairMutation, { data, loading, error }] = useAnularInovoiceByRepairMutation({
+ *   variables: {
+ *      idRepair: // value for 'idRepair'
+ *   },
+ * });
+ */
+export function useAnularInovoiceByRepairMutation(baseOptions?: Apollo.MutationHookOptions<AnularInovoiceByRepairMutation, AnularInovoiceByRepairMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AnularInovoiceByRepairMutation, AnularInovoiceByRepairMutationVariables>(AnularInovoiceByRepairDocument, options);
+      }
+export type AnularInovoiceByRepairMutationHookResult = ReturnType<typeof useAnularInovoiceByRepairMutation>;
+export type AnularInovoiceByRepairMutationResult = Apollo.MutationResult<AnularInovoiceByRepairMutation>;
+export type AnularInovoiceByRepairMutationOptions = Apollo.BaseMutationOptions<AnularInovoiceByRepairMutation, AnularInovoiceByRepairMutationVariables>;
 export const OrderRepairDocument = gql`
     query OrderRepair($orderRepairId: ID!) {
   orderRepair(id: $orderRepairId) {
@@ -5452,6 +5564,7 @@ export const ProductsOutflowsDocument = gql`
     description
     paymentMethod
     status
+    invoiceNumber
     client {
       id
       createdAt
@@ -5522,6 +5635,67 @@ export function useProductsOutflowsLazyQuery(baseOptions?: Apollo.LazyQueryHookO
 export type ProductsOutflowsQueryHookResult = ReturnType<typeof useProductsOutflowsQuery>;
 export type ProductsOutflowsLazyQueryHookResult = ReturnType<typeof useProductsOutflowsLazyQuery>;
 export type ProductsOutflowsQueryResult = Apollo.QueryResult<ProductsOutflowsQuery, ProductsOutflowsQueryVariables>;
+export const GetReportDocument = gql`
+    query GetReport($dateRange: DateRangeInput!) {
+  getOrdersByDateRange(dateRange: $dateRange) {
+    status
+    total_por_estado
+  }
+  getBalanceByDateRange(dateRange: $dateRange) {
+    total_vendido_producto
+    total_vendido_servicio
+    total_gasto
+    total_recaudado
+    saldo
+  }
+  getGastosByDateRange(dateRange: $dateRange) {
+    total
+    day
+    month
+    year
+  }
+  getProductByDateRange(dateRange: $dateRange) {
+    total
+    day
+    month
+    year
+  }
+  getServiceByDateRange(dateRange: $dateRange) {
+    total
+    day
+    month
+    year
+  }
+}
+    `;
+
+/**
+ * __useGetReportQuery__
+ *
+ * To run a query within a React component, call `useGetReportQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetReportQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetReportQuery({
+ *   variables: {
+ *      dateRange: // value for 'dateRange'
+ *   },
+ * });
+ */
+export function useGetReportQuery(baseOptions: Apollo.QueryHookOptions<GetReportQuery, GetReportQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetReportQuery, GetReportQueryVariables>(GetReportDocument, options);
+      }
+export function useGetReportLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetReportQuery, GetReportQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetReportQuery, GetReportQueryVariables>(GetReportDocument, options);
+        }
+export type GetReportQueryHookResult = ReturnType<typeof useGetReportQuery>;
+export type GetReportLazyQueryHookResult = ReturnType<typeof useGetReportLazyQuery>;
+export type GetReportQueryResult = Apollo.QueryResult<GetReportQuery, GetReportQueryVariables>;
 export const UsersDocument = gql`
     query Users($orderBy: [FindUsersOrderBy!], $where: FindUsersWhere, $pagination: Pagination) {
   users(orderBy: $orderBy, where: $where, pagination: $pagination) {

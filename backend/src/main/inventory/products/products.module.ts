@@ -6,6 +6,7 @@ import { ProductsResolver } from './resolvers/products.resolver';
 import { CompanyModule } from 'src/main/company/company.module';
 import { FilesModule } from 'src/general/files/files.module';
 import { StatisticCardsModule } from 'src/main/statistic/statistic.module';
+import { ProductsController } from './controllers/products.controller';
 
 
 @Module({
@@ -16,6 +17,7 @@ import { StatisticCardsModule } from 'src/main/statistic/statistic.module';
     FilesModule,
     StatisticCardsModule
   ],
+  controllers: [ProductsController],
   exports: [ProductsService]
 })
 export class ProductsModule {}

@@ -1,10 +1,15 @@
-import React, {useState } from 'react';
+import React, {useEffect, useState } from 'react';
 import { BiPencil } from 'react-icons/bi';
-import { CategoryExpenses, MetadataPagination, OrderTypes, Products, useCategoryExpensesQuery, useExpensesQuery, useProductsQuery} from '../../../domain/graphql';
+import { CategoryExpenses, MetadataPagination, OrderTypes, Products, StatusExpenses, useCategoryExpensesQuery, useExpensesQuery, useProductsQuery, useUpdateExpenseMutation} from '../../../domain/graphql';
 import TableSkeleton from '../../../components/esqueleto/table';
 import Card from '../../../components/cards/Card';
 import { PaginationTable } from '../../../components/table/PaginationTable';
-import { formatCurrency } from '../../../lib/utils';
+import { formatCurrency, ToastyErrorGraph } from '../../../lib/utils';
+import dayjs from 'dayjs';
+import { FcDeleteRow } from 'react-icons/fc';
+import { toast } from 'sonner';
+import { apolloClient } from '../../../main.config';
+import { GrClose } from 'react-icons/gr';
 
 const EgresosTable: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -17,7 +22,7 @@ const EgresosTable: React.FC = () => {
     setSearchQuery(event.target.value);
   };
   const [skip, setSkip] = useState(0)
-  const [product, setProduct] = useState<CategoryExpenses>()
+  const [update] = useUpdateExpenseMutation()
 
   const takeValue = 10
   const {data, loading, refetch} = useExpensesQuery({
@@ -28,12 +33,42 @@ const EgresosTable: React.FC = () => {
       },
       orderBy: {
         createdAt: OrderTypes.Desc
+      },
+      where: {
+        description: {
+          _contains: searchQuery
+        }
       }
     }
   })
-  const onEdit = (categoryExpenses: CategoryExpenses) => {
-    setProduct(categoryExpenses)
-    openRegisterModal()
+  useEffect(() => {
+    refetch();
+  }, [searchQuery]);
+  const onEdit = async (categoryExpenses: CategoryExpenses) => {
+    if(confirm('¿Estas seguro que quieres anular este gasto?')){
+      const toastId = toast.loading("Anulando gasto...")
+      try {
+        const resMutation = await update({
+          variables: {
+            updateInput: {
+              id: categoryExpenses.id,
+              status: StatusExpenses.Cancelada
+            }
+          }
+        });
+        if (resMutation.errors) {
+          toast.error("¡Oops, hubo un error")
+          return
+        }
+        toast.success("Gasto anulado con exito")
+        apolloClient.cache.evict({ fieldName: "Expenses" })
+
+      } catch (error) {
+        ToastyErrorGraph(error as any)
+      } finally{
+        toast.dismiss(toastId)
+      }
+    }
 
   }
 
@@ -66,7 +101,7 @@ const EgresosTable: React.FC = () => {
             type="text"
             id="table-search-users"
             className="block pt-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="Search for users"
+            placeholder="Buscar descripción de gasto"
             value={searchQuery}
             onChange={handleSearchChange}
           />
@@ -93,6 +128,7 @@ const EgresosTable: React.FC = () => {
               </div>
             </th>
             <th scope="col" className="px-6 py-3">Categoria</th>
+            <th scope="col" className="px-6 py-3">Descripcion</th>
             <th scope="col" className="px-6 py-3">Monto</th>
             <th scope="col" className="px-6 py-3">Estado</th>
             <th scope="col" className="px-6 py-3">Metodo de pago</th>
@@ -120,13 +156,19 @@ const EgresosTable: React.FC = () => {
                   </div>
                 </td>
                 <td className="px-6 py-4">{product.category.name}</td>
+                <td className="px-6 py-4">{product.description}</td>
                 <td className="px-6 py-4">{formatCurrency(product.amount)}</td>
                 <td className="px-6 py-4">{product.status}</td>
                 <td className="px-6 py-4">{product.paymentMethod}</td>
-                <td className="px-6 py-4">{product.createdAt}</td>
-                <td className="px-6 py-4">
-                  <BiPencil className="w-5 h-8 text-gray-500 mr-3 cursor-pointer" onClick={()=> onEdit(product)}/>
-                </td>
+                <td className="px-6 py-4">{dayjs(product.createdAt).format('YYYY-MM-DD HH:mm:ss')}</td>
+                {
+                  product.status === StatusExpenses.Pagada
+                  && (
+                    <td className="px-6 py-4">
+                    <GrClose className="w-5 h-8 text-gray-500 mr-3 cursor-pointer" onClick={()=> onEdit(product)}/>
+                  </td>
+                  )
+                }
               </tr>
             ))}
         </tbody>

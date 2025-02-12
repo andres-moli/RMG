@@ -32,3 +32,14 @@ export class GetFacturadoPorTrabajadorInput {
   @IsString()
   fechaFin: string;
 }
+
+@InputType()
+export class DateRangeInput {
+  @Field()
+  @IsString()
+  startDate: string; // formato esperado: YYYY-MM-DD
+
+  @Field()
+  @IsString()
+  endDate: string; // formato esperado: YYYY-MM-DD
+}

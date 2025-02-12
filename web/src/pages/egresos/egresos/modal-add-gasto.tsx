@@ -95,6 +95,11 @@ const RegisterModalExpenses: React.FC<RegisterModalProps> = ({ isOpen, onClose }
   const { data, loading } = useCategoryExpensesQuery({
     variables: {
       orderBy: { name: OrderTypes.Asc },
+      where: {
+        status: {
+          _eq: StatusCategoryExpenses.Activo
+        }
+      },
       pagination: {
         skip: 0,
         take: 99999999

@@ -17,7 +17,7 @@ class FindClientWhere {
   user: StringFilter;
 
   @Field(() => StringFilter)
-  city: StringFilter
+  lastName: StringFilter
 
   @Field(() => StringFilter)
   department: StringFilter

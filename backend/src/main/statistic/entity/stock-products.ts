@@ -73,5 +73,13 @@ export class StockProductView {
     @ViewColumn()
     name: string;
 
+    
+    @Field(() => Boolean)
+    @ViewColumn()
+    isActive: boolean;
+
+    @Field(() => String)
+    @ViewColumn()
+    description
 
 }

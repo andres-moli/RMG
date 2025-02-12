@@ -1,32 +1,24 @@
-import html2pdf from "html2pdf.js";
 import { Invoice, ProductOutflow, StatusInvoice } from "../domain/graphql";
 import dayjs from "dayjs";
 import 'dayjs/locale/es' 
+import { formatCurrency } from "./utils";
 export const dowlonadProductInoices = (invoiceData: ProductOutflow) => {
-  // Formatear la fecha correctamente
   dayjs.locale("es");
-  const tableProudct =  invoiceData.invoiceProducts.map((product)=> {
-    return `
-    <tr>
-      <td colspan="2" style="text-align: right;">${product.product.name}</td>
-      <td colspan="2" style="text-align: right;">${product.quantity}</td>
-      <td colspan="2" style="text-align: right;">${product.subtotal || 0}</td>
-      <td colspan="2" style="text-align: right;">${product.tax || 0}</td>
-      <td colspan="2" style="text-align: right;">${product.total || 0}</td>
-    </tr>
-    `
-  })
+
   const htmlContent = `
     <html>
     <head>
+      <title>Recibo producto - ${invoiceData.invoiceNumber}</title>
       <style>
         body {
           margin: 0;
           padding: 0;
           display: flex;
           justify-content: center;
+          align-items:  flex-start;
           background: #f5f6fa;
           color: #2e323c;
+          height: 100vh;
         }
         .invoice-container {
           max-width: 800px;
@@ -52,9 +44,6 @@ export const dowlonadProductInoices = (invoiceData: ProductOutflow) => {
           text-align: center;
           border-radius: 5px;
         }
-        .table-responsive {
-          overflow-x: auto;
-        }
         .custom-table {
           width: 100%;
           border-collapse: collapse;
@@ -70,25 +59,42 @@ export const dowlonadProductInoices = (invoiceData: ProductOutflow) => {
           background: #007ae1;
           color: white;
         }
-        .custom-table tbody tr:nth-child(even) {
-          background-color: #f9f9f9;
-        }
         .text-success {
           color: #00bb42;
+        }
+        @media print {
+          .description-cell {
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            overflow-wrap: break-word;
+            text-align: left;
+            font-size: 12px; /* Ajusta el tamaño si es necesario */
+            max-width: 100%;
+          }
+
+          /* Asegurar que la tabla respete los anchos en impresión */
+          .custom-table {
+            width: 100%;
+            table-layout: auto; /* Permite que las celdas se ajusten dinámicamente */
+            border-collapse: collapse;
+          }
+
+          .custom-table td {
+            padding: 8px;
+            vertical-align: top; /* Asegura que el texto empiece desde arriba */
+          }
         }
         .sello-anulado {
           position: absolute;
           top: 50%;
           left: 50%;
-          transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%) rotate(-45deg);
           font-size: 5rem;
-          color: rgba(255, 0, 0, 0.5); /* Color rojo con algo de transparencia */
+          color: rgba(255, 0, 0, 0.5);
           font-weight: bold;
           text-transform: uppercase;
-          z-index: 0; /* Coloca el sello detrás de la factura */
-          pointer-events: none; /* Para que no interfiera con otros elementos interactivos */
+          pointer-events: none;
           white-space: nowrap;
-          transform: translate(-50%, -50%) rotate(-45deg);
         }
       </style>
     </head>
@@ -96,14 +102,15 @@ export const dowlonadProductInoices = (invoiceData: ProductOutflow) => {
       ${invoiceData.status === StatusInvoice.Anulada ? '<div class="sello-anulado">RECIBO ANULADO</div>' : ''}
       <div class="invoice-container">
         <div class="invoice-header">
-          <div class="invoice-logo">RMG</div>
+          <img src="/logo3.png" alt="Logo" width="200" height="100">
           <address>
-            Calle 42 #33-26<br>
-            Barranquilla
+            Calle 42 #33-26, Barranquilla <br>
+            3006734018
           </address>
         </div>
 
         <div class="invoice-details">
+          <strong>Datos del cliente:</strong>
           <address>
             ${invoiceData.client.name} ${invoiceData.client.lastName}<br>
             ${invoiceData.client.numberDocument}<br>
@@ -113,76 +120,66 @@ export const dowlonadProductInoices = (invoiceData: ProductOutflow) => {
         </div>
 
         <div class="invoice-details">
-          <div class="invoice-num">
-            <strong>Número de Recibo:</strong> ${invoiceData.id}<br>
-            <strong>Metodo de pago:</strong> ${invoiceData.paymentMethod}<br>
-            <strong>Fecha:</strong> ${dayjs(invoiceData.createdAt).locale('es').format('YYYY-MMMM-DD HH:mm:ss')}
-          </div>
+          <strong>Número de Recibo:</strong> ${invoiceData.invoiceNumber}<br>
+          <strong>Método de pago:</strong> ${invoiceData.paymentMethod}<br>
+          <strong>Fecha:</strong> ${dayjs(invoiceData.createdAt).locale('es').format('YYYY-MMMM-DD HH:mm:ss')}
         </div>
 
         <div class="invoice-body">
-          <div class="table-responsive">
-            <table class="custom-table">
-              <thead>
-                <tr>
-                  <th>Proudcto</th>
-                  <th>Subtotal</th>
-                  <th>Cantidad</th>
-                  <th>Descuento</th>
-                  <th>Total</th>
-                </tr>
-              </thead>
-              <tbody>
-              ${
-                invoiceData.invoiceProducts.map((product)=> {
-                  return `
-                  <tr>
-                    <td>${product.product.name}</td>
-                    <td>${product.subtotal}</td>
-                    <td>${product.quantity}</td>
-                    <td>${product.discount}</td>
-                    <td>${product.total || 0}</td>
-                  </tr>
-                  `
-                })
-              }
+          <table class="custom-table">
+            <thead>
               <tr>
-                  <td colspan="2" style="text-align: left;"><strong>Total</strong></td>
-                  <td colspan="2" class="text-success" style="text-align: left;"><strong>${invoiceData.invoiceProducts?.reduce((total, product) => total + product.total, 0) || 0}</strong></td>
-                </tr>
+                <th>Producto</th>
+                <th>Subtotal</th>
+                <th>Cantidad</th>
+                <th>Descuento</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${invoiceData.invoiceProducts.map(product => `
                 <tr>
-                  <td colspan="3">${invoiceData.description || "Sin descripción"}</td>
+                  <td>${product.product.name}</td>
+                  <td>${formatCurrency(product.subtotal)}</td>
+                  <td>${product.quantity}</td>
+                  <td>${formatCurrency(product.discount || 0)}</td>
+                  <td>${formatCurrency(product.total || 0)}</td>
                 </tr>
-              </tbody>
-            </table>
-          </div>
+              `).join("")}
+              <tr>
+                <td colspan="2"><strong>Total a pagar</strong></td>
+                <td colspan="3" class="text-success"><strong>${formatCurrency(invoiceData.invoiceProducts?.reduce((total, product) => total + product.total, 0) || 0)}</strong></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
         <div class="invoice-footer">
           Gracias por su compra, fue un placer atenderlo.
         </div>
-
         <div class="invoice-footer">
           Generado a las ${dayjs().format("HH:mm")} del día ${dayjs().format("DD")} de ${dayjs().locale('es').format("MMMM")} de ${dayjs().format("YYYY")}.
         </div>
       </div>
+
+      <script>
+        window.onload = function () {
+          setTimeout(() => {
+            window.print();
+          }, 500);
+        };
+      </script>
     </body>
     </html>
   `;
 
-  // Crear un elemento invisible en el DOM para renderizar el HTML antes de exportarlo
-  const container = document.createElement("div");
-  container.innerHTML = htmlContent;
-  document.body.appendChild(container);
-
-  // Generar y descargar el PDF
-  html2pdf(container, {
-    margin: 10,
-    filename: `Recibo_${invoiceData.id}.pdf`,
-    image: { type: "jpeg", quality: 0.98 },
-    html2canvas: { scale: 2 },
-    jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-  }).then(() => {
-    document.body.removeChild(container); // Eliminar el contenedor después de la generación
-  });
+  // Abrir nueva pestaña y escribir el HTML generado
+  const newTab = window.open("", "_blank");
+  if (newTab) {
+    newTab.document.write(htmlContent);
+    newTab.document.close();
+  } else {
+    alert("No se pudo abrir la nueva pestaña. Por favor, desactiva el bloqueador de pop-ups.");
+  }
 };
+

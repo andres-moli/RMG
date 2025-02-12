@@ -15,6 +15,7 @@ import ProductsEntryPage from '../pages/entry-products';
 import ProductsOutPage from '../pages/out-products';
 import CategoriaEgresosPage from '../pages/egresos/categoria';
 import EgresosPage from '../pages/egresos/egresos';
+import ReportPage from '../pages/Reports';
 
 const AppRoutes: React.FC = () => {
   return (
@@ -88,6 +89,12 @@ const AppRoutes: React.FC = () => {
           path="/expenses"
           element={
             <ProtectedRoute element={<EgresosPage />} />
+          }
+        />
+        <Route
+          path="/report"
+          element={
+            <ProtectedRoute element={<ReportPage />} />
           }
         />
       </Routes>

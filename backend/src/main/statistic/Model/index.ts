@@ -149,3 +149,43 @@ export class StockProductsFilterDay {
   @Field(() => Float)
   stock : number;
 }
+@ObjectType()
+export class OrderRepair {
+  @Field()
+  status: string;
+
+  @Field()
+  total_por_estado: number;
+}
+@ObjectType()
+export class SumGastos {
+  @Field()
+  total: number;
+
+  @Field()
+  day: number;
+
+  @Field()
+  month: number;
+
+  @Field()
+  year: number;
+}
+
+@ObjectType()
+export class Balance {
+  @Field()
+  total_vendido_producto: number;
+
+  @Field()
+  total_vendido_servicio: number;
+
+  @Field()
+  total_gasto: number;
+
+  @Field()
+  total_recaudado: number;
+
+  @Field()
+  saldo: number;
+}

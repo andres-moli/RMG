@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { CustomFieldValue, OrderRepairty, OrderStatusEnum, useCreateUserMutation, User, UserDocumentTypes, UserTypes, useUpdateOrderRepairMutation, useUpdateUserMutation } from "../../../domain/graphql";
+import { CustomFieldValue, OrderRepairty, OrderStatusEnum, useAnularInovoiceByRepairMutation, useCreateUserMutation, User, UserDocumentTypes, UserTypes, useUpdateOrderRepairMutation, useUpdateUserMutation } from "../../../domain/graphql";
 import { toast } from "sonner";
 import { ToastyErrorGraph } from "../../../lib/utils";
 import { apolloClient } from "../../../main.config";
@@ -60,6 +60,7 @@ const ViewActivityModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, visi
   // const formValues = visit.fieldValues
   const [formValues,setFormValues] = useState(convertToKeyValue(visit.fieldValues || []))
   const [updateStatus] = useUpdateOrderRepairMutation()
+  const [anular] = useAnularInovoiceByRepairMutation()
   const handleChangeField = (id: string, value: string | File) => {
     // const fielValue = visit.repairType.fields?.find((value) => value.id === id)
     setFormValues((prev) => ({
@@ -68,7 +69,7 @@ const ViewActivityModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, visi
     }));
   }
   const changeStatus = async (status: OrderStatusEnum) => {
-    if(confirm('¿Estas seguro que quieres actulizar el estado de la repación')){
+    if(confirm('¿Estas seguro que quieres actulizar el estado de la repación?')){
       const toastId = toast.loading('Actualizando estado de la repación')
       try {
         const res = await updateStatus({
@@ -84,6 +85,29 @@ const ViewActivityModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, visi
           return
         }
         toast.success('Reparación actualizada con éxito')
+        apolloClient.cache.evict({ fieldName: "orderRepairs" })
+        onClose()
+      }catch(err){
+        ToastyErrorGraph(err as any)
+      }finally {
+        toast.dismiss(toastId)
+      }
+    }
+  }
+  const removeInvoiceByRepair = async (id: string) => {
+    if(confirm('¿Estas seguro que quieres actulizar anular el recibo de pago?')){
+      const toastId = toast.loading('Anulando recibo de pago')
+      try {
+        const res = await anular({
+          variables: {
+            idRepair: id
+          }
+        })
+        if(res.errors){
+          ToastyErrorGraph(res.errors)
+          return
+        }
+        toast.success('Anulación realizada con éxito')
         apolloClient.cache.evict({ fieldName: "orderRepairs" })
         onClose()
       }catch(err){
@@ -181,15 +205,15 @@ const ViewActivityModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, visi
                 )
               }
               {
-                facturar 
+                visit.invoice 
                 && 
                 (
                   <button
                   type="button"
-                  onClick={onClose}
+                  onClick={()=> removeInvoiceByRepair(visit.id)}
                   className="bg-orange-500 text-white px-4 py-2 rounded-md"
                 >
-                  Recibo de pago
+                  Anular recibo de pago
                 </button>
                 )
               }

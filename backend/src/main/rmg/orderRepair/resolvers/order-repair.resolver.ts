@@ -67,5 +67,13 @@ export class OrderRepairResolver extends CrudResolverFrom(resolverStructure) {
             return this.service.statictsByStatusRepair()
       }
 
+      @Mutation(()=> String)
+      anularInovoiceByRepair(
+            @Args({ type: () => String, name: 'idRepair' }) idRepair: string,
+            @CurrentContext() context: IContext
+      ){
+            return this.service.anularInovoiceByRepair(context,idRepair)
+      }
+
       
 }

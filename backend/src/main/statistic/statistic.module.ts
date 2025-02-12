@@ -16,7 +16,7 @@ import { EstadoFinancieroView } from './entity/cards-saldo-contabilidad';
             // TotalSalesByCompany,
             // TotalAppointmentsByStatusPerCompany,
             StockProductView,
-            // EstadoFinancieroView
+            EstadoFinancieroView
         ]
         )
     ],

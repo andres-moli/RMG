@@ -3,13 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { StatisticCards } from '../entity/statistic-cards';
 import { StatisticService } from '../service/statistic.service';
-import { BalanceResponse, FacturadoPorTrabajador, MonthlySalesModel, TopProductosVendidos } from '../Model';
+import { Balance, BalanceResponse, FacturadoPorTrabajador, MonthlySalesModel, OrderRepair, SumGastos, TopProductosVendidos } from '../Model';
 import { TotalAppointmentsByStatusPerCompany } from '../entity/status-cita';
 import { StockProductView } from '../entity/stock-products';
 import { AnyUser } from 'src/security/auth/decorators/user-types.decorator';
 import { applyClassDecorators } from 'src/patterns/crud-pattern/utils/decorators.utils';
 import { EstadoFinancieroView } from '../entity/cards-saldo-contabilidad';
-import { BalanceInput, GetFacturadoPorTrabajadorInput } from '../inputs';
+import { BalanceInput, DateRangeInput, GetFacturadoPorTrabajadorInput } from '../inputs';
 import { CurrentContext } from 'src/patterns/crud-pattern/decorators/current-context.decorator';
 import { Products } from 'src/main/inventory/products/entities/products.entity';
 import { IContext } from 'src/patterns/crud-pattern/interfaces/context.interface';
@@ -68,5 +68,37 @@ export class StatisticResolver {
       return this.statisticService.obtenerTopProductosVendidos(input);
     }
     
+    @Query(() => [OrderRepair])
+    async getOrdersByDateRange(
+      @Args('dateRange') dateRange: DateRangeInput,
+    ): Promise<OrderRepair[]> {
+      return this.statisticService.getOrdersByDateRange(dateRange);
+    }
+
+    @Query(() => [SumGastos])
+    async getGastosByDateRange(
+      @Args('dateRange') dateRange: DateRangeInput,
+    ): Promise<SumGastos[]> {
+      return this.statisticService.getGastosByDateRange(dateRange);
+    }
+    @Query(() => [SumGastos])
+    async getProductByDateRange(
+      @Args('dateRange') dateRange: DateRangeInput,
+    ): Promise<SumGastos[]> {
+      return this.statisticService.getProductByDateRange(dateRange);
+    }
+    @Query(() => [SumGastos])
+    async getServiceByDateRange(
+      @Args('dateRange') dateRange: DateRangeInput,
+    ): Promise<SumGastos[]> {
+      return this.statisticService.getServiceByDateRange(dateRange);
+    }
+    
+    @Query(() => Balance)
+    async getBalanceByDateRange(
+      @Args('dateRange') dateRange: DateRangeInput,
+    ): Promise<Balance> {
+      return this.statisticService.getBalanceByDateRange(dateRange);
+    }
     
 }

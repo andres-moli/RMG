@@ -38,9 +38,14 @@ export class ClientService extends CrudServiceFrom(serviceStructure) {
 
   async beforeCreate(context:IContext,repository: Repository<Client>, entity: Client, createInput: CreateClientInput): Promise<void> {
     const oldClient = await repository.findOne({
-      where: {
-        numberDocument: createInput.numberDocument
-      }
+      where: [
+        {
+          numberDocument: !!createInput.numberDocument ? createInput.numberDocument  : undefined
+        },
+        {
+          celular: !!createInput.celular ? createInput.celular : undefined,
+        }
+      ]
     })
     if(oldClient) throw new Error(`ya existe un cliente con este nit - [${createInput.numberDocument}]`)
   }
@@ -51,9 +56,14 @@ export class ClientService extends CrudServiceFrom(serviceStructure) {
 
   async findOneOrCreate(queryRunner: QueryRunner,createInput: CreateClientInput){
     const findOne = await queryRunner.manager.findOne(Client,{
-      where: {
-        numberDocument: createInput.numberDocument
-      }
+      where: [
+        {
+          numberDocument: !!createInput.numberDocument ? createInput.numberDocument  : undefined
+        },
+        {
+          celular: !!createInput.celular ? createInput.celular : undefined,
+        }
+      ]
     })
     if(findOne){
       return findOne
