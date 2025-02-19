@@ -1,0 +1,98 @@
+mutation CreateCotizacion($createInput: CreateCotizacionInput!) {
+  createCotizacion(createInput: $createInput) {
+    id
+  }
+}
+mutation UpdateCotizacion($updateInput: UpdateCotizacionInput!) {
+  updateCotizacion(updateInput: $updateInput) {
+    id
+  }
+}
+query Cotizaciones($orderBy: [FindCotizacionOrderBy!], $where: FindCotizacionWhere, $pagination: Pagination) {
+  Cotizaciones(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    invoiceNumber
+    description
+    status
+    client {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      identificationType
+      lastName
+      numberDocument
+      email
+      address
+      celular
+    }
+    cotizacionService {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      quantity
+      unitPrice
+      subtotal
+      discount
+      tax
+      total
+      service {
+        id
+        createdAt
+        updatedAt
+        deletedAt
+        name
+        status
+        costEstimate
+      }
+    }
+    cotizacionProduct {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      quantity
+      unitPrice
+      subtotal
+      discount
+      tax
+      total
+      product {
+        id
+        createdAt
+        updatedAt
+        deletedAt
+        name
+        description
+        salePrice
+        minStock
+        costPrice
+        tax
+        unitOfMeasure
+        isActive
+        isShowPublic
+        expirationDate
+        stock {
+          id
+          entrada_producto
+          salida_producto
+          stock
+          name
+          isActive
+          description
+        }
+      }
+    }
+  }
+  CotizacionesCount (orderBy: $orderBy, where: $where, pagination: $pagination) {
+    totalItems
+    itemsPerPage
+    totalPages
+    currentPage
+  }
+}

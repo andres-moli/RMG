@@ -1,31 +1,31 @@
-import React, {useEffect, useState } from 'react';
-import { BiPencil } from 'react-icons/bi';
-import { CategoryExpenses, MetadataPagination, OrderTypes, Products, StatusExpenses, useCategoryExpensesQuery, useExpensesQuery, useProductsQuery, useUpdateExpenseMutation} from '../../../domain/graphql';
-import TableSkeleton from '../../../components/esqueleto/table';
-import Card from '../../../components/cards/Card';
-import { PaginationTable } from '../../../components/table/PaginationTable';
-import { formatCurrency, ToastyErrorGraph } from '../../../lib/utils';
-import dayjs from 'dayjs';
-import { FcDeleteRow } from 'react-icons/fc';
-import { toast } from 'sonner';
-import { apolloClient } from '../../../main.config';
-import { GrClose } from 'react-icons/gr';
+import React, { useEffect, useState } from 'react';
+import { Cotizacion, MetadataPagination, OrderTypes, useCotizacionesQuery } from '../../../../domain/graphql';
+import TableSkeleton from '../../../../components/esqueleto/table';
+import Card from '../../../../components/cards/Card';
+import { PaginationTable } from '../../../../components/table/PaginationTable';
+import { BsEye } from 'react-icons/bs';
+import { BiDownload, BiShare } from 'react-icons/bi';
+import UpdateModalCotizacionOut from '../modals/update-cotizacion';
+import { dowloandCotizacion } from '../../../../lib/dowloandCotizacion';
 
-const EgresosTable: React.FC = () => {
+
+const CotizacionesTable: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [cotizacion, setCotizacion] = useState<Cotizacion>();
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
 
   const openRegisterModal = () => setIsRegisterModalOpen(true);
   const closeRegisterModal = () => setIsRegisterModalOpen(false);
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    
     setSearchQuery(event.target.value);
   };
+  useEffect(() => {
+    refetch();
+  }, [searchQuery]);
   const [skip, setSkip] = useState(0)
-  const [update] = useUpdateExpenseMutation()
 
   const takeValue = 10
-  const {data, loading, refetch} = useExpensesQuery({
+  const {data, loading, refetch} = useCotizacionesQuery({
     variables: {
       pagination: {
         skip,
@@ -41,35 +41,9 @@ const EgresosTable: React.FC = () => {
       }
     }
   })
-  useEffect(() => {
-    refetch();
-  }, [searchQuery]);
-  const onEdit = async (categoryExpenses: CategoryExpenses) => {
-    if(confirm('¿Estas seguro que quieres anular este gasto?')){
-      const toastId = toast.loading("Anulando gasto...")
-      try {
-        const resMutation = await update({
-          variables: {
-            updateInput: {
-              id: categoryExpenses.id,
-              status: StatusExpenses.Cancelada
-            }
-          }
-        });
-        if (resMutation.errors) {
-          toast.error("¡Oops, hubo un error")
-          return
-        }
-        toast.success("Gasto anulado con exito")
-        apolloClient.cache.evict({ fieldName: "Expenses" })
-
-      } catch (error) {
-        ToastyErrorGraph(error as any)
-      } finally{
-        toast.dismiss(toastId)
-      }
-    }
-
+  const onEdit = async (cotizacion: Cotizacion) => {
+    setCotizacion(cotizacion);
+    openRegisterModal()
   }
 
 
@@ -101,7 +75,7 @@ const EgresosTable: React.FC = () => {
             type="text"
             id="table-search-users"
             className="block pt-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="Buscar descripción de gasto"
+            placeholder="Buscar entrada de productos"
             value={searchQuery}
             onChange={handleSearchChange}
           />
@@ -127,19 +101,19 @@ const EgresosTable: React.FC = () => {
                 </label>
               </div>
             </th>
-            <th scope="col" className="px-6 py-3">Categoria</th>
-            <th scope="col" className="px-6 py-3">Cuenta</th>
-            <th scope="col" className="px-6 py-3">Descripcion</th>
-            <th scope="col" className="px-6 py-3">Monto</th>
+            <th scope="col" className="px-6 py-3"># cotización</th>
+            <th scope="col" className="px-6 py-3">Cliente</th>
             <th scope="col" className="px-6 py-3">Estado</th>
-            <th scope="col" className="px-6 py-3">Metodo de pago</th>
             <th scope="col" className="px-6 py-3">Fecha</th>
             <th scope="col" className="px-6 py-3">Acción</th>
+            <th scope="col" className="px-6 py-3">Descargar</th>
           </tr>
         </thead>
         <tbody>
           {
-          data?.Expenses.map((product, index) => (
+          data?.Cotizaciones?.map((cotizacion, index) => {
+            
+            return (
               <tr
                 key={index}
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
@@ -156,37 +130,32 @@ const EgresosTable: React.FC = () => {
                     </label>
                   </div>
                 </td>
-                <td className="px-6 py-4">{product.category.name}</td>
-                <td className="px-6 py-4">{product.count.nameBank + ' - ' + product.count.numberCount}</td>
-                <td className="px-6 py-4">{product.description}</td>
-                <td className="px-6 py-4">{formatCurrency(product.amount)}</td>
-                <td className="px-6 py-4">{product.status}</td>
-                <td className="px-6 py-4">{product.paymentMethod}</td>
-                <td className="px-6 py-4">{dayjs(product.createdAt).format('YYYY-MM-DD HH:mm:ss')}</td>
-                {
-                  product.status === StatusExpenses.Pagada
-                  && (
-                    <td className="px-6 py-4">
-                    <GrClose className="w-5 h-8 text-gray-500 mr-3 cursor-pointer" onClick={()=> onEdit(product)}/>
-                  </td>
-                  )
-                }
+                <td className="px-6 py-4">{cotizacion.invoiceNumber}</td>
+                <td className="px-6 py-4">{cotizacion.client.name + ' ' + cotizacion.client.lastName}</td>
+                <td className="px-6 py-4">{cotizacion.status}</td>
+                <td className="px-6 py-4">{cotizacion.createdAt}</td>
+                <td className="px-6 py-4">
+                    <BsEye className="w-5 h-8 text-gray-500 mr-3 cursor-pointer" onClick={()=> onEdit(cotizacion)}/>
+                </td>
+                <td className="px-6 py-4">
+                    <BiDownload className="w-5 h-8 text-gray-500 mr-3 cursor-pointer" onClick={()=> dowloandCotizacion(cotizacion)}/>
+                </td>
               </tr>
-            ))}
+            )})}
         </tbody>
       </table>
       }
       <Card className="w-50 md:w-30 lg:w-50">
-        <PaginationTable skipState={{ value: skip, setValue: setSkip }} metaDataPagination={data?.ExpensesCount as MetadataPagination} takeValue={takeValue} />
+        <PaginationTable skipState={{ value: skip, setValue: setSkip }} metaDataPagination={data?.CotizacionesCount as MetadataPagination} takeValue={takeValue} />
       </Card>
-      {/* <EditModalProducts
+      <UpdateModalCotizacionOut
         isOpen={isRegisterModalOpen}
         onClose={closeRegisterModal}
-        product={product}
-        key={product?.id}
-      /> */}
+        cotizacion={cotizacion}
+        key={cotizacion?.id}
+      />
     </div>
   );
 };
 
-export default EgresosTable;
+export default CotizacionesTable;

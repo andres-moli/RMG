@@ -5,6 +5,7 @@ import { Column, Entity, Index, ManyToOne } from 'typeorm';
 import { User } from 'src/security/users/entities/user.entity';
 import { StatusExpenses } from '../emun/expenses.emun';
 import { CategoryExpenses } from '../../CategoryExpenses/entities/CategoryExpenses.entity';
+import { CountExpenses } from '../../cuentasExpenses/entities/cuentasExpenses.entity';
 
 @Entity({ name: 'com_expenses' })
 @ObjectType()
@@ -54,6 +55,9 @@ export class Expense extends CrudEntity {
   // @ManyToOne(() => Company, (company) => undefined, { lazy: true })
   // @Field(() => Company)
   // company: Company; // Relación con la entidad de la compañía
+  @ManyToOne(() => CountExpenses, (categoryExpenses) => undefined, { lazy: true })
+  @Field(() => CountExpenses)
+  count: CountExpenses; 
 
   @ManyToOne(() => User, (user) => undefined, { lazy: true })
   @Field(() => User)

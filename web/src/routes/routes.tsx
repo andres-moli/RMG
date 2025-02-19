@@ -16,6 +16,8 @@ import ProductsOutPage from '../pages/out-products';
 import CategoriaEgresosPage from '../pages/egresos/categoria';
 import EgresosPage from '../pages/egresos/egresos';
 import ReportPage from '../pages/Reports';
+import CotizacionPage from '../pages/cotizacion';
+import CuentasEgresosPage from '../pages/egresos/cuentas';
 
 const AppRoutes: React.FC = () => {
   return (
@@ -92,9 +94,21 @@ const AppRoutes: React.FC = () => {
           }
         />
         <Route
+          path="/expenses-accounts"
+          element={
+            <ProtectedRoute element={<CuentasEgresosPage />} />
+          }
+        />
+        <Route
           path="/report"
           element={
             <ProtectedRoute element={<ReportPage />} />
+          }
+        />
+        <Route
+          path="/quotations"
+          element={
+            <ProtectedRoute element={<CotizacionPage />} />
           }
         />
       </Routes>

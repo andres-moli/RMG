@@ -21,7 +21,9 @@ export class CreateExpensesInput {
   @Field(() => ID)
   @IsString()
   categoryId: string; // Categoría del gasto
-
+  @Field(() => ID)
+  @IsString()
+  countId: string; // Categoría del gasto
 
   @Field(() => Boolean, { nullable: true })
   @IsOptional()

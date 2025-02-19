@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { OrderTypes, PaymentMethodEnum, StatusCategoryExpenses, StatusExpenses, useCategoryExpensesQuery, useCreateCategoryExpenseMutation, useCreateExpenseMutation, useCreateProductMutation } from "../../../domain/graphql";
+import { OrderTypes, PaymentMethodEnum, StatusCategoryExpenses, StatusCountExpenses, StatusExpenses, useCategoryExpensesQuery, useCountExpensesQuery, useCreateCategoryExpenseMutation, useCreateExpenseMutation, useCreateProductMutation } from "../../../domain/graphql";
 import { toast } from "sonner";
 import { formatCurrency, ToastyErrorGraph } from "../../../lib/utils";
 import { apolloClient } from "../../../main.config";
@@ -16,6 +16,7 @@ const RegisterModalExpenses: React.FC<RegisterModalProps> = ({ isOpen, onClose }
     paymentMethod: "",
     categoryId: "",
     amount: "",
+    countId: ""
   });
 
   const [errors, setErrors] = useState({
@@ -23,6 +24,7 @@ const RegisterModalExpenses: React.FC<RegisterModalProps> = ({ isOpen, onClose }
     paymentMethod: "",
     categoryId: "",
     amount: "",
+    countId: ""
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -47,6 +49,7 @@ const RegisterModalExpenses: React.FC<RegisterModalProps> = ({ isOpen, onClose }
     if (!formData.amount) formErrors.amount = "Este campo es obligatorio";
     if (!formData.categoryId) formErrors.categoryId = "Este campo es obligatorio";
     if (!formData.paymentMethod) formErrors.paymentMethod = "Este campo es obligatorio";
+    if (!formData.countId) formErrors.countId = "Este campo es obligatorio";
 
     return formErrors;
   };
@@ -89,6 +92,7 @@ const RegisterModalExpenses: React.FC<RegisterModalProps> = ({ isOpen, onClose }
       paymentMethod: "",
       categoryId: "",
       amount: "",
+      countId: ""
     });
     onClose(); // Cerrar el modal después de enviar
   };
@@ -109,6 +113,24 @@ const RegisterModalExpenses: React.FC<RegisterModalProps> = ({ isOpen, onClose }
   const optionCategory = data?.CategoryExpenses.map((x) => ({
     key: x.id,
     value: x.name
+  })) || [];
+  const { data: dataCount, loading: loadingCount } = useCountExpensesQuery({
+    variables: {
+      orderBy: { name: OrderTypes.Asc },
+      where: {
+        status: {
+          _eq: StatusCountExpenses.Activo
+        }
+      },
+      pagination: {
+        skip: 0,
+        take: 99999999
+      }
+    }
+  });
+  const optionCount = dataCount?.CountExpenses.map((x) => ({
+    key: x.id,
+    value: x.nameBank + ' - ' + x.numberCount
   })) || [];
   if (!isOpen) return null;
 
@@ -135,6 +157,32 @@ const RegisterModalExpenses: React.FC<RegisterModalProps> = ({ isOpen, onClose }
             <option disabled selected value={''}>Seleccione un tipo</option>
             {
               optionCategory.map((id)=> {
+                return (
+                  <option value={id.key}>{id.value}</option>
+                )
+              })
+            }
+          </select>
+          }
+          <br />
+          <label htmlFor="countId" className="block text-sm font-medium">Una cuenta</label>
+          {
+            loading
+            ?
+            <>
+            Cargando cuentas
+            </>
+            :
+            <select
+              id="countId"
+              name="countId"
+              value={formData.countId}
+              onChange={handleChange}
+              className={`mt-1 block w-full p-2 border border-gray-300 rounded-md`}
+            >
+            <option disabled selected value={''}>Seleccione un tipo</option>
+            {
+              optionCount.map((id)=> {
                 return (
                   <option value={id.key}>{id.value}</option>
                 )

@@ -155,6 +155,74 @@ export type Company = {
   user: User;
 };
 
+export type Cotizacion = {
+  __typename?: 'Cotizacion';
+  client: Client;
+  cotizacionProduct?: Maybe<Array<CotizacionProduct>>;
+  cotizacionService?: Maybe<Array<CotizacionServiceE>>;
+  createdAt: Scalars['DateTime'];
+  deletedAt?: Maybe<Scalars['DateTime']>;
+  description?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  invoiceNumber: Scalars['String'];
+  status: CotizacionStatusEmun;
+  updatedAt: Scalars['DateTime'];
+};
+
+export type CotizacionProduct = {
+  __typename?: 'CotizacionProduct';
+  cotizacion: Cotizacion;
+  createdAt: Scalars['DateTime'];
+  deletedAt?: Maybe<Scalars['DateTime']>;
+  discount?: Maybe<Scalars['Float']>;
+  id: Scalars['ID'];
+  product: Products;
+  quantity: Scalars['Int'];
+  subtotal: Scalars['Float'];
+  tax?: Maybe<Scalars['Float']>;
+  total: Scalars['Float'];
+  unitPrice: Scalars['Float'];
+  updatedAt: Scalars['DateTime'];
+};
+
+export type CotizacionServiceE = {
+  __typename?: 'CotizacionServiceE';
+  cotizacion: Cotizacion;
+  createdAt: Scalars['DateTime'];
+  deletedAt?: Maybe<Scalars['DateTime']>;
+  discount?: Maybe<Scalars['Float']>;
+  id: Scalars['ID'];
+  quantity: Scalars['Int'];
+  service: RepairType;
+  subtotal: Scalars['Float'];
+  tax?: Maybe<Scalars['Float']>;
+  total: Scalars['Float'];
+  unitPrice: Scalars['Float'];
+  updatedAt: Scalars['DateTime'];
+};
+
+/** Estados posibles de una cotización */
+export enum CotizacionStatusEmun {
+  Aprobada = 'APROBADA',
+  Cancelada = 'CANCELADA',
+  Pendiente = 'PENDIENTE',
+  Realizada = 'REALIZADA',
+  Rechazada = 'RECHAZADA'
+}
+
+export type CountExpenses = {
+  __typename?: 'CountExpenses';
+  createdAt: Scalars['DateTime'];
+  deletedAt?: Maybe<Scalars['DateTime']>;
+  description?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  nameBank?: Maybe<Scalars['String']>;
+  numberCount?: Maybe<Scalars['String']>;
+  status: StatusCountExpenses;
+  updatedAt: Scalars['DateTime'];
+};
+
 export type Country = {
   __typename?: 'Country';
   code: Scalars['Int'];
@@ -208,6 +276,20 @@ export type CreateCompanyInput = {
   userId: Scalars['ID'];
 };
 
+export type CreateCotizacionInput = {
+  clientId: Scalars['String'];
+  description?: InputMaybe<Scalars['String']>;
+  items: Array<ItemDto>;
+};
+
+export type CreateCountExpensesInput = {
+  description?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
+  nameBank?: InputMaybe<Scalars['String']>;
+  numberCount: Scalars['String'];
+  status?: InputMaybe<StatusCountExpenses>;
+};
+
 export type CreateCustomFieldValueInput = {
   fieldId: Scalars['String'];
   valorFecha?: InputMaybe<Scalars['DateTime']>;
@@ -232,6 +314,7 @@ export type CreateDummyInput = {
 export type CreateExpensesInput = {
   amount: Scalars['Float'];
   categoryId: Scalars['ID'];
+  countId: Scalars['ID'];
   description: Scalars['String'];
   expenseDate: Scalars['DateTime'];
   isRecurring?: InputMaybe<Scalars['Boolean']>;
@@ -579,6 +662,7 @@ export type Expense = {
   autorizoBy?: Maybe<User>;
   canceldBy?: Maybe<User>;
   category: CategoryExpenses;
+  count: CountExpenses;
   createdAt: Scalars['DateTime'];
   createdBy: User;
   deletedAt?: Maybe<Scalars['DateTime']>;
@@ -683,6 +767,34 @@ export type FindCompanyWhere = {
   _or?: InputMaybe<Array<FindCompanyWhere>>;
   name?: InputMaybe<StringFilter>;
   user?: InputMaybe<StringFilter>;
+};
+
+export type FindCotizacionOrderBy = {
+  createdAt?: InputMaybe<OrderTypes>;
+};
+
+export type FindCotizacionWhere = {
+  _and?: InputMaybe<Array<FindCotizacionWhere>>;
+  _or?: InputMaybe<Array<FindCotizacionWhere>>;
+  client?: InputMaybe<DateFilter>;
+  company?: InputMaybe<StringFilter>;
+  createdAt?: InputMaybe<DateFilter>;
+  description?: InputMaybe<StringFilter>;
+  status?: InputMaybe<StringFilter>;
+};
+
+export type FindCountExpensesOrderBy = {
+  createdAt?: InputMaybe<OrderTypes>;
+  name?: InputMaybe<OrderTypes>;
+};
+
+export type FindCountExpensesWhere = {
+  _and?: InputMaybe<Array<FindCountExpensesWhere>>;
+  _or?: InputMaybe<Array<FindCountExpensesWhere>>;
+  company?: InputMaybe<StringFilter>;
+  nameBank?: InputMaybe<StringFilter>;
+  numberCount?: InputMaybe<StringFilter>;
+  status?: InputMaybe<StringFilter>;
 };
 
 export type FindCustomFieldValueTypeOrderBy = {
@@ -964,6 +1076,16 @@ export type InvoiceProduct = {
   updatedAt: Scalars['DateTime'];
 };
 
+export type ItemDto = {
+  discount: Scalars['Float'];
+  id: Scalars['ID'];
+  quantity: Scalars['Int'];
+  tax: Scalars['Float'];
+  total: Scalars['Float'];
+  type: Scalars['String'];
+  unitPrice: Scalars['Float'];
+};
+
 export type MetadataPagination = {
   __typename?: 'MetadataPagination';
   currentPage?: Maybe<Scalars['Int']>;
@@ -1000,6 +1122,8 @@ export type Mutation = {
   createClient: Client;
   createClientContact: ClientContact;
   createCompany: Company;
+  createCotizacion: Cotizacion;
+  createCountExpense: CountExpenses;
   createCustomFieldValue: CustomFieldValue;
   createDefaultRoles: Array<Role>;
   createDocumentType: DocumentType;
@@ -1035,6 +1159,8 @@ export type Mutation = {
   removeClient: Client;
   removeClientContact: ClientContact;
   removeCompany: Company;
+  removeCotizacion: Cotizacion;
+  removeCountExpense: CountExpenses;
   removeCustomFieldValue: CustomFieldValue;
   removeDocumentType: DocumentType;
   removeDummy: Dummy;
@@ -1071,6 +1197,8 @@ export type Mutation = {
   updateClient: Client;
   updateClientContact: ClientContact;
   updateCompany: Company;
+  updateCotizacion: Cotizacion;
+  updateCountExpense: CountExpenses;
   updateCustomFieldValue: CustomFieldValue;
   updateDocumentType: DocumentType;
   updateDummy: Dummy;
@@ -1135,6 +1263,16 @@ export type MutationCreateClientContactArgs = {
 
 export type MutationCreateCompanyArgs = {
   createInput: CreateCompanyInput;
+};
+
+
+export type MutationCreateCotizacionArgs = {
+  createInput: CreateCotizacionInput;
+};
+
+
+export type MutationCreateCountExpenseArgs = {
+  createInput: CreateCountExpensesInput;
 };
 
 
@@ -1294,6 +1432,16 @@ export type MutationRemoveClientContactArgs = {
 
 
 export type MutationRemoveCompanyArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationRemoveCotizacionArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationRemoveCountExpenseArgs = {
   id: Scalars['ID'];
 };
 
@@ -1470,6 +1618,16 @@ export type MutationUpdateClientContactArgs = {
 
 export type MutationUpdateCompanyArgs = {
   updateInput: UpdateCompanyInput;
+};
+
+
+export type MutationUpdateCotizacionArgs = {
+  updateInput: UpdateCotizacionInput;
+};
+
+
+export type MutationUpdateCountExpenseArgs = {
+  updateInput: UpdateCountExpensesInput;
 };
 
 
@@ -1828,7 +1986,13 @@ export type Query = {
   Company: Company;
   Companys: Array<Company>;
   CompanysCount: MetadataPagination;
+  Cotizacion: Cotizacion;
+  Cotizaciones: Array<Cotizacion>;
+  CotizacionesCount: MetadataPagination;
   Count: MetadataPagination;
+  CountExpense: CountExpenses;
+  CountExpenses: Array<CountExpenses>;
+  CountExpensesCount: MetadataPagination;
   Expense: Expense;
   Expenses: Array<Expense>;
   ExpensesCount: MetadataPagination;
@@ -1974,10 +2138,48 @@ export type QueryCompanysCountArgs = {
 };
 
 
+export type QueryCotizacionArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryCotizacionesArgs = {
+  orderBy?: InputMaybe<Array<FindCotizacionOrderBy>>;
+  pagination?: InputMaybe<Pagination>;
+  where?: InputMaybe<FindCotizacionWhere>;
+};
+
+
+export type QueryCotizacionesCountArgs = {
+  orderBy?: InputMaybe<Array<FindCotizacionOrderBy>>;
+  pagination?: InputMaybe<Pagination>;
+  where?: InputMaybe<FindCotizacionWhere>;
+};
+
+
 export type QueryCountArgs = {
   orderBy?: InputMaybe<Array<FindUsersOrderBy>>;
   pagination?: InputMaybe<Pagination>;
   where?: InputMaybe<FindUsersWhere>;
+};
+
+
+export type QueryCountExpenseArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryCountExpensesArgs = {
+  orderBy?: InputMaybe<Array<FindCountExpensesOrderBy>>;
+  pagination?: InputMaybe<Pagination>;
+  where?: InputMaybe<FindCountExpensesWhere>;
+};
+
+
+export type QueryCountExpensesCountArgs = {
+  orderBy?: InputMaybe<Array<FindCountExpensesOrderBy>>;
+  pagination?: InputMaybe<Pagination>;
+  where?: InputMaybe<FindCountExpensesWhere>;
 };
 
 
@@ -2731,6 +2933,12 @@ export enum StatusCategoryExpenses {
   Inactivo = 'INACTIVO'
 }
 
+export enum StatusCountExpenses {
+  Activo = 'ACTIVO',
+  Cerrada = 'CERRADA',
+  Inactivo = 'INACTIVO'
+}
+
 export enum StatusExpenses {
   Cancelada = 'CANCELADA',
   Pagada = 'PAGADA',
@@ -2855,6 +3063,20 @@ export type UpdateCompanyInput = {
   userId?: InputMaybe<Scalars['ID']>;
 };
 
+export type UpdateCotizacionInput = {
+  id: Scalars['ID'];
+  status: CotizacionStatusEmun;
+};
+
+export type UpdateCountExpensesInput = {
+  description?: InputMaybe<Scalars['String']>;
+  id: Scalars['ID'];
+  name?: InputMaybe<Scalars['String']>;
+  nameBank?: InputMaybe<Scalars['String']>;
+  numberCount?: InputMaybe<Scalars['String']>;
+  status?: InputMaybe<StatusCountExpenses>;
+};
+
 export type UpdateCustomFieldInput = {
   fieldId?: InputMaybe<Scalars['String']>;
   id: Scalars['ID'];
@@ -2884,6 +3106,7 @@ export type UpdateExpensesInput = {
   autorizoById?: InputMaybe<Scalars['ID']>;
   canceldById?: InputMaybe<Scalars['ID']>;
   categoryId?: InputMaybe<Scalars['ID']>;
+  countId?: InputMaybe<Scalars['ID']>;
   description?: InputMaybe<Scalars['String']>;
   expenseDate?: InputMaybe<Scalars['DateTime']>;
   id: Scalars['ID'];
@@ -3250,6 +3473,29 @@ export type UpdateClientMutationVariables = Exact<{
 
 export type UpdateClientMutation = { __typename?: 'Mutation', updateClient: { __typename?: 'Client', id: string } };
 
+export type CreateCotizacionMutationVariables = Exact<{
+  createInput: CreateCotizacionInput;
+}>;
+
+
+export type CreateCotizacionMutation = { __typename?: 'Mutation', createCotizacion: { __typename?: 'Cotizacion', id: string } };
+
+export type UpdateCotizacionMutationVariables = Exact<{
+  updateInput: UpdateCotizacionInput;
+}>;
+
+
+export type UpdateCotizacionMutation = { __typename?: 'Mutation', updateCotizacion: { __typename?: 'Cotizacion', id: string } };
+
+export type CotizacionesQueryVariables = Exact<{
+  orderBy?: InputMaybe<Array<FindCotizacionOrderBy> | FindCotizacionOrderBy>;
+  where?: InputMaybe<FindCotizacionWhere>;
+  pagination?: InputMaybe<Pagination>;
+}>;
+
+
+export type CotizacionesQuery = { __typename?: 'Query', Cotizaciones: Array<{ __typename?: 'Cotizacion', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, invoiceNumber: string, description?: string | null, status: CotizacionStatusEmun, client: { __typename?: 'Client', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, identificationType?: UserDocumentTypes | null, lastName?: string | null, numberDocument?: string | null, email?: string | null, address?: string | null, celular: string }, cotizacionService?: Array<{ __typename?: 'CotizacionServiceE', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, quantity: number, unitPrice: number, subtotal: number, discount?: number | null, tax?: number | null, total: number, service: { __typename?: 'RepairType', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, status?: boolean | null, costEstimate?: number | null } }> | null, cotizacionProduct?: Array<{ __typename?: 'CotizacionProduct', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, quantity: number, unitPrice: number, subtotal: number, discount?: number | null, tax?: number | null, total: number, product: { __typename?: 'Products', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, description?: string | null, salePrice: number, minStock?: number | null, costPrice?: number | null, tax?: number | null, unitOfMeasure?: string | null, isActive: boolean, isShowPublic: boolean, expirationDate?: any | null, stock: { __typename?: 'StockProductView', id: string, entrada_producto: number, salida_producto: number, stock: number, name: string, isActive: boolean, description: string } } }> | null }>, CotizacionesCount: { __typename?: 'MetadataPagination', totalItems?: number | null, itemsPerPage?: number | null, totalPages?: number | null, currentPage?: number | null } };
+
 export type CreateCategoryExpenseMutationVariables = Exact<{
   createInput: CreateCategoryExpensesInput;
 }>;
@@ -3301,14 +3547,37 @@ export type ExpensesQueryVariables = Exact<{
 }>;
 
 
-export type ExpensesQuery = { __typename?: 'Query', Expenses: Array<{ __typename?: 'Expense', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, description: string, amount: number, expenseDate: any, invoiceNumber: string, isRecurring: boolean, nextDueDate?: any | null, paymentMethod: string, referenceNumber?: string | null, status: StatusExpenses, category: { __typename?: 'CategoryExpenses', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, description?: string | null, status: StatusCategoryExpenses }, createdBy: { __typename?: 'User', fullName: string, email: string, id: string, identificationNumber?: string | null }, autorizoBy?: { __typename?: 'User', fullName: string, email: string, id: string, identificationNumber?: string | null } | null, canceldBy?: { __typename?: 'User', fullName: string, email: string, id: string, identificationNumber?: string | null } | null }>, ExpensesCount: { __typename?: 'MetadataPagination', totalItems?: number | null, itemsPerPage?: number | null, totalPages?: number | null, currentPage?: number | null } };
+export type ExpensesQuery = { __typename?: 'Query', Expenses: Array<{ __typename?: 'Expense', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, description: string, amount: number, expenseDate: any, invoiceNumber: string, isRecurring: boolean, nextDueDate?: any | null, paymentMethod: string, referenceNumber?: string | null, status: StatusExpenses, category: { __typename?: 'CategoryExpenses', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, description?: string | null, status: StatusCategoryExpenses }, createdBy: { __typename?: 'User', fullName: string, email: string, id: string, identificationNumber?: string | null }, autorizoBy?: { __typename?: 'User', fullName: string, email: string, id: string, identificationNumber?: string | null } | null, count: { __typename?: 'CountExpenses', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, description?: string | null, numberCount?: string | null, nameBank?: string | null, status: StatusCountExpenses }, canceldBy?: { __typename?: 'User', fullName: string, email: string, id: string, identificationNumber?: string | null } | null }>, ExpensesCount: { __typename?: 'MetadataPagination', totalItems?: number | null, itemsPerPage?: number | null, totalPages?: number | null, currentPage?: number | null } };
 
 export type ExpenseQueryVariables = Exact<{
   expenseId: Scalars['ID'];
 }>;
 
 
-export type ExpenseQuery = { __typename?: 'Query', Expense: { __typename?: 'Expense', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, description: string, amount: number, expenseDate: any, invoiceNumber: string, isRecurring: boolean, nextDueDate?: any | null, paymentMethod: string, referenceNumber?: string | null, status: StatusExpenses, category: { __typename?: 'CategoryExpenses', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, description?: string | null, status: StatusCategoryExpenses }, createdBy: { __typename?: 'User', fullName: string, email: string, id: string, identificationNumber?: string | null }, autorizoBy?: { __typename?: 'User', fullName: string, email: string, id: string, identificationNumber?: string | null } | null, canceldBy?: { __typename?: 'User', fullName: string, email: string, id: string, identificationNumber?: string | null } | null } };
+export type ExpenseQuery = { __typename?: 'Query', Expense: { __typename?: 'Expense', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, description: string, amount: number, expenseDate: any, invoiceNumber: string, isRecurring: boolean, nextDueDate?: any | null, paymentMethod: string, referenceNumber?: string | null, status: StatusExpenses, category: { __typename?: 'CategoryExpenses', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, description?: string | null, status: StatusCategoryExpenses }, count: { __typename?: 'CountExpenses', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, description?: string | null, numberCount?: string | null, nameBank?: string | null, status: StatusCountExpenses }, createdBy: { __typename?: 'User', fullName: string, email: string, id: string, identificationNumber?: string | null }, autorizoBy?: { __typename?: 'User', fullName: string, email: string, id: string, identificationNumber?: string | null } | null, canceldBy?: { __typename?: 'User', fullName: string, email: string, id: string, identificationNumber?: string | null } | null } };
+
+export type CreateCountExpenseMutationVariables = Exact<{
+  createInput: CreateCountExpensesInput;
+}>;
+
+
+export type CreateCountExpenseMutation = { __typename?: 'Mutation', createCountExpense: { __typename?: 'CountExpenses', id: string } };
+
+export type UpdateCountExpenseMutationVariables = Exact<{
+  updateInput: UpdateCountExpensesInput;
+}>;
+
+
+export type UpdateCountExpenseMutation = { __typename?: 'Mutation', updateCountExpense: { __typename?: 'CountExpenses', id: string } };
+
+export type CountExpensesQueryVariables = Exact<{
+  orderBy?: InputMaybe<Array<FindCountExpensesOrderBy> | FindCountExpensesOrderBy>;
+  where?: InputMaybe<FindCountExpensesWhere>;
+  pagination?: InputMaybe<Pagination>;
+}>;
+
+
+export type CountExpensesQuery = { __typename?: 'Query', CountExpenses: Array<{ __typename?: 'CountExpenses', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, description?: string | null, numberCount?: string | null, nameBank?: string | null, status: StatusCountExpenses }>, CountExpensesCount: { __typename?: 'MetadataPagination', totalItems?: number | null, itemsPerPage?: number | null, totalPages?: number | null, currentPage?: number | null } };
 
 export type CreateInvoiceMutationVariables = Exact<{
   createInput: CreateInvoiceInput;
@@ -4003,6 +4272,192 @@ export function useUpdateClientMutation(baseOptions?: Apollo.MutationHookOptions
 export type UpdateClientMutationHookResult = ReturnType<typeof useUpdateClientMutation>;
 export type UpdateClientMutationResult = Apollo.MutationResult<UpdateClientMutation>;
 export type UpdateClientMutationOptions = Apollo.BaseMutationOptions<UpdateClientMutation, UpdateClientMutationVariables>;
+export const CreateCotizacionDocument = gql`
+    mutation CreateCotizacion($createInput: CreateCotizacionInput!) {
+  createCotizacion(createInput: $createInput) {
+    id
+  }
+}
+    `;
+export type CreateCotizacionMutationFn = Apollo.MutationFunction<CreateCotizacionMutation, CreateCotizacionMutationVariables>;
+
+/**
+ * __useCreateCotizacionMutation__
+ *
+ * To run a mutation, you first call `useCreateCotizacionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCotizacionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCotizacionMutation, { data, loading, error }] = useCreateCotizacionMutation({
+ *   variables: {
+ *      createInput: // value for 'createInput'
+ *   },
+ * });
+ */
+export function useCreateCotizacionMutation(baseOptions?: Apollo.MutationHookOptions<CreateCotizacionMutation, CreateCotizacionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateCotizacionMutation, CreateCotizacionMutationVariables>(CreateCotizacionDocument, options);
+      }
+export type CreateCotizacionMutationHookResult = ReturnType<typeof useCreateCotizacionMutation>;
+export type CreateCotizacionMutationResult = Apollo.MutationResult<CreateCotizacionMutation>;
+export type CreateCotizacionMutationOptions = Apollo.BaseMutationOptions<CreateCotizacionMutation, CreateCotizacionMutationVariables>;
+export const UpdateCotizacionDocument = gql`
+    mutation UpdateCotizacion($updateInput: UpdateCotizacionInput!) {
+  updateCotizacion(updateInput: $updateInput) {
+    id
+  }
+}
+    `;
+export type UpdateCotizacionMutationFn = Apollo.MutationFunction<UpdateCotizacionMutation, UpdateCotizacionMutationVariables>;
+
+/**
+ * __useUpdateCotizacionMutation__
+ *
+ * To run a mutation, you first call `useUpdateCotizacionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCotizacionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCotizacionMutation, { data, loading, error }] = useUpdateCotizacionMutation({
+ *   variables: {
+ *      updateInput: // value for 'updateInput'
+ *   },
+ * });
+ */
+export function useUpdateCotizacionMutation(baseOptions?: Apollo.MutationHookOptions<UpdateCotizacionMutation, UpdateCotizacionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateCotizacionMutation, UpdateCotizacionMutationVariables>(UpdateCotizacionDocument, options);
+      }
+export type UpdateCotizacionMutationHookResult = ReturnType<typeof useUpdateCotizacionMutation>;
+export type UpdateCotizacionMutationResult = Apollo.MutationResult<UpdateCotizacionMutation>;
+export type UpdateCotizacionMutationOptions = Apollo.BaseMutationOptions<UpdateCotizacionMutation, UpdateCotizacionMutationVariables>;
+export const CotizacionesDocument = gql`
+    query Cotizaciones($orderBy: [FindCotizacionOrderBy!], $where: FindCotizacionWhere, $pagination: Pagination) {
+  Cotizaciones(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    invoiceNumber
+    description
+    status
+    client {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      identificationType
+      lastName
+      numberDocument
+      email
+      address
+      celular
+    }
+    cotizacionService {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      quantity
+      unitPrice
+      subtotal
+      discount
+      tax
+      total
+      service {
+        id
+        createdAt
+        updatedAt
+        deletedAt
+        name
+        status
+        costEstimate
+      }
+    }
+    cotizacionProduct {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      quantity
+      unitPrice
+      subtotal
+      discount
+      tax
+      total
+      product {
+        id
+        createdAt
+        updatedAt
+        deletedAt
+        name
+        description
+        salePrice
+        minStock
+        costPrice
+        tax
+        unitOfMeasure
+        isActive
+        isShowPublic
+        expirationDate
+        stock {
+          id
+          entrada_producto
+          salida_producto
+          stock
+          name
+          isActive
+          description
+        }
+      }
+    }
+  }
+  CotizacionesCount(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    totalItems
+    itemsPerPage
+    totalPages
+    currentPage
+  }
+}
+    `;
+
+/**
+ * __useCotizacionesQuery__
+ *
+ * To run a query within a React component, call `useCotizacionesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCotizacionesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCotizacionesQuery({
+ *   variables: {
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *      pagination: // value for 'pagination'
+ *   },
+ * });
+ */
+export function useCotizacionesQuery(baseOptions?: Apollo.QueryHookOptions<CotizacionesQuery, CotizacionesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CotizacionesQuery, CotizacionesQueryVariables>(CotizacionesDocument, options);
+      }
+export function useCotizacionesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CotizacionesQuery, CotizacionesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CotizacionesQuery, CotizacionesQueryVariables>(CotizacionesDocument, options);
+        }
+export type CotizacionesQueryHookResult = ReturnType<typeof useCotizacionesQuery>;
+export type CotizacionesLazyQueryHookResult = ReturnType<typeof useCotizacionesLazyQuery>;
+export type CotizacionesQueryResult = Apollo.QueryResult<CotizacionesQuery, CotizacionesQueryVariables>;
 export const CreateCategoryExpenseDocument = gql`
     mutation CreateCategoryExpense($createInput: CreateCategoryExpensesInput!) {
   createCategoryExpense(createInput: $createInput) {
@@ -4275,6 +4730,17 @@ export const ExpensesDocument = gql`
       id
       identificationNumber
     }
+    count {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      description
+      numberCount
+      nameBank
+      status
+    }
     canceldBy {
       fullName
       email
@@ -4345,6 +4811,17 @@ export const ExpenseDocument = gql`
     paymentMethod
     referenceNumber
     status
+    count {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      description
+      numberCount
+      nameBank
+      status
+    }
     createdBy {
       fullName
       email
@@ -4394,6 +4871,123 @@ export function useExpenseLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Ex
 export type ExpenseQueryHookResult = ReturnType<typeof useExpenseQuery>;
 export type ExpenseLazyQueryHookResult = ReturnType<typeof useExpenseLazyQuery>;
 export type ExpenseQueryResult = Apollo.QueryResult<ExpenseQuery, ExpenseQueryVariables>;
+export const CreateCountExpenseDocument = gql`
+    mutation CreateCountExpense($createInput: CreateCountExpensesInput!) {
+  createCountExpense(createInput: $createInput) {
+    id
+  }
+}
+    `;
+export type CreateCountExpenseMutationFn = Apollo.MutationFunction<CreateCountExpenseMutation, CreateCountExpenseMutationVariables>;
+
+/**
+ * __useCreateCountExpenseMutation__
+ *
+ * To run a mutation, you first call `useCreateCountExpenseMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCountExpenseMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCountExpenseMutation, { data, loading, error }] = useCreateCountExpenseMutation({
+ *   variables: {
+ *      createInput: // value for 'createInput'
+ *   },
+ * });
+ */
+export function useCreateCountExpenseMutation(baseOptions?: Apollo.MutationHookOptions<CreateCountExpenseMutation, CreateCountExpenseMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateCountExpenseMutation, CreateCountExpenseMutationVariables>(CreateCountExpenseDocument, options);
+      }
+export type CreateCountExpenseMutationHookResult = ReturnType<typeof useCreateCountExpenseMutation>;
+export type CreateCountExpenseMutationResult = Apollo.MutationResult<CreateCountExpenseMutation>;
+export type CreateCountExpenseMutationOptions = Apollo.BaseMutationOptions<CreateCountExpenseMutation, CreateCountExpenseMutationVariables>;
+export const UpdateCountExpenseDocument = gql`
+    mutation UpdateCountExpense($updateInput: UpdateCountExpensesInput!) {
+  updateCountExpense(updateInput: $updateInput) {
+    id
+  }
+}
+    `;
+export type UpdateCountExpenseMutationFn = Apollo.MutationFunction<UpdateCountExpenseMutation, UpdateCountExpenseMutationVariables>;
+
+/**
+ * __useUpdateCountExpenseMutation__
+ *
+ * To run a mutation, you first call `useUpdateCountExpenseMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCountExpenseMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCountExpenseMutation, { data, loading, error }] = useUpdateCountExpenseMutation({
+ *   variables: {
+ *      updateInput: // value for 'updateInput'
+ *   },
+ * });
+ */
+export function useUpdateCountExpenseMutation(baseOptions?: Apollo.MutationHookOptions<UpdateCountExpenseMutation, UpdateCountExpenseMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateCountExpenseMutation, UpdateCountExpenseMutationVariables>(UpdateCountExpenseDocument, options);
+      }
+export type UpdateCountExpenseMutationHookResult = ReturnType<typeof useUpdateCountExpenseMutation>;
+export type UpdateCountExpenseMutationResult = Apollo.MutationResult<UpdateCountExpenseMutation>;
+export type UpdateCountExpenseMutationOptions = Apollo.BaseMutationOptions<UpdateCountExpenseMutation, UpdateCountExpenseMutationVariables>;
+export const CountExpensesDocument = gql`
+    query CountExpenses($orderBy: [FindCountExpensesOrderBy!], $where: FindCountExpensesWhere, $pagination: Pagination) {
+  CountExpenses(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    name
+    description
+    numberCount
+    nameBank
+    status
+  }
+  CountExpensesCount(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    totalItems
+    itemsPerPage
+    totalPages
+    currentPage
+  }
+}
+    `;
+
+/**
+ * __useCountExpensesQuery__
+ *
+ * To run a query within a React component, call `useCountExpensesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCountExpensesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCountExpensesQuery({
+ *   variables: {
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *      pagination: // value for 'pagination'
+ *   },
+ * });
+ */
+export function useCountExpensesQuery(baseOptions?: Apollo.QueryHookOptions<CountExpensesQuery, CountExpensesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CountExpensesQuery, CountExpensesQueryVariables>(CountExpensesDocument, options);
+      }
+export function useCountExpensesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CountExpensesQuery, CountExpensesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CountExpensesQuery, CountExpensesQueryVariables>(CountExpensesDocument, options);
+        }
+export type CountExpensesQueryHookResult = ReturnType<typeof useCountExpensesQuery>;
+export type CountExpensesLazyQueryHookResult = ReturnType<typeof useCountExpensesLazyQuery>;
+export type CountExpensesQueryResult = Apollo.QueryResult<CountExpensesQuery, CountExpensesQueryVariables>;
 export const CreateInvoiceDocument = gql`
     mutation CreateInvoice($createInput: CreateInvoiceInput!) {
   createInvoice(createInput: $createInput) {

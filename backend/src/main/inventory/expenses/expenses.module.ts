@@ -5,6 +5,7 @@ import { ExpensesService } from './services/expenses.service';
 import {  ExpensesResolver} from './resolvers/expenses.resolver';
 import { CategoryExpensesModule } from '../CategoryExpenses/category-expenses.module';
 import { UsersModule } from 'src/security/users/users.module';
+import { CountExpensesModule } from '../cuentasExpenses/count-expenses.module';
 
 
 @Module({
@@ -12,7 +13,8 @@ import { UsersModule } from 'src/security/users/users.module';
   imports:[
     TypeOrmModule.forFeature([Expense]),
     CategoryExpensesModule,
-    UsersModule
+    UsersModule,
+    CountExpensesModule
   ]
 })
 export class ExpensesModule {}

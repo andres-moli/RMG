@@ -1,14 +1,18 @@
-import { Invoice, ProductOutflow, StatusInvoice } from "../domain/graphql";
+import { Cotizacion, CotizacionStatusEmun } from "../domain/graphql";
 import dayjs from "dayjs";
 import 'dayjs/locale/es' 
 import { formatCurrency } from "./utils";
-export const dowlonadProductInoices = (invoiceData: ProductOutflow) => {
+export const dowloandCotizacion = (invoiceData: Cotizacion) => {
   dayjs.locale("es");
-
+  const calculateTotal = () => {
+    const totalProducto = invoiceData.cotizacionProduct?.reduce((total, item) => total + item.total, 0) || 0;
+    const totalServicio = invoiceData.cotizacionService?.reduce((total, item) => total + item.total, 0) || 0;
+    return totalProducto + totalServicio
+  };
   const htmlContent = `
     <html>
 <head>
-  <title>Recibo producto - ${invoiceData.invoiceNumber}</title>
+  <title>Cotización - ${invoiceData.invoiceNumber}</title>
   <style>
     @media print {
       body {
@@ -41,12 +45,39 @@ export const dowlonadProductInoices = (invoiceData: ProductOutflow) => {
         font-size: 16px;
         margin-top: 10px;
       }
+        .client-info {
+          font-family: Arial, sans-serif;
+          margin-bottom: 20px;
+        }
 
-      .client-info {
-        margin-top: 20px;
-        text-align: left;
-        font-size: 14px;
-      }
+        .client-info strong {
+          display: block; /* Título en una línea separada */
+          margin-bottom: 10px;
+          font-size: 16px;
+        }
+
+        .client-details {
+          display: flex; /* Alinea los elementos en horizontal */
+          flex-wrap: wrap; /* Permite que los elementos se envuelvan si no caben */
+          gap: 20px; /* Espacio entre los elementos */
+        }
+
+        .detail-item {
+          display: flex;
+          flex-direction: column; /* Coloca el label arriba y el dato abajo */
+        }
+
+        .detail-item label {
+          font-weight: bold; /* Hace el label en negrita */
+          margin-bottom: 5px; /* Espacio entre el label y el dato */
+          font-size: 14px;
+          color: #555; /* Color del texto del label */
+        }
+
+        .detail-item span {
+          font-size: 14px;
+          color: #333; /* Color del texto del dato */
+        }
 
       .invoice-body {
         margin-top: 5px;
@@ -102,7 +133,7 @@ export const dowlonadProductInoices = (invoiceData: ProductOutflow) => {
   </style>
 </head>
 <body>
-  ${invoiceData.status === StatusInvoice.Anulada ? '<div class="sello-anulado">RECIBO ANULADO</div>' : ''}
+  ${invoiceData.status === CotizacionStatusEmun.Cancelada ? '<div class="sello-anulado">CANCELADA</div>' : ''}
   
   <div class="invoice-container">
     <div class="company-header">
@@ -118,37 +149,67 @@ export const dowlonadProductInoices = (invoiceData: ProductOutflow) => {
     </div>
     
     <div class="invoice-header">
-      <strong>Número de Recibo:</strong> ${invoiceData.invoiceNumber}<br>
-      <strong>Método de pago:</strong> ${invoiceData.paymentMethod}<br>
+      <strong>Número de cotización:</strong> ${invoiceData.invoiceNumber}<br>
       <strong>Fecha:</strong> ${dayjs(invoiceData.createdAt).locale('es').format('YYYY-MMMM-DD HH:mm:ss')}
     </div>
     <div class="client-info">
       <strong>Datos del cliente:</strong>
-      <address>
-        ${invoiceData.client.name} ${invoiceData.client.lastName}<br>
-        ${invoiceData.client.numberDocument}<br>
-        ${invoiceData.client.address}<br>
-        ${invoiceData.client.email}
-      </address>
+      <div class="client-details">
+        <div class="detail-item">
+          <label>Nombre</label>
+          <span>${invoiceData.client.name} ${invoiceData.client.lastName}</span>
+        </div>
+        <div class="detail-item">
+          <label>Tipo de documento</label>
+          <span>${invoiceData.client.identificationType}</span>
+        </div>
+        <div class="detail-item">
+          <label>Documento</label>
+          <span>${invoiceData.client.numberDocument}</span>
+        </div>
+        <div class="detail-item">
+          <label>Dirección</label>
+          <span>${invoiceData.client.address}</span>
+        </div>
+        <div class="detail-item">
+          <label>Correo</label>
+          <span>${invoiceData.client.email}</span>
+        </div>
+      </div>
     </div>
     <div class="invoice-body">
       <table class="custom-table">
         <thead>
           <tr>
-            <th>Producto</th>
-            <th>Subtotal</th>
+            <th>Tipo</th>
+            <th>Producto o servicio</th>
             <th>Cantidad</th>
-            <th>Descuento</th>
+            <th>Precio und</th>
+            <th>Descuento (%)</th>
+            <th>Impuesto (%)</th>
             <th>Total</th>
           </tr>
         </thead>
         <tbody>
-          ${invoiceData.invoiceProducts.map(product => `
+          ${invoiceData.cotizacionProduct?.map(product => `
             <tr>
+              <td>Producto</td>
               <td>${product.product.name}</td>
-              <td>${formatCurrency(product.subtotal)}</td>
               <td>${product.quantity}</td>
-              <td>${formatCurrency(product.discount || 0)}</td>
+              <td>${formatCurrency(product.unitPrice)}</td>
+              <td>${product.discount}</td>
+              <td>${product.tax}</td>
+              <td>${formatCurrency(product.total || 0)}</td>
+            </tr>
+          `).join("")}
+          ${invoiceData.cotizacionService?.map(product => `
+            <tr>
+              <td>Servicio</td>
+              <td>${product.service.name}</td>
+              <td>${product.quantity}</td>
+              <td>${formatCurrency(product.unitPrice)}</td>
+              <td>${product.discount}</td>
+              <td>${product.tax}</td>
               <td>${formatCurrency(product.total || 0)}</td>
             </tr>
           `).join("")}
@@ -157,13 +218,15 @@ export const dowlonadProductInoices = (invoiceData: ProductOutflow) => {
             <td></td>
             <td></td>
             <td></td>
-            <td><strong>${formatCurrency(invoiceData.invoiceProducts?.reduce((total, product) => total + product.total, 0) || 0)}</strong></td>
+            <td></td>
+            <td></td>
+            <td><strong>${formatCurrency(calculateTotal())}</strong></td>
           </tr>
         </tbody>
       </table>
     </div>
     <div class="invoice-footer">
-      Gracias por su compra, fue un placer atenderlo.
+      <strong>Nota: </strong>${invoiceData.description}
     </div>
     <div class="invoice-footer">
       Generado a las ${dayjs().format("HH:mm")} del día ${dayjs().format("DD")} de ${dayjs().locale('es').format("MMMM")} de ${dayjs().format("YYYY")}.

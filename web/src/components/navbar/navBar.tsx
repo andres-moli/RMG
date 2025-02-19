@@ -1,4 +1,18 @@
+import Cookies from 'js-cookie'
+import { User } from '../../domain/graphql';
+const stringToJsonUser = (stringUser: string | undefined): Partial<User> | undefined => {
+  try {
+    if(!stringUser) return undefined
+    const result = JSON.parse(stringUser);
+    return result as User
+  }catch {
+    return undefined
+  }
+}
 const NavBar = () => {
+  const stringUser = Cookies.get(import.meta.env.VITE_APP_KEY_COOKIE_USER);
+  const user = stringToJsonUser(stringUser)
+
   return (
     <nav className="bg-[#007BFF] border-b border-gray-200 p-4 flex justify-between items-center shadow-sm w-full fixed top-0 left-0 z-10">
       <div className="flex items-center space-x-3 bg-blue">
@@ -32,14 +46,14 @@ const NavBar = () => {
           </svg>
         </button>
         <div className="flex items-center space-x-2">
+          <div className="hidden md:block">
+            <p className="text-white text-2.5xl font-bold transform">{user?.fullName?.toLocaleUpperCase()}</p>
+          </div>
           {/* <img
             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSf8LZk98dkqzBdcXuQ4OhFcAg4Oiv6Gye9DQ&s"
             alt="User"
             className="w-10 h-10 rounded-full"
           /> */}
-          <div className="hidden md:block">
-            {/* <p className="text-gray-900 bold">Username</p> */}
-          </div>
         </div>
       </div>
     </nav>

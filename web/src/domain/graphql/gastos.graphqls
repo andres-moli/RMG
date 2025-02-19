@@ -100,6 +100,17 @@ query Expenses($orderBy: [FindExpensesOrderBy!], $where: FindExpensesWhere, $pag
       id
       identificationNumber
     }
+        count {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      description
+      numberCount
+      nameBank
+      status
+    }
     canceldBy {
       fullName
       email
@@ -139,6 +150,17 @@ query Expense($expenseId: ID!) {
     paymentMethod
     referenceNumber
     status
+    count {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      description
+      numberCount
+      nameBank
+      status
+    }
     createdBy {
       fullName
       email
@@ -157,5 +179,34 @@ query Expense($expenseId: ID!) {
       id
       identificationNumber
     }
+  }
+}
+mutation CreateCountExpense($createInput: CreateCountExpensesInput!) {
+  createCountExpense(createInput: $createInput) {
+    id
+  }
+}
+mutation UpdateCountExpense($updateInput: UpdateCountExpensesInput!) {
+  updateCountExpense(updateInput: $updateInput) {
+    id
+  }
+}
+query CountExpenses($orderBy: [FindCountExpensesOrderBy!], $where: FindCountExpensesWhere, $pagination: Pagination) {
+  CountExpenses(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    name
+    description
+    numberCount
+    nameBank
+    status
+  }
+  CountExpensesCount(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    totalItems
+    itemsPerPage
+    totalPages
+    currentPage
   }
 }

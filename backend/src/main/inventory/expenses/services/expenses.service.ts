@@ -13,6 +13,7 @@ import { User } from 'src/security/users/entities/user.entity';
 import { StatusExpenses } from '../emun/expenses.emun';
 import { UsersService } from 'src/security/users/services/users.service';
 import { formatCurrency } from 'src/common/functions';
+import { CountExpensesService } from '../../cuentasExpenses/services/category-count.service';
 
 export const serviceStructure = CrudServiceStructure({
   entityType: Expense,
@@ -26,29 +27,20 @@ export class ExpensesService extends CrudServiceFrom(serviceStructure) {
   constructor(
     // private readonly companyService: CompanyService,
     private readonly categoryExpensesService: CategoryExpensesService,
-    private readonly usersService: UsersService
+    private readonly usersService: UsersService,
+    private readonly countService: CountExpensesService
   ){ super(); }
   async beforeCreate(context: IContext, repository: Repository<Expense>, entity: Expense, createInput: CreateExpensesInput): Promise<void> {
     entity.createdBy = context.user as User
     entity.category = await this.categoryExpensesService.findOne(context,createInput.categoryId,true);
+    entity.count = await this.countService.findOne(context,createInput.countId,true)
     // entity.company = await this.companyService.findOne(context,createInput.companyId,true);
     entity.invoiceNumber = await this.generateInvoiceNumber(repository,createInput);
     entity.status = StatusExpenses.PAGADA
   }
 
   async createExpensesWoker(context: IContext, input: CreateExpensesWorkerInput){
-    const woker = await this.usersService.findOne(context, input.workerId,true);
-    const category = await this.categoryExpensesService.findOneCategoryDefualt(context, 'PAGO DE PERSONAL',true);
-    const create = await this.create(context, {
-      amount: input.amount,
-      categoryId: category.id,
-      // companyId: input.companyId,
-      description: `PAGO AUTOMATICO PARA ${woker.name + woker.lastName } POR VALOR DE ${formatCurrency(input.amount)}`,
-      paymentMethod: input.paymentMethod,
-      expenseDate: new Date(),
-      status: StatusExpenses.PAGADA
-    })
-    return create
+
   }
 
   async generateInvoiceNumber(repository: Repository<Expense>, createInput: CreateExpensesInput) {

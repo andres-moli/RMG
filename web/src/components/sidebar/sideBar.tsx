@@ -1,158 +1,111 @@
-import { BiLogOut, BiSolidCategory } from "react-icons/bi";
-import { FaHome, FaStore, FaBox, FaTags, FaClipboardList, FaUser, FaUsers, FaPlusSquare, FaCashRegister } from "react-icons/fa";
+import { useState } from "react";
+import { BiLogOut, BiSolidBank, BiSolidCategory } from "react-icons/bi";
+import { FaHome, FaUser, FaUsers, FaPlusSquare, FaCashRegister, FaSearch } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
-import { FaMapLocation } from "react-icons/fa6";
-import { FiMapPin, FiPlusSquare } from "react-icons/fi";
-import { BsFillPinMapFill, BsTools } from "react-icons/bs";
-import { PiMapPinLineFill } from "react-icons/pi";
-import { GrDocumentText, GrServices, GrUserSettings } from "react-icons/gr";
-import { MdAssignmentReturn, MdMiscellaneousServices } from "react-icons/md";
-import { CiShoppingCart } from "react-icons/ci";
-import { IoBarChartSharp, IoDocumentText } from "react-icons/io5";
+import { BsTools } from "react-icons/bs";
+import { MdMiscellaneousServices } from "react-icons/md";
+import { IoBarChartSharp, IoClose, IoDocumentText, IoPricetagsSharp } from "react-icons/io5";
 import { RiShoppingBag3Fill } from "react-icons/ri";
 
 const SideBar = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const [search, setSearch] = useState("");
+
   const onLogout = () => {
-    Cookies.remove(import.meta.env.VITE_APP_KEY_COOKIE_SESSION)
-    navigate('/login')
-  }
+    Cookies.remove(import.meta.env.VITE_APP_KEY_COOKIE_SESSION);
+    navigate('/login');
+  };
+
+  const menuGroups = [
+    {
+      title: "General",
+      items: [
+        { label: "Dashboard", icon: <FaHome className="w-5 h-5 text-gray-500 mr-3" />, path: "/" },
+        { label: "Reportes", icon: <IoBarChartSharp className="w-5 h-5 text-gray-500 mr-3" />, path: "/report" },
+      ],
+    },
+    {
+      title: "Gestión",
+      items: [
+        { label: "Reparaciones", icon: <BsTools className="w-5 h-5 text-gray-500 mr-3" />, path: "/repair" },
+        { label: "Crear reparación", icon: <FaPlusSquare className="w-5 h-5 text-gray-500 mr-3" />, path: "/create-repair" },
+        { label: "Servicios", icon: <MdMiscellaneousServices className="w-5 h-5 text-gray-500 mr-3" />, path: "/service" },
+      ],
+    },
+    {
+      title: "Usuarios",
+      items: [
+        { label: "Clientes", icon: <FaUsers className="w-5 h-5 text-gray-500 mr-3" />, path: "/client" },
+        { label: "Usuarios", icon: <FaUser className="w-5 h-5 text-gray-500 mr-3" />, path: "/user" },
+      ],
+    },
+    {
+      title: "Mis Productos",
+      items: [
+        { label: "Mis Productos", icon: <RiShoppingBag3Fill />, path: "/product" },
+        { label: "Entrada de producto", icon: <IoPricetagsSharp className="w-5 h-5 text-gray-500 mr-3" />, path: "/product-entry" },
+        { label: "Recibo de pago producto", icon: <FaCashRegister className="w-5 h-5 text-gray-500 mr-3" />, path: "/out-products" },
+      ],
+    },
+    {
+      title: "Egresos",
+      items: [
+        { label: "Mis Egresos", icon: <RiShoppingBag3Fill className="w-5 h-5 text-gray-500 mr-3" />, path: "/expenses" },
+        { label: "Categoría de Egresos", icon: <BiSolidCategory className="w-5 h-5 text-gray-500 mr-3" />, path: "/expenses-category" },
+        { label: "Cuentas", icon: <BiSolidBank className="w-5 h-5 text-gray-500 mr-3" />, path: "/expenses-accounts" },
+      ],
+    },
+    {
+      title: "Cotizaciones",
+      items: [
+        { label: "Cotizaciones", icon: <IoDocumentText className="w-5 h-5 text-gray-500 mr-3" />, path: "/quotations" },
+      ],
+    },
+  ];
+
   return (
     <aside className="fixed top-16 left-0 h-[calc(100%-4rem)] w-64 bg-white border-r border-gray-200 shadow-sm overflow-y-auto">
       <div className="p-6">
-        <h2 className="text-xs font-bold text-gray-800">INICIO</h2>
-        <ul className="mt-4 space-y-2">
-          <li>
-            <a
-              href="/"
-              className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
-            >
-              <FaHome className="w-5 h-5 text-gray-500 mr-3" />
-              Dashboard
-            </a>
-          </li>
-        </ul>
-        <h2 className="mt-6 text-xs font-bold text-gray-800">REPARACIONES</h2>
-        <ul className="mt-4 space-y-2">
-          <li>
-            <a
-              href="/repair"
-              className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
-            >
-              <BsTools className="w-5 h-5 text-gray-500 mr-3" />
-              reparaciones
-            </a>
-          </li>
-          <li>
-            <a
-              href="/create-repair"
-              className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
-            >
-              <FaPlusSquare  className="w-5 h-5 text-gray-500 mr-3" />
-              Crear reparación
-            </a>
-          </li>
-          <li>
-            <a
-              href="/service"
-              className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
-            >
-              <MdMiscellaneousServices   className="w-5 h-5 text-gray-500 mr-3" />
-              Servicios
-            </a>
-          </li>
-        </ul>
-        <h2 className="mt-6 text-xs font-bold text-gray-800">USUARIOS</h2>
-        <ul className="mt-4 space-y-2">
-          <li>
-            <a
-              href="/client"
-              className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
-            >
-              <FaUsers  className="w-5 h-5 text-gray-500 mr-3" />
-              Clientes
-            </a>
-          </li>
-          <li>
-            <a
-              href="/user"
-              className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
-            >
-              <FaUser  className="w-5 h-5 text-gray-500 mr-3" />
-              Usuarios
-            </a>
-          </li>
-        </ul>
-        <h2 className="mt-6 text-xs font-bold text-gray-800">PRODUCTOS </h2>
-        <ul className="mt-4 space-y-2">
-          <li>
-            <a
-              href="/product"
-              className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
-            >
-              <RiShoppingBag3Fill  className="w-5 h-5 text-gray-500 mr-3" />
-              Mis Productos
-            </a>
-          </li>
-          <li>
-            <a
-              href="/entry-products"
-              className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
-            >
-              <MdAssignmentReturn   className="w-5 h-5 text-gray-500 mr-3" />
-              Entrada de producto
-            </a>
-          </li>
-          <li>
-            <a
-              href="/out-products"
-              className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
-            >
-              <IoDocumentText       className="w-5 h-5 text-gray-500 mr-3" />
-              Recibo de pago producto
-            </a>
-          </li>
-        </ul>
-        <h2 className="mt-6 text-xs font-bold text-gray-800">EGRESOS </h2>
-        <ul className="mt-4 space-y-2">
-          <li>
-            <a
-              href="/expenses"
-              className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
-            >
-              <FaCashRegister   className="w-5 h-5 text-gray-500 mr-3" />
-              Mis Egresos
-            </a>
-          </li>
-          <li>
-            <a
-              href="/expenses-category"
-              className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
-            >
-              <BiSolidCategory    className="w-5 h-5 text-gray-500 mr-3" />
-              Categoria
-            </a>
-          </li>
-        </ul>
-        <h2 className="mt-6 text-xs font-bold text-gray-800">REPORTES </h2>
-        <ul className="mt-4 space-y-2">
-          <li>
-            <a
-              href="/report"
-              className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
-            >
-              <IoBarChartSharp  className="w-5 h-5 text-gray-500 mr-3" />
-              Reportes
-            </a>
-          </li>
-        </ul>
-        <h2 className="mt-6 text-xs font-bold text-gray-800">LOUGUT</h2>
+      <div className="relative mb-4">
+          <FaSearch className="absolute left-3 top-3 text-gray-500" />
+          <input
+            type="text"
+            placeholder="Buscar..."
+            className="w-full p-2 pl-10 border border-gray-300 rounded-lg"
+            value={search}
+            onChange={(e) => setSearch(e.target.value.toLowerCase())}
+          />
+          {search && (
+            <IoClose 
+              className="absolute right-3 top-3 text-gray-500 cursor-pointer" 
+              onClick={() => setSearch("")} 
+            />
+          )}
+        </div>
+        {menuGroups.map((group, index) => {
+          const filteredItems = group.items.filter((item) => item.label.toLowerCase().includes(search));
+          if (filteredItems.length === 0) return ;
+          return (
+            <div key={index} className="mt-4">
+              <h2 className="text-xs font-bold text-gray-800 mb-2">{group.title}</h2>
+              <ul className="space-y-2">
+                {filteredItems.map((item, i) => (
+                  <li key={i}>
+                    <a href={item.path} className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
+                      {item.icon}
+                      {item.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );
+        })}
+        <h2 className="mt-6 text-xs font-bold text-gray-800">LOGOUT</h2>
         <ul className="mt-4 space-y-2">
           <li onClick={onLogout}>
-            <a
-              className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer"
-            >
+            <a className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer">
               <BiLogOut className="w-5 h-5 text-gray-500 mr-3" />
               Cerrar sesión
             </a>
