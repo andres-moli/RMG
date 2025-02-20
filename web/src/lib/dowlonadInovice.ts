@@ -131,14 +131,14 @@ ${invoiceData.status == StatusInvoice.Anulada ? '<div class="sello-anulado">RECI
         </tr>
       </thead>
       <tbody>
-        <tr class="tr-hr">
+        <tr>
           <td>${invoiceData.orrderReapirty.repairType.name}</td>
           <td>${formatCurrency(invoiceData.orrderReapirty.repairType.costEstimate || 0)}</td>
           <td>${formatCurrency(invoiceData.discount|| 0)}</td>
           <td>${1}</td>
           <td>${formatCurrency(invoiceData.total || 0)}</td>
         </tr>
-        <tr class="tr-hr">
+        <tr>
           <td><strong>Total a pagar<strong></td>
           <td></td>
           <td></td>

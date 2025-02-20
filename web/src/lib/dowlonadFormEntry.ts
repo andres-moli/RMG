@@ -10,270 +10,160 @@ export const downloadFromEntry = (repair: OrderRepairty) => {
     let fieldContent = "";
 
     switch (fieldValue.field.type) {
-      case FieldTypeEnum.Text:
-        fieldContent = `<p class="field-value">${fieldValue.valorTexto || "N/A"}</p>`;
-        break;
-      case FieldTypeEnum.Selector:
-        fieldContent = `<p class="field-value">${fieldValue.valorSeletor || "N/A"}</p>`;
-        break;
-
-      case FieldTypeEnum.Number:
-        fieldContent = `<p class="field-value">${fieldValue.valorNumerico !== null ? fieldValue.valorNumerico : "N/A"}</p>`;
-        break;
-
-      case FieldTypeEnum.Date:
-        fieldContent = `<p class="field-value">${fieldValue.valorFecha ? dayjs(fieldValue.valorFecha).format("DD/MM/YYYY") : "N/A"}</p>`;
-        break;
-
-      case FieldTypeEnum.LongText:
-        fieldContent = `<p class="field-value long-text">${fieldValue.valorTextoLargo || "N/A"}</p>`;
-        break;
-
-      case FieldTypeEnum.Image:
-        if (fieldValue.valorFoto && fieldValue.valorFoto.url) {
-          fieldContent = `<img src="${fieldValue.valorFoto.url}" alt="Imagen" class="field-image">`;
-        } else {
-          fieldContent = "<p class='field-value'>N/A</p>";
-        }
-        break;
-
-      default:
-        fieldContent = "<p class='field-value'>N/A</p>";
+        case FieldTypeEnum.Text:
+            fieldContent = `<span>${fieldValue.valorTexto || "N/A"}</span>`;
+            break;
+        case FieldTypeEnum.Selector:
+            fieldContent = `<span>${fieldValue.valorSeletor || "N/A"}</span>`;
+            break;
+        case FieldTypeEnum.Number:
+            fieldContent = `<span>${fieldValue.valorNumerico !== null ? fieldValue.valorNumerico : "N/A"}</span>`;
+            break;
+        case FieldTypeEnum.Date:
+            fieldContent = `<span>${fieldValue.valorFecha ? dayjs(fieldValue.valorFecha).format("DD/MM/YYYY") : "N/A"}</span>`;
+            break;
+        case FieldTypeEnum.LongText:
+            fieldContent = `<span class="long-text">${fieldValue.valorTextoLargo || "N/A"}</span>`;
+            break;
+        case FieldTypeEnum.Image:
+            fieldContent = fieldValue.valorFoto?.url ? `<img src="${fieldValue.valorFoto.url}" alt="Imagen">` : "<span>N/A</span>";
+            break;
+        default:
+            fieldContent = "<span>N/A</span>";
     }
 
     return `
-      <div class="field-container">
-        <label>${fieldName}:</label>
-        ${fieldContent}
-      </div>
+        <div class="field">
+            <label>${fieldName}:</label>
+            ${fieldContent}
+        </div>
     `;
-  }).join("");
+}).join("");
 
-  // Construcción del HTML
-  const htmlContent = `
-    <html>
-    <head>
-      <title>${repair.client.name + ' ' + repair.client.lastName+ ' ' + repair.client.celular  }</title>
-      <style>
+const htmlContent = `
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>${repair.client.name} ${repair.client.lastName} ${repair.client.celular}</title>
+    <style>
         body {
-          margin: 0;
-          padding: 0;
-          display: flex;
-          justify-content: center;
-          align-items: flex-start;
-          background: #f5f6fa;
-          color: #2e323c;
-          height: 100vh;
-          font-family: Arial, sans-serif;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 10px;
+            background: #f5f6fa;
+            color: #2e323c;
         }
-        .invoice-container {
-          max-width: 800px;
-          width: 100%;
-          background: #ffffff;
-          padding: 2rem;
-          box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-          border-radius: 8px;
-          border: 2px solid #007ae1;
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
         }
-        .invoice-header, .invoice-footer {
-          text-align: center;
-          margin-bottom: 20px;
-        }
-        .invoice-logo {
-          font-size: 1.6rem;
-          font-weight: 700;
-        }
-        .invoice-details {
-          background: #f5f6fa;
-          padding: 1rem;
-          margin-bottom: 20px;
-          border-radius: 5px;
-          border: 1px solid #dcdde1;
-        }
-        .field-container {
-          display: flex;
-          flex-direction: column;
-          padding: 10px;
-          border: 1px solid #007ae1;
-          margin-bottom: 10px;
-          border-radius: 5px;
-          background: #f9f9f9;
-        }
-        .field-container label {
-          font-weight: bold;
-          background: #007ae1;
-          color: white;
-          padding: 5px;
-          border-radius: 3px;
-        }
-        .field-value {
+        .company-info {
+            text-align: center;
+                  font-size: 14px;
           margin-top: 5px;
-          padding: 5px;
-          background: white;
-          border-radius: 3px;
+        }
+        .company-info img {
+           width: 150px;
+        }
+        .client-info {
+          text-align: left;
+          font-size: 14px;
+          width: 45%; /* Ancho para los datos del cliente */
+        }
+        .repair-info {
+          text-align: right;
+          font-size: 14px;
+          width: 45%; /* Ancho para los datos de la reparación */
+        }
+        .fields {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 5px;
+            margin-top: 10px;
+        }
+        .field {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+        .field label {
+            font-weight: bold;
         }
         .long-text {
-          max-width: 100%;
-          font-size: 12px;
+            font-size: 12px;
         }
-        .field-image {
-          max-width: 100%;
-          height: auto;
-          display: block;
-          margin-top: 5px;
-          border-radius: 5px;
-          border: 1px solid #ccc;
+        img {
+            max-width: 100%;
+            height: auto;
         }
         .sello-anulado {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%) rotate(-45deg);
-          font-size: 5rem;
-          color: rgba(255, 0, 0, 0.5);
-          font-weight: bold;
-          text-transform: uppercase;
-          pointer-events: none;
-          white-space: nowrap;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 5rem;
+            color: rgba(255, 0, 0, 0.5);
+            font-weight: bold;
+            text-transform: uppercase;
+            pointer-events: none;
+            white-space: nowrap;
         }
-        @media print {
-        body {
-          margin: 0;
-          padding: 0;
-          display: flex;
-          justify-content: center;
-          align-items: flex-start;
-          background: #f5f6fa;
-          color: #2e323c;
-          height: 100vh;
-          font-family: Arial, sans-serif;
+        .footer {
+            text-align: center;
+            margin-top: 20px;
         }
-        .invoice-container {
-          max-width: 800px;
-          width: 100%;
-          background: #ffffff;
-          padding: 2rem;
-          box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-          border-radius: 8px;
-          border: 2px solid #007ae1;
-        }
-        .invoice-header, .invoice-footer {
-          text-align: center;
-          margin-bottom: 20px;
-        }
-        .invoice-logo {
-          font-size: 1.6rem;
-          font-weight: 700;
-        }
-        .invoice-details {
-          background: #f5f6fa;
-          padding: 1rem;
-          margin-bottom: 20px;
-          border-radius: 5px;
-          border: 1px solid #dcdde1;
-        }
-        .field-container {
-          display: flex;
-          flex-direction: column;
-          padding: 10px;
-          border: 1px solid #007ae1;
-          margin-bottom: 10px;
-          border-radius: 5px;
-          background: #f9f9f9;
-        }
-        .field-container label {
-          font-weight: bold;
-          background: #007ae1;
-          color: white;
-          padding: 5px;
-          border-radius: 3px;
-        }
-        .field-value {
-          margin-top: 5px;
-          padding: 5px;
-          background: white;
-          border-radius: 3px;
-        }
-        .long-text {
-          max-width: 100%;
-          font-size: 12px;
-        }
-        .field-image {
-          max-width: 100%;
-          height: auto;
-          display: block;
-          margin-top: 5px;
-          border-radius: 5px;
-          border: 1px solid #ccc;
-        }
-        .sello-anulado {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%) rotate(-45deg);
-          font-size: 5rem;
-          color: rgba(255, 0, 0, 0.5);
-          font-weight: bold;
-          text-transform: uppercase;
-          pointer-events: none;
-          white-space: nowrap;
-        }
-        }
-      </style>
-    </head>
-    <body>
-      ${repair.status == OrderStatusEnum.Canceled ? '<div class="sello-anulado">RECIBO ANULADO</div>' : ''}
-
-      <div class="invoice-container">
-        <div class="invoice-header">
-          <div class="invoice-logo">
-            <img src="/logo3.png" alt="Image" width="200" height="100">
-          </div>
-          <address>
-            Calle 42 #33-26, Barranquilla <br>
-            3006734018
-          </address>
+    </style>
+</head>
+<body>
+    ${repair.status == OrderStatusEnum.Canceled ? '<div class="sello-anulado">RECIBO ANULADO</div>' : ''}
+    
+    <div class="header">
+        <div class="client-info">
+            <strong>Datos del cliente:</strong>
+            <address>
+                ${repair.client.name} ${repair.client.lastName}<br>
+                ${repair.client.numberDocument}<br>
+                ${repair.client.address}<br>
+                ${repair.client.email}
+            </address>
         </div>
-
-        <div class="invoice-details">
-          <strong>Datos del cliente:</strong>
-          <address>
-            ${repair.client.name} ${repair.client.lastName}<br>
-            ${repair.client.numberDocument}<br>
-            ${repair.client.address}<br>
-            ${repair.client.email}
-          </address>
+        <div class="company-info">
+            <img src="/logo3.png" alt="Logo">
+            <address>
+                Calle 42 #33-26, Barranquilla<br>
+                3006734018
+            </address>
         </div>
-
-        <div class="invoice-details">
-          <div class="invoice-num">
+        <div class="repair-info">
             <strong>Tipo de servicio:</strong> ${repair.repairType.name}<br>
             <strong>Fecha:</strong> ${dayjs(repair.createdAt).locale('es').format('YYYY-MMMM-DD HH:mm:ss')}
-          </div>
         </div>
-
-        <div class="fields-section">
-          ${fieldValuesHtml}
-        </div>
-
-        <div class="invoice-footer">
-          Gracias por su confianza en nosotros, fue un placer atenderlo.
-        </div>
-        <div class="invoice-footer">
-          Generado a las ${dayjs().format("HH:mm")} del día ${dayjs().format("DD")} de ${dayjs().locale('es').format("MMMM")} de ${dayjs().format("YYYY")}.
-        </div>
-      </div>
-
-      <script>
-        window.onload = function () {
-          setTimeout(() => {
-            window.print();
-          }, 500);
+    </div>
+    
+    <div class="fields">
+        ${fieldValuesHtml}
+    </div>
+    
+    <div class="footer">
+       <!--  Gracias por su confianza en nosotros, fue un placer atenderlo.<br> -->
+        Generado a las ${dayjs().format("HH:mm")} del día ${dayjs().format("DD")} de ${dayjs().locale('es').format("MMMM")} de ${dayjs().format("YYYY")}.
+    </div>
+    
+    <script>
+        window.onload = function() {
+            setTimeout(() => {
+                window.print();
+            }, 500);
         };
-      </script>
-    </body>
-    </html>
-  `;
+    </script>
+</body>
+</html>
+`;
 
   // Abrir nueva pestaña
   const newTab = window.open("", "_blank");
