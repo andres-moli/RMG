@@ -16,6 +16,8 @@ import { dowlonadProductInoices } from '../../../lib/dowlonadProductInoices';
 import EditModalProductsOut from '../../modals/modal-products-out/modal-edit-prodctus';
 import { handleSendEmail } from '../../../lib/sendMail';
 import { MdMarkEmailUnread } from 'react-icons/md';
+import { IoLogoWhatsapp } from 'react-icons/io5';
+import { handleSendWhastapp } from '../../../lib/sendWhastapp';
 
 const ProductOutTable: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -177,6 +179,13 @@ const ProductOutTable: React.FC = () => {
                     <MdMarkEmailUnread />
                     :
                     <BiMailSend  className="w-5 h-8 text-gray-500 mr-3 cursor-pointer" onClick={()=> handleSendEmail(product.client.email || '', product, 'RECIBO_PAGO_PRODUCTO_SERVICIO',setLoadingEmail)}/>
+                  }
+                   {
+                    loadginEmial
+                    ?
+                    <IoLogoWhatsapp />
+                    :
+                    <IoLogoWhatsapp   className="w-5 h-8 text-gray-500 mr-3 cursor-pointer" onClick={()=> handleSendWhastapp(product.client.celular || '', product, 'RECIBO_PAGO_PRODUCTO_SERVICIO',setLoadingEmail)}/>
                   }
                 </td>
                 {

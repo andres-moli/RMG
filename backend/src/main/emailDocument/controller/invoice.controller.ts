@@ -3,13 +3,15 @@ import { Response } from 'express';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { EmailDocumentServicePdf, TYPE_EMAIL_DOCUMETN } from '../service/emailDocument.service';
 import { MailService } from 'src/general/email/service/email.service';
+import { WhatsAppService } from 'src/general/whastapp/whastapp.service';
 
 @ApiTags('emailDocument')
 @Controller('emailDocument')
 export class EmailDocumentController {
   constructor(
     private emailDocumentSevice: EmailDocumentServicePdf,
-    private emailService: MailService
+    private emailService: MailService,
+    private readonly whatsAppService: WhatsAppService
   ) {}
 
   @Post('generate-pdf/:type')
@@ -49,5 +51,21 @@ export class EmailDocumentController {
     );
 
     return { message: 'Correo enviado exitosamente' };
+  }
+  @Post('send-whastapp/:type/:number/:message')
+  @ApiBody({ type: Object })
+  async sendWhastappWithPdf(
+    @Body() data: any,
+    @Param('type') type: TYPE_EMAIL_DOCUMETN,
+    @Param('number') number: string,
+    @Param('message') message: string,
+  ) {
+    // Genera el PDF
+    const pdfBuffer = await this.emailDocumentSevice.generateInvoicePdf(data, type);
+
+    // Envía el correo con el PDF adjunto
+    await this.whatsAppService.sendMessageWithPdf('57'+number, pdfBuffer.pdfBuffer, `${pdfBuffer.title}.pdf`,message == 'NA' ? undefined : message);
+
+    return { message: 'whastapp enviado exitosamente' };
   }
 }

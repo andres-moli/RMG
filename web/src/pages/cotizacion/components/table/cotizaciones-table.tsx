@@ -3,12 +3,14 @@ import { Cotizacion, MetadataPagination, OrderTypes, useCotizacionesQuery } from
 import TableSkeleton from '../../../../components/esqueleto/table';
 import Card from '../../../../components/cards/Card';
 import { PaginationTable } from '../../../../components/table/PaginationTable';
-import { BsEye } from 'react-icons/bs';
+import { BsEye, BsWhatsapp } from 'react-icons/bs';
 import { BiDownload, BiMailSend, BiShare } from 'react-icons/bi';
 import UpdateModalCotizacionOut from '../modals/update-cotizacion';
 import { dowloandCotizacion } from '../../../../lib/dowloandCotizacion';
 import { MdMarkEmailUnread } from 'react-icons/md';
 import { handleSendEmail } from '../../../../lib/sendMail';
+import { handleSendWhastapp } from '../../../../lib/sendWhastapp';
+import { IoLogoWhatsapp } from 'react-icons/io5';
 
 
 const CotizacionesTable: React.FC = () => {
@@ -152,6 +154,13 @@ const CotizacionesTable: React.FC = () => {
                     <MdMarkEmailUnread />
                     :
                     <BiMailSend  className="w-5 h-8 text-gray-500 mr-3 cursor-pointer" onClick={()=> handleSendEmail(cotizacion.client.email || '', cotizacion, 'COTIZACION',setLoadingEmail)}/>
+                  }
+                  {
+                    loadginEmial
+                    ?
+                    <IoLogoWhatsapp />
+                    :
+                    <BsWhatsapp  className="w-5 h-8 text-gray-500 mr-3 cursor-pointer" onClick={()=> handleSendWhastapp(cotizacion.client.celular || '', cotizacion, 'COTIZACION',setLoadingEmail)}/>
                   }
                 </td>
               </tr>
