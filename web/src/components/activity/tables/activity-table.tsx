@@ -345,7 +345,7 @@ const ActivityTable = () => {
                         <td>
                         <GrDocumentDownload className="w-5 h-8 text-gray-500 mr-3 cursor-pointer" title="Descargar archivo de entrega" onClick={()=> downloadFromEntry(repair)}/>
                         </td>
-                        {
+                        {/* {
                           repair.invoice &&(
                             <td>
                             <FaCashRegister className="w-5 h-8 text-gray-500 mr-3 cursor-pointer" title="Ver recibo de pago" onClick={()=> downloadAndShareInvoice(repair.invoice)}/>
@@ -358,7 +358,7 @@ const ActivityTable = () => {
                             <PiCashRegisterDuotone className="w-5 h-8 text-gray-500 mr-3 cursor-pointer" title="Crear recibo de pago" onClick={()=> openMapCommentModal(repair)}/>
                             </td>
                           )
-                        }
+                        } */}
                       </tr>
                       )
                     })

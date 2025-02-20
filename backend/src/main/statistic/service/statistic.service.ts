@@ -124,22 +124,12 @@ export class StatisticService {
                 t."createdAt" BETWEEN $1 AND $2
             GROUP BY 
                 t.status
-                UNION ALL
+            UNION ALL
             SELECT
-            'SIN_RECIBO' AS status,
-            SUM(
-                CASE
-                    WHEN t."invoiceId" IS NULL THEN 1
-                    ELSE 0
-                END) AS total_por_estado
+            'CLIENTES' AS status,
+            COUNT(t.id) AS total_por_estado
             FROM 
-                public.cyt_order_repair AS t
-            WHERE 
-                t.status = 'COMPLETED'
-                AND
-                t."createdAt" BETWEEN $1 AND $2
-            GROUP BY 
-            t.status
+                public.cyt_client AS t
         `, [startDate, endDate]);
       }
     
@@ -177,8 +167,9 @@ export class StatisticService {
               WHERE f.status = 'PAGADA'
               AND f."createdAt" BETWEEN $1 AND $2) pv
           CROSS JOIN 
-              (SELECT SUM(f.total) AS total_vendido_servicio
-              FROM ag_invoice f
+              (SELECT SUM(fd.total) AS total_vendido_servicio
+             FROM "com_productOutFlow" f
+              JOIN "com_serviceInvoice" fd ON f.id = fd."productOutflowId"
               WHERE f.status = 'PAGADA'
               AND f."createdAt" BETWEEN $1 AND $2) fc
           CROSS JOIN 

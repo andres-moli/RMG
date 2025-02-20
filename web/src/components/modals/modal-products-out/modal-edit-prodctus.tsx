@@ -13,7 +13,9 @@ const EditModalProductsOut: React.FC<RegisterModalProps> = ({ isOpen, onClose, p
   if(!product) return
   if (!isOpen) return null;
   const calculateTotalInvoice = () => {
-    return product.invoiceProducts?.reduce((total, product) => total + product.total, 0) || 0;
+    const totaP =  product.invoiceProducts?.reduce((total, product) => total + product.total, 0) || 0;
+    const totaS=  product.invoiceServices?.reduce((total, product) => total + product.total, 0) || 0;
+    return totaP + totaS
   };
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -113,7 +115,54 @@ const EditModalProductsOut: React.FC<RegisterModalProps> = ({ isOpen, onClose, p
                       />
                     </td>
                   </tr>
-                ))}
+              ))}
+              {product.invoiceServices?.map((product, index) => (
+                  <tr key={index} className="border-b">
+                    {/* Columna de Producto - ocupa más espacio */}
+                    <td className="w-1/3">
+                      <input
+                        type="text"
+                        value={product.service.name}
+                        className="w-full p-3 border border-gray-300 rounded text-xs"
+                        disabled={true}
+                      />
+                    </td>
+
+                    {/* Columnas de valores numéricos más estrechas */}
+                    <td className="w-1/10">
+                      <input
+                        type="number"
+                        value={product.quantity}
+                        className="w-full p-3 border border-gray-300 rounded text-xs"
+                        disabled={true}
+                      />
+                    </td>
+                    <td className="w-1/10">
+                      <input
+                        type="number"
+                        value={product.discount || 0}
+                        className="w-full p-3 border border-gray-300 rounded text-xs"
+                        disabled={true}
+                      />
+                    </td>
+                    <td className="w-1/10">
+                      <input
+                        type="number"
+                        value={product.tax || 0}
+                        className="w-full p-3 border border-gray-300 rounded text-xs"
+                        disabled={true}
+                      />
+                    </td>
+                    <td className="w-1/6 p-1 text-right">
+                      <input
+                        type="number"
+                        value={product.total}
+                        className="w-full p-3 border border-gray-300 rounded text-xs"
+                        disabled={true}
+                      />
+                    </td>
+                  </tr>
+              ))}
               </tbody>
               </table>
             </div>

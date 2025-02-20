@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BiPencil } from 'react-icons/bi';
+import { BiMailSend, BiPencil } from 'react-icons/bi';
 import { MetadataPagination, OrderTypes, ProductInflow, ProductInflowEmun, ProductOutflow, Products, StatusInvoice, useProductsInflowsQuery, useProductsOutflowsQuery, useProductsQuery, User, UserStatusTypes, useUpdateProductInflowMutation, useUpdateProductOutflowMutation, useUsersQuery } from '../../../domain/graphql';
 import { PaginationTable } from '../../table/PaginationTable';
 import Card from '../../cards/Card';
@@ -14,10 +14,13 @@ import { apolloClient } from '../../../main.config';
 import { BsDownload, BsEye } from 'react-icons/bs';
 import { dowlonadProductInoices } from '../../../lib/dowlonadProductInoices';
 import EditModalProductsOut from '../../modals/modal-products-out/modal-edit-prodctus';
+import { handleSendEmail } from '../../../lib/sendMail';
+import { MdMarkEmailUnread } from 'react-icons/md';
 
 const ProductOutTable: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
+  const [loadginEmial, setLoadingEmail] = useState(false);
 
   const openRegisterModal = () => setIsRegisterModalOpen(true);
   const closeRegisterModal = () => setIsRegisterModalOpen(false);
@@ -166,6 +169,15 @@ const ProductOutTable: React.FC = () => {
                   setProduct(product),
                   openRegisterModal()
                 }}/>
+                </td>
+                <td>
+                  {
+                    loadginEmial
+                    ?
+                    <MdMarkEmailUnread />
+                    :
+                    <BiMailSend  className="w-5 h-8 text-gray-500 mr-3 cursor-pointer" onClick={()=> handleSendEmail(product.client.email || '', product, 'RECIBO_PAGO_PRODUCTO_SERVICIO',setLoadingEmail)}/>
+                  }
                 </td>
                 {
                   product.status === StatusInvoice.Pagada

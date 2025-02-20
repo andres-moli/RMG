@@ -34,6 +34,13 @@ const SideBar = () => {
       ],
     },
     {
+      title: "Pagos y cotizaciones",
+      items: [
+        { label: "Recibo de pago", icon: <FaCashRegister className="w-5 h-5 text-gray-500 mr-3" />, path: "/out-products" },
+        { label: "Cotizaciones", icon: <IoDocumentText className="w-5 h-5 text-gray-500 mr-3" />, path: "/quotations" },
+      ],
+    },
+    {
       title: "Usuarios",
       items: [
         { label: "Clientes", icon: <FaUsers className="w-5 h-5 text-gray-500 mr-3" />, path: "/client" },
@@ -45,7 +52,6 @@ const SideBar = () => {
       items: [
         { label: "Mis Productos", icon: <RiShoppingBag3Fill />, path: "/product" },
         { label: "Entrada de producto", icon: <IoPricetagsSharp className="w-5 h-5 text-gray-500 mr-3" />, path: "/product-entry" },
-        { label: "Recibo de pago producto", icon: <FaCashRegister className="w-5 h-5 text-gray-500 mr-3" />, path: "/out-products" },
       ],
     },
     {
@@ -54,12 +60,6 @@ const SideBar = () => {
         { label: "Mis Egresos", icon: <RiShoppingBag3Fill className="w-5 h-5 text-gray-500 mr-3" />, path: "/expenses" },
         { label: "Categoría de Egresos", icon: <BiSolidCategory className="w-5 h-5 text-gray-500 mr-3" />, path: "/expenses-category" },
         { label: "Cuentas", icon: <BiSolidBank className="w-5 h-5 text-gray-500 mr-3" />, path: "/expenses-accounts" },
-      ],
-    },
-    {
-      title: "Cotizaciones",
-      items: [
-        { label: "Cotizaciones", icon: <IoDocumentText className="w-5 h-5 text-gray-500 mr-3" />, path: "/quotations" },
       ],
     },
   ];

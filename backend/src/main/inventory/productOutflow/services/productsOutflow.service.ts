@@ -16,6 +16,8 @@ import { StatusInvoice } from '../../invoice/emun/invoice.emun';
 import { ClientService } from 'src/main/rmg/client/services/client.service';
 import { StatisticService } from 'src/main/statistic/service/statistic.service';
 import { CreateInvoiceProductInput } from '../dto/inputs/CreateInvoiceProduct.input';
+import { OrderRepairTypeService } from 'src/main/rmg/repairType/service/order-repair-type.service';
+import { InvoiceService } from '../entities/InvoiceService.entity';
 
 export const serviceStructure = CrudServiceStructure({
   entityType: ProductOutflow,
@@ -33,8 +35,11 @@ export class ProductsOutflowService extends CrudServiceFrom(serviceStructure) {
     private readonly userService: UsersService,
     private readonly productService: ProductsService,
     private readonly statisticaService: StatisticService,
+    private readonly ordertypeService: OrderRepairTypeService,
     @InjectRepository(InvoiceProduct)
-    private readonly invoiceProductRepository: Repository<InvoiceProduct>
+    private readonly invoiceProductRepository: Repository<InvoiceProduct>,
+    @InjectRepository(InvoiceService)
+    private readonly invoiceServiceRepository: Repository<InvoiceService>
   ){ super(); }
 
   async beforeCreate(context: IContext, repository: Repository<ProductOutflow>, entity: ProductOutflow, createInput: CreateProductOutflowInput): Promise<void> {
@@ -67,6 +72,26 @@ export class ProductsOutflowService extends CrudServiceFrom(serviceStructure) {
       });
 
       await this.invoiceProductRepository.save(invoiceProduct);
+    }
+    for(const invoiceServiceDTO of createInput.invoiceServices){
+      const { quantity, unitPrice, discount = 0, tax = 0, serviceId } = invoiceServiceDTO;
+      const service = await this.ordertypeService.findOne(context,serviceId,true);
+
+      const subtotal = quantity * service.costEstimate;
+      const total = subtotal - discount + tax;
+
+      const invoiceService = this.invoiceServiceRepository.create({
+        quantity,
+        unitPrice: service.costEstimate,
+        subtotal,
+        discount,
+        tax,
+        total,
+        service: service,
+        productOutflow: entity
+      });
+
+      await this.invoiceServiceRepository.save(invoiceService);
     }
   }
   async valideDetailInvoiceStock(context: IContext,createInput: CreateProductOutflowInput, entity: ProductOutflow){

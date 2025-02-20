@@ -20,8 +20,8 @@ const ProductsOutPage: React.FC = () => {
         <Card className="w-50 md:w-30 lg:w-50">
         <div className="flex justify-between items-center w-full">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Recibo Productos</h1>
-            <h3 className="text-lg font-medium text-gray-600 dark:text-gray-400">Gestiona tus Recibo de productos</h3>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Recibo de pago</h1>
+            <h3 className="text-lg font-medium text-gray-600 dark:text-gray-400">Gestiona tus Recibo de pagos</h3>
           </div>
           <button
             onClick={openRegisterModal}

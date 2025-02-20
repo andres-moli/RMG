@@ -366,6 +366,14 @@ export type CreateInvoiceProductInput = {
   unitPrice: Scalars['Float'];
 };
 
+export type CreateInvoiceServiceInput = {
+  discount?: InputMaybe<Scalars['Float']>;
+  quantity: Scalars['Float'];
+  serviceId: Scalars['ID'];
+  tax?: InputMaybe<Scalars['Float']>;
+  unitPrice: Scalars['Float'];
+};
+
 export type CreateMultikeyRegisterInput = {
   date: Scalars['DateTime'];
   description: Scalars['String'];
@@ -472,6 +480,7 @@ export type CreateProductOutflowInput = {
   description?: InputMaybe<Scalars['String']>;
   inflowDate: Scalars['DateTime'];
   invoiceProducts: Array<CreateInvoiceProductInput>;
+  invoiceServices: Array<CreateInvoiceServiceInput>;
   paymentMethod: PaymentMethodEnum;
   status: StatusInvoice;
 };
@@ -1069,6 +1078,22 @@ export type InvoiceProduct = {
   product: Products;
   productOutflow: ProductOutflow;
   quantity: Scalars['Int'];
+  subtotal: Scalars['Float'];
+  tax?: Maybe<Scalars['Float']>;
+  total: Scalars['Float'];
+  unitPrice: Scalars['Float'];
+  updatedAt: Scalars['DateTime'];
+};
+
+export type InvoiceService = {
+  __typename?: 'InvoiceService';
+  createdAt: Scalars['DateTime'];
+  deletedAt?: Maybe<Scalars['DateTime']>;
+  discount?: Maybe<Scalars['Float']>;
+  id: Scalars['ID'];
+  productOutflow: ProductOutflow;
+  quantity: Scalars['Int'];
+  service: RepairType;
   subtotal: Scalars['Float'];
   tax?: Maybe<Scalars['Float']>;
   total: Scalars['Float'];
@@ -1934,6 +1959,7 @@ export type ProductOutflow = {
   inflowDate: Scalars['DateTime'];
   invoiceNumber: Scalars['String'];
   invoiceProducts: Array<InvoiceProduct>;
+  invoiceServices: Array<InvoiceService>;
   paymentMethod: PaymentMethodEnum;
   status: StatusInvoice;
   updatedAt: Scalars['DateTime'];
@@ -3257,6 +3283,7 @@ export type UpdateProductsOutflowInput = {
   id: Scalars['ID'];
   inflowDate?: InputMaybe<Scalars['DateTime']>;
   invoiceProducts?: InputMaybe<Array<CreateInvoiceProductInput>>;
+  invoiceServices?: InputMaybe<Array<CreateInvoiceServiceInput>>;
   paymentMethod?: InputMaybe<PaymentMethodEnum>;
   status?: InputMaybe<StatusInvoice>;
 };
@@ -3734,7 +3761,7 @@ export type ProductsOutflowsQueryVariables = Exact<{
 }>;
 
 
-export type ProductsOutflowsQuery = { __typename?: 'Query', ProductsOutflows: Array<{ __typename?: 'ProductOutflow', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, inflowDate: any, description?: string | null, paymentMethod: PaymentMethodEnum, status: StatusInvoice, invoiceNumber: string, client: { __typename?: 'Client', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, lastName?: string | null, numberDocument?: string | null, email?: string | null, address?: string | null, celular: string }, invoiceProducts: Array<{ __typename?: 'InvoiceProduct', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, quantity: number, unitPrice: number, subtotal: number, discount?: number | null, tax?: number | null, total: number, product: { __typename?: 'Products', costPrice?: number | null, id: string, name: string, tax?: number | null, salePrice: number } }> }>, ProductsOutflowsCount: { __typename?: 'MetadataPagination', currentPage?: number | null, itemsPerPage?: number | null, totalItems?: number | null, totalPages?: number | null } };
+export type ProductsOutflowsQuery = { __typename?: 'Query', ProductsOutflows: Array<{ __typename?: 'ProductOutflow', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, inflowDate: any, description?: string | null, paymentMethod: PaymentMethodEnum, status: StatusInvoice, invoiceNumber: string, client: { __typename?: 'Client', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, lastName?: string | null, numberDocument?: string | null, email?: string | null, address?: string | null, celular: string }, invoiceProducts: Array<{ __typename?: 'InvoiceProduct', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, quantity: number, unitPrice: number, subtotal: number, discount?: number | null, tax?: number | null, total: number, product: { __typename?: 'Products', costPrice?: number | null, id: string, name: string, tax?: number | null, salePrice: number } }>, invoiceServices: Array<{ __typename?: 'InvoiceService', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, quantity: number, unitPrice: number, subtotal: number, discount?: number | null, tax?: number | null, total: number, service: { __typename?: 'RepairType', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, status?: boolean | null, costEstimate?: number | null } }> }>, ProductsOutflowsCount: { __typename?: 'MetadataPagination', currentPage?: number | null, itemsPerPage?: number | null, totalItems?: number | null, totalPages?: number | null } };
 
 export type GetReportQueryVariables = Exact<{
   dateRange: DateRangeInput;
@@ -6188,6 +6215,27 @@ export const ProductsOutflowsDocument = gql`
         name
         tax
         salePrice
+      }
+    }
+    invoiceServices {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      quantity
+      unitPrice
+      subtotal
+      discount
+      tax
+      total
+      service {
+        id
+        createdAt
+        updatedAt
+        deletedAt
+        name
+        status
+        costEstimate
       }
     }
   }

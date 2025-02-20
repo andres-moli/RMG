@@ -201,6 +201,27 @@ query ProductsOutflows($orderBy: [FindProductsOutflowOrderBy!], $where: FindProd
         salePrice
       }
     }
+    invoiceServices {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      quantity
+      unitPrice
+      subtotal
+      discount
+      tax
+      total
+      service {
+        id
+        createdAt
+        updatedAt
+        deletedAt
+        name
+        status
+        costEstimate
+      }
+    }
   }
   ProductsOutflowsCount(orderBy: $orderBy, where: $where, pagination: $pagination) {
     currentPage

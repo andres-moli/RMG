@@ -13,7 +13,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { FaClipboardList, FaChartLine, FaRegCalendarAlt, FaChartBar } from "react-icons/fa";
+import { FaClipboardList, FaChartLine, FaRegCalendarAlt, FaChartBar, FaUserPlus } from "react-icons/fa";
 import { useGetReportQuery } from "../../domain/graphql";
 import SkeletonDashboard from "../../components/esqueleto/dashboard";
 import { formatCurrency } from "../../lib/utils";
@@ -106,7 +106,7 @@ const ingresosChartData = {
     PENDING: { label: "Pendiente", color: "text-yellow-500", icon: <FaRegCalendarAlt className="text-4xl text-yellow-500" /> },
     COMPLETED: { label: "Completadas", color: "text-green-500", icon: <FaChartLine className="text-4xl text-green-500" /> },
     CANCELED: { label: "Canceladas", color: "text-red-500", icon: <FaChartBar className="text-4xl text-red-500" /> },
-    SIN_RECIBO: { label: "Sin recibo", color: "text-orange-500", icon: <GrDocument className="text-4xl text-red-500" /> },
+    CLIENTES: { label: "Nuevos clientes", color: "text-blue-500", icon: <FaUserPlus className="text-4xl text-blue-500" /> },
   };
   const onRefesh = async () => {
     const toastid = toast.loading('Actualizando...')

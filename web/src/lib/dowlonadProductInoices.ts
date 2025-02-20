@@ -8,7 +8,7 @@ export const dowlonadProductInoices = (invoiceData: ProductOutflow) => {
   const htmlContent = `
   <html>
   <head>
-    <title>Recibo producto - ${invoiceData.invoiceNumber}</title>
+    <title>Recibo de pago - ${invoiceData.invoiceNumber}</title>
     <style>
       @media print {
         body {
@@ -149,7 +149,7 @@ export const dowlonadProductInoices = (invoiceData: ProductOutflow) => {
         <table class="custom-table">
           <thead>
             <tr>
-              <th>Producto</th>
+              <th>Producto o Servicio</th>
               <th>Subtotal</th>
               <th>Cantidad</th>
               <th>Descuento</th>
@@ -166,12 +166,21 @@ export const dowlonadProductInoices = (invoiceData: ProductOutflow) => {
                 <td>${formatCurrency(product.total || 0)}</td>
               </tr>
             `).join("")}
+            ${invoiceData.invoiceServices.map(service => `
+              <tr>
+                <td>${service.service.name}</td>
+                <td>${formatCurrency(service.subtotal)}</td>
+                <td>${service.quantity}</td>
+                <td>${formatCurrency(service.discount || 0)}</td>
+                <td>${formatCurrency(service.total || 0)}</td>
+              </tr>
+            `).join("")}
             <tr>
               <td><strong>Total a pagar</strong></td>
               <td></td>
               <td></td>
               <td></td>
-              <td><strong>${formatCurrency(invoiceData.invoiceProducts?.reduce((total, product) => total + product.total, 0) || 0)}</strong></td>
+              <td><strong>${formatCurrency((invoiceData.invoiceProducts?.reduce((total, product) => total + product.total, 0) + invoiceData.invoiceServices?.reduce((total, product) => total + product.total, 0)) || 0)}</strong></td>
             </tr>
           </tbody>
         </table>

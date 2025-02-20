@@ -4,9 +4,11 @@ import TableSkeleton from '../../../../components/esqueleto/table';
 import Card from '../../../../components/cards/Card';
 import { PaginationTable } from '../../../../components/table/PaginationTable';
 import { BsEye } from 'react-icons/bs';
-import { BiDownload, BiShare } from 'react-icons/bi';
+import { BiDownload, BiMailSend, BiShare } from 'react-icons/bi';
 import UpdateModalCotizacionOut from '../modals/update-cotizacion';
 import { dowloandCotizacion } from '../../../../lib/dowloandCotizacion';
+import { MdMarkEmailUnread } from 'react-icons/md';
+import { handleSendEmail } from '../../../../lib/sendMail';
 
 
 const CotizacionesTable: React.FC = () => {
@@ -16,6 +18,8 @@ const CotizacionesTable: React.FC = () => {
 
   const openRegisterModal = () => setIsRegisterModalOpen(true);
   const closeRegisterModal = () => setIsRegisterModalOpen(false);
+  const [loadginEmial, setLoadingEmail] = useState(false);
+  
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
   };
@@ -107,6 +111,7 @@ const CotizacionesTable: React.FC = () => {
             <th scope="col" className="px-6 py-3">Fecha</th>
             <th scope="col" className="px-6 py-3">Acción</th>
             <th scope="col" className="px-6 py-3">Descargar</th>
+            <th scope="col" className="px-6 py-3">Enviar</th>
           </tr>
         </thead>
         <tbody>
@@ -139,6 +144,15 @@ const CotizacionesTable: React.FC = () => {
                 </td>
                 <td className="px-6 py-4">
                     <BiDownload className="w-5 h-8 text-gray-500 mr-3 cursor-pointer" onClick={()=> dowloandCotizacion(cotizacion)}/>
+                </td>
+                <td>
+                  {
+                    loadginEmial
+                    ?
+                    <MdMarkEmailUnread />
+                    :
+                    <BiMailSend  className="w-5 h-8 text-gray-500 mr-3 cursor-pointer" onClick={()=> handleSendEmail(cotizacion.client.email || '', cotizacion, 'COTIZACION',setLoadingEmail)}/>
+                  }
                 </td>
               </tr>
             )})}

@@ -1,6 +1,6 @@
 import { IsString, IsOptional, IsNumber, IsBoolean, IsDate, IsPositive, IsNotEmpty, IsEnum } from 'class-validator';
 import { Field, Float, ID, InputType } from '@nestjs/graphql';
-import { CreateInvoiceProductInput } from './CreateInvoiceProduct.input';
+import { CreateInvoiceProductInput, CreateInvoiceServiceInput } from './CreateInvoiceProduct.input';
 import {paymentMethodEnum, StatusInvoice } from 'src/main/inventory/invoice/emun/invoice.emun';
 @InputType()
 export class CreateProductOutflowInput {
@@ -23,4 +23,7 @@ export class CreateProductOutflowInput {
   description?: string; 
   @Field(() => [CreateInvoiceProductInput])
   invoiceProducts: CreateInvoiceProductInput[];
+
+  @Field(() => [CreateInvoiceServiceInput])
+  invoiceServices: CreateInvoiceServiceInput[];
 }
