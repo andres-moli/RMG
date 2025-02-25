@@ -6,7 +6,7 @@ import Select, { OptionsSelect } from '../../components/input/Select';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
-// import DatePickerComponent from '../../components/input/FormDate';
+import DatePickerComponent from '../../components/input/FormDate';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import mime from 'mime';
 const { color } = useColor();
@@ -105,7 +105,7 @@ const RepairDetailsForm = forwardRef(({ onSubmit }: { onSubmit: (data: any) => v
           </View>
         );
       case FieldTypeEnum.Date:
-        return null
+        // return null
         return (
           <View key={field.id} style={styles.inputContainer}>
             <DatePickerComponent 
@@ -199,6 +199,22 @@ const RepairDetailsForm = forwardRef(({ onSubmit }: { onSubmit: (data: any) => v
             {error && <Text style={styles.errorText}>{error}</Text>}
           </View>
         );
+        case FieldTypeEnum.Selector: 
+        const options: OptionsSelect[] = field.selectorOptions?.map((op) => {
+          return {
+            key: op.id,
+            value: op.value
+          }
+        }) || []
+        return(
+          <Select 
+            options={options}
+            placeholder={field.name}
+            onSelect={(val) => handleChange(field.id, val)}
+            key={field.id}
+            selectedOption={value}
+          />
+        )
       default:
         return null;
     }
@@ -257,6 +273,12 @@ const RepairDetailsForm = forwardRef(({ onSubmit }: { onSubmit: (data: any) => v
             return {
               fieldId: field.id,
               valorFotoId: value ? value : undefined,
+            };
+          }
+          if(field.type === FieldTypeEnum.Selector){
+            return {
+              fieldId: field.id,
+              valorSeletor: value ? value : undefined,
             };
           }
           return {

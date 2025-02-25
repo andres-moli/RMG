@@ -27,14 +27,14 @@ const GreetingCard = ({greeting, scrollOffset }: {greeting: string, scrollOffset
   const styles = StyleSheet.create({
     headerContainer: {
       backgroundColor: color.primary, // Fondo del header
-      padding: 20,
+      // padding: 20,
       paddingTop: 55, // Ajuste para espacio adicional en la parte superior
-      borderBottomLeftRadius: isScrolled ? 0 : 20,
-      borderBottomRightRadius: isScrolled ? 0 : 20,
+      borderBottomLeftRadius: isScrolled ? 20 : 20,
+      borderBottomRightRadius: isScrolled ? 20 : 20,
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      marginBottom: 20,
+      // marginBottom: 20,
       shadowColor: '#000',
       shadowOpacity: 0.1,
       shadowOffset: { width: 0, height: 2 },

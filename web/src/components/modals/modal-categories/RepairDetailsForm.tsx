@@ -72,6 +72,9 @@ const RepairDetailsForm = forwardRef(({ onSubmit }: { onSubmit: (data: any) => v
           if (field.type === FieldTypeEnum.Image) {
             return { fieldId: field.id, valorFotoId: value };
           }
+          if (field.type === FieldTypeEnum.Selector) {
+            return { fieldId: field.id, valorSeletor: value };
+          }
           return { fieldId: field.id, valorTexto: value };
         });
 

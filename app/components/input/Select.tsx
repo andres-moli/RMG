@@ -80,7 +80,7 @@ const Select: React.FC<SelectProps> = ({ options, placeholder, selectedOption, o
                   onPress={() => handleSelect(item)}
                 >
                   <View style={styles.radioContainer}>
-                    <View style={selectedOption === item.value ? styles.selectedRadio : styles.unselectedRadio} />
+                    <View style={selectedOption === item.key ? styles.selectedRadio : styles.unselectedRadio} />
                     <Text style={styles.optionText}>{item.value}</Text>
                   </View>
                 </TouchableOpacity>

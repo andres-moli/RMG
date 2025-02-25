@@ -59,7 +59,7 @@ const ProfileScreen = () => {
           icon="cash-register"
           title="Recibo de pago"
           description="Gestiona mis recibos de pago"
-          screen="PermissionsScreen"
+          screen="ReciboPagoListScreen"
         />
         <OptionItem
           icon="cart-variant"

@@ -295,6 +295,7 @@ export type CreateCustomFieldValueInput = {
   valorFecha?: InputMaybe<Scalars['DateTime']>;
   valorFotoId?: InputMaybe<Scalars['String']>;
   valorNumerico?: InputMaybe<Scalars['Float']>;
+  valorSeletor?: InputMaybe<Scalars['String']>;
   valorTexto?: InputMaybe<Scalars['String']>;
   valorTextoLargo?: InputMaybe<Scalars['String']>;
 };
@@ -3109,6 +3110,7 @@ export type UpdateCustomFieldInput = {
   valorFecha?: InputMaybe<Scalars['DateTime']>;
   valorFotoId?: InputMaybe<Scalars['String']>;
   valorNumerico?: InputMaybe<Scalars['Float']>;
+  valorSeletor?: InputMaybe<Scalars['String']>;
   valorTexto?: InputMaybe<Scalars['String']>;
   valorTextoLargo?: InputMaybe<Scalars['String']>;
 };

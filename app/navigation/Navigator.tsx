@@ -35,6 +35,9 @@ import StepProgress from '../screens/Add/AddScreen';
 import ClientListScreen from '../screens/client';
 import ServiceListScreen from '../screens/service/serviceScreen';
 import RepairDetailScreen from '../screens/repair';
+import ReciboPagoScreen from '../screens/Recibo';
+import ListReciboScreen from '../screens/Recibo/list-recibo';
+import ReciboDetailScreen from '../screens/Recibo/ReciboPagoDetail';
 const { color } = useColor();
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -381,6 +384,60 @@ const Navigator = () => {
             marginRight: 0,
           },
           title: 'DETALLE DE LA REPACION',
+          headerBackTitleVisible: false
+        }}
+      />
+      <Stack.Screen
+        name="ReciboPagoScreen"
+        component={ReciboPagoScreen}
+        options={{
+          headerShown: true,
+          headerStyle: { backgroundColor: color.primary },
+          headerTintColor: color.lightBeige,
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            fontSize: 15,
+            textAlign: 'center',
+            marginLeft: 0,
+            marginRight: 0,
+          },
+          title: 'Recibo de pago',
+          headerBackTitleVisible: false
+        }}
+      />
+      <Stack.Screen
+        name="ReciboPagoListScreen"
+        component={ListReciboScreen}
+        options={{
+          headerShown: true,
+          headerStyle: { backgroundColor: color.primary },
+          headerTintColor: color.lightBeige,
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            fontSize: 15,
+            textAlign: 'center',
+            marginLeft: 0,
+            marginRight: 0,
+          },
+          title: 'Mis Recibo de pago',
+          headerBackTitleVisible: false
+        }}
+      />
+      <Stack.Screen
+        name="ReciboPagoDetailScreen"
+        component={ReciboDetailScreen}
+        options={{
+          headerShown: true,
+          headerStyle: { backgroundColor: color.primary },
+          headerTintColor: color.lightBeige,
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            fontSize: 15,
+            textAlign: 'center',
+            marginLeft: 0,
+            marginRight: 0,
+          },
+          title: 'Recibo de pago',
           headerBackTitleVisible: false
         }}
       />

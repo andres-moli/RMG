@@ -35,6 +35,60 @@ export type AuthResponse = {
   user: User;
 };
 
+export type Balance = {
+  __typename?: 'Balance';
+  saldo: Scalars['Float']['output'];
+  total_gasto: Scalars['Float']['output'];
+  total_recaudado: Scalars['Float']['output'];
+  total_vendido_producto: Scalars['Float']['output'];
+  total_vendido_servicio: Scalars['Float']['output'];
+};
+
+export type BalanceInput = {
+  companyId: Scalars['String']['input'];
+  fechaFin: Scalars['String']['input'];
+  fechaInicio: Scalars['String']['input'];
+};
+
+export type BalanceResponse = {
+  __typename?: 'BalanceResponse';
+  id: Scalars['String']['output'];
+  saldo: Scalars['Float']['output'];
+  saldo_efectivo: Scalars['Float']['output'];
+  saldo_transferencia: Scalars['Float']['output'];
+  total_entrada: Scalars['Float']['output'];
+  total_entrada_efectivo: Scalars['Float']['output'];
+  total_entrada_transferencia: Scalars['Float']['output'];
+  total_gasto: Scalars['Float']['output'];
+  total_gasto_efectivo: Scalars['Float']['output'];
+  total_gasto_transferencia: Scalars['Float']['output'];
+  total_recuado: Scalars['Float']['output'];
+  total_saldo_anterior: Scalars['Float']['output'];
+  total_saldo_anterior_efectivo: Scalars['Float']['output'];
+  total_saldo_anterior_transferencia: Scalars['Float']['output'];
+  total_salida: Scalars['Float']['output'];
+  total_salida_efectivo: Scalars['Float']['output'];
+  total_salida_transferencia: Scalars['Float']['output'];
+  total_vendido_cita: Scalars['Float']['output'];
+  total_vendido_cita_efectivo: Scalars['Float']['output'];
+  total_vendido_cita_transferencia: Scalars['Float']['output'];
+  total_vendido_producto: Scalars['Float']['output'];
+  total_vendido_producto_efectivo: Scalars['Float']['output'];
+  total_vendido_producto_transferencia: Scalars['Float']['output'];
+};
+
+export type CategoryExpenses = {
+  __typename?: 'CategoryExpenses';
+  createdAt: Scalars['DateTime']['output'];
+  deletedAt?: Maybe<Scalars['DateTime']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  isDefualtCategory: Scalars['Boolean']['output'];
+  name: Scalars['String']['output'];
+  status: StatusCategoryExpenses;
+  updatedAt: Scalars['DateTime']['output'];
+};
+
 export type City = {
   __typename?: 'City';
   code: Scalars['Int']['output'];
@@ -52,12 +106,12 @@ export type Client = {
   celular: Scalars['String']['output'];
   createdAt: Scalars['DateTime']['output'];
   deletedAt?: Maybe<Scalars['DateTime']['output']>;
-  email: Scalars['String']['output'];
+  email?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   identificationType?: Maybe<UserDocumentTypes>;
   lastName?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
-  numberDocument: Scalars['String']['output'];
+  numberDocument?: Maybe<Scalars['String']['output']>;
   updatedAt: Scalars['DateTime']['output'];
 };
 
@@ -103,6 +157,74 @@ export type Company = {
   user: User;
 };
 
+export type Cotizacion = {
+  __typename?: 'Cotizacion';
+  client: Client;
+  cotizacionProduct?: Maybe<Array<CotizacionProduct>>;
+  cotizacionService?: Maybe<Array<CotizacionServiceE>>;
+  createdAt: Scalars['DateTime']['output'];
+  deletedAt?: Maybe<Scalars['DateTime']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  invoiceNumber: Scalars['String']['output'];
+  status: CotizacionStatusEmun;
+  updatedAt: Scalars['DateTime']['output'];
+};
+
+export type CotizacionProduct = {
+  __typename?: 'CotizacionProduct';
+  cotizacion: Cotizacion;
+  createdAt: Scalars['DateTime']['output'];
+  deletedAt?: Maybe<Scalars['DateTime']['output']>;
+  discount?: Maybe<Scalars['Float']['output']>;
+  id: Scalars['ID']['output'];
+  product: Products;
+  quantity: Scalars['Int']['output'];
+  subtotal: Scalars['Float']['output'];
+  tax?: Maybe<Scalars['Float']['output']>;
+  total: Scalars['Float']['output'];
+  unitPrice: Scalars['Float']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+};
+
+export type CotizacionServiceE = {
+  __typename?: 'CotizacionServiceE';
+  cotizacion: Cotizacion;
+  createdAt: Scalars['DateTime']['output'];
+  deletedAt?: Maybe<Scalars['DateTime']['output']>;
+  discount?: Maybe<Scalars['Float']['output']>;
+  id: Scalars['ID']['output'];
+  quantity: Scalars['Int']['output'];
+  service: RepairType;
+  subtotal: Scalars['Float']['output'];
+  tax?: Maybe<Scalars['Float']['output']>;
+  total: Scalars['Float']['output'];
+  unitPrice: Scalars['Float']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+};
+
+/** Estados posibles de una cotización */
+export enum CotizacionStatusEmun {
+  Aprobada = 'APROBADA',
+  Cancelada = 'CANCELADA',
+  Pendiente = 'PENDIENTE',
+  Realizada = 'REALIZADA',
+  Rechazada = 'RECHAZADA'
+}
+
+export type CountExpenses = {
+  __typename?: 'CountExpenses';
+  createdAt: Scalars['DateTime']['output'];
+  deletedAt?: Maybe<Scalars['DateTime']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  nameBank?: Maybe<Scalars['String']['output']>;
+  numberCount?: Maybe<Scalars['String']['output']>;
+  status: StatusCountExpenses;
+  updatedAt: Scalars['DateTime']['output'];
+};
+
 export type Country = {
   __typename?: 'Country';
   code: Scalars['Int']['output'];
@@ -116,6 +238,12 @@ export type Country = {
 export type CreateAndRemoveRoleFxInput = {
   permissions: Array<Scalars['String']['input']>;
   role: Scalars['ID']['input'];
+};
+
+export type CreateCategoryExpensesInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+  status?: InputMaybe<StatusCategoryExpenses>;
 };
 
 export type CreateClientContactInput = {
@@ -134,7 +262,7 @@ export type CreateClientInput = {
   identificationType: UserDocumentTypes;
   lastName: Scalars['String']['input'];
   name: Scalars['String']['input'];
-  numberDocument: Scalars['String']['input'];
+  numberDocument?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CreateCompanyInput = {
@@ -150,11 +278,26 @@ export type CreateCompanyInput = {
   userId: Scalars['ID']['input'];
 };
 
+export type CreateCotizacionInput = {
+  clientId: Scalars['String']['input'];
+  description?: InputMaybe<Scalars['String']['input']>;
+  items: Array<ItemDto>;
+};
+
+export type CreateCountExpensesInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+  nameBank?: InputMaybe<Scalars['String']['input']>;
+  numberCount: Scalars['String']['input'];
+  status?: InputMaybe<StatusCountExpenses>;
+};
+
 export type CreateCustomFieldValueInput = {
   fieldId: Scalars['String']['input'];
   valorFecha?: InputMaybe<Scalars['DateTime']['input']>;
   valorFotoId?: InputMaybe<Scalars['String']['input']>;
   valorNumerico?: InputMaybe<Scalars['Float']['input']>;
+  valorSeletor?: InputMaybe<Scalars['String']['input']>;
   valorTexto?: InputMaybe<Scalars['String']['input']>;
   valorTextoLargo?: InputMaybe<Scalars['String']['input']>;
 };
@@ -169,6 +312,26 @@ export type CreateDummyInput = {
   phone?: InputMaybe<Scalars['String']['input']>;
   secondField: Scalars['DateTime']['input'];
   thirdField: Scalars['Float']['input'];
+};
+
+export type CreateExpensesInput = {
+  amount: Scalars['Float']['input'];
+  categoryId: Scalars['ID']['input'];
+  countId: Scalars['ID']['input'];
+  description: Scalars['String']['input'];
+  expenseDate: Scalars['DateTime']['input'];
+  isRecurring?: InputMaybe<Scalars['Boolean']['input']>;
+  nextDueDate?: InputMaybe<Scalars['DateTime']['input']>;
+  paymentMethod: PaymentMethodEnum;
+  referenceNumber?: InputMaybe<Scalars['String']['input']>;
+  status?: InputMaybe<StatusExpenses>;
+};
+
+export type CreateExpensesWorkerInput = {
+  amount: Scalars['Float']['input'];
+  companyId: Scalars['ID']['input'];
+  paymentMethod: PaymentMethodEnum;
+  workerId: Scalars['ID']['input'];
 };
 
 export type CreateGroupInput = {
@@ -202,6 +365,14 @@ export type CreateInvoiceProductInput = {
   discount?: InputMaybe<Scalars['Float']['input']>;
   productId: Scalars['ID']['input'];
   quantity: Scalars['Float']['input'];
+  tax?: InputMaybe<Scalars['Float']['input']>;
+  unitPrice: Scalars['Float']['input'];
+};
+
+export type CreateInvoiceServiceInput = {
+  discount?: InputMaybe<Scalars['Float']['input']>;
+  quantity: Scalars['Float']['input'];
+  serviceId: Scalars['ID']['input'];
   tax?: InputMaybe<Scalars['Float']['input']>;
   unitPrice: Scalars['Float']['input'];
 };
@@ -287,7 +458,6 @@ export type CreatePositionInput = {
 };
 
 export type CreateProductInflowInput = {
-  companyId: Scalars['ID']['input'];
   description?: InputMaybe<Scalars['String']['input']>;
   inflowDate: Scalars['DateTime']['input'];
   productId: Scalars['ID']['input'];
@@ -295,7 +465,6 @@ export type CreateProductInflowInput = {
 };
 
 export type CreateProductInput = {
-  companyId: Scalars['ID']['input'];
   costPrice?: InputMaybe<Scalars['Float']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   expirationDate?: InputMaybe<Scalars['DateTime']['input']>;
@@ -310,13 +479,13 @@ export type CreateProductInput = {
 };
 
 export type CreateProductOutflowInput = {
-  companyId: Scalars['ID']['input'];
+  clientId: Scalars['String']['input'];
   description?: InputMaybe<Scalars['String']['input']>;
   inflowDate: Scalars['DateTime']['input'];
   invoiceProducts: Array<CreateInvoiceProductInput>;
+  invoiceServices: Array<CreateInvoiceServiceInput>;
   paymentMethod: PaymentMethodEnum;
   status: StatusInvoice;
-  userId: Scalars['String']['input'];
 };
 
 export type CreateProfileInput = {
@@ -335,6 +504,7 @@ export type CreateRepairFieldInput = {
   maxLength?: InputMaybe<Scalars['Float']['input']>;
   minLength?: InputMaybe<Scalars['Float']['input']>;
   name: Scalars['String']['input'];
+  selectorOptions?: InputMaybe<Array<SelectorOptionDto>>;
   type: FieldTypeEnum;
 };
 
@@ -384,6 +554,7 @@ export type CustomFieldValue = {
   valorFecha?: Maybe<Scalars['DateTime']['output']>;
   valorFoto?: Maybe<FileInfo>;
   valorNumerico?: Maybe<Scalars['Float']['output']>;
+  valorSeletor?: Maybe<Scalars['String']['output']>;
   valorTexto?: Maybe<Scalars['String']['output']>;
   valorTextoLargo?: Maybe<Scalars['String']['output']>;
 };
@@ -398,6 +569,11 @@ export type DateFilter = {
   _lte?: InputMaybe<Scalars['DateTime']['input']>;
   _neq?: InputMaybe<Scalars['DateTime']['input']>;
   _notbetween?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+};
+
+export type DateRangeInput = {
+  endDate: Scalars['String']['input'];
+  startDate: Scalars['String']['input'];
 };
 
 export type Department = {
@@ -492,11 +668,44 @@ export type EmailRecipient = {
   type: RecipientType;
 };
 
+export type Expense = {
+  __typename?: 'Expense';
+  amount: Scalars['Float']['output'];
+  autorizoBy?: Maybe<User>;
+  canceldBy?: Maybe<User>;
+  category: CategoryExpenses;
+  count: CountExpenses;
+  createdAt: Scalars['DateTime']['output'];
+  createdBy: User;
+  deletedAt?: Maybe<Scalars['DateTime']['output']>;
+  description: Scalars['String']['output'];
+  expenseDate: Scalars['DateTime']['output'];
+  id: Scalars['ID']['output'];
+  invoiceNumber: Scalars['String']['output'];
+  isRecurring: Scalars['Boolean']['output'];
+  nextDueDate?: Maybe<Scalars['DateTime']['output']>;
+  paymentMethod: Scalars['String']['output'];
+  referenceNumber?: Maybe<Scalars['String']['output']>;
+  status: StatusExpenses;
+  updatedAt: Scalars['DateTime']['output'];
+};
+
+export type FacturadoPorTrabajador = {
+  __typename?: 'FacturadoPorTrabajador';
+  apellido: Scalars['String']['output'];
+  commission_percentage: Scalars['Float']['output'];
+  company_id: Scalars['String']['output'];
+  nombre: Scalars['String']['output'];
+  total_facturado: Scalars['Float']['output'];
+  worker_id: Scalars['String']['output'];
+};
+
 export enum FieldTypeEnum {
   Date = 'DATE',
   Image = 'IMAGE',
   LongText = 'LONG_TEXT',
   Number = 'NUMBER',
+  Selector = 'SELECTOR',
   Text = 'TEXT'
 }
 
@@ -520,6 +729,18 @@ export enum FileModes {
   Url = 'url'
 }
 
+export type FindCategoryExpensesOrderBy = {
+  createdAt?: InputMaybe<OrderTypes>;
+  name?: InputMaybe<OrderTypes>;
+};
+
+export type FindCategoryExpensesWhere = {
+  _and?: InputMaybe<Array<FindCategoryExpensesWhere>>;
+  _or?: InputMaybe<Array<FindCategoryExpensesWhere>>;
+  company?: InputMaybe<StringFilter>;
+  status?: InputMaybe<StringFilter>;
+};
+
 export type FindClientContactOrderBy = {
   createdAt?: InputMaybe<OrderTypes>;
   numberDocument?: InputMaybe<OrderTypes>;
@@ -542,8 +763,9 @@ export type FindClientOrderBy = {
 export type FindClientWhere = {
   _and?: InputMaybe<Array<FindClientWhere>>;
   _or?: InputMaybe<Array<FindClientWhere>>;
-  city?: InputMaybe<StringFilter>;
+  celular?: InputMaybe<StringFilter>;
   department?: InputMaybe<StringFilter>;
+  lastName?: InputMaybe<StringFilter>;
   name?: InputMaybe<StringFilter>;
   numberDocument?: InputMaybe<StringFilter>;
   user?: InputMaybe<StringFilter>;
@@ -558,6 +780,34 @@ export type FindCompanyWhere = {
   _or?: InputMaybe<Array<FindCompanyWhere>>;
   name?: InputMaybe<StringFilter>;
   user?: InputMaybe<StringFilter>;
+};
+
+export type FindCotizacionOrderBy = {
+  createdAt?: InputMaybe<OrderTypes>;
+};
+
+export type FindCotizacionWhere = {
+  _and?: InputMaybe<Array<FindCotizacionWhere>>;
+  _or?: InputMaybe<Array<FindCotizacionWhere>>;
+  client?: InputMaybe<DateFilter>;
+  company?: InputMaybe<StringFilter>;
+  createdAt?: InputMaybe<DateFilter>;
+  description?: InputMaybe<StringFilter>;
+  status?: InputMaybe<StringFilter>;
+};
+
+export type FindCountExpensesOrderBy = {
+  createdAt?: InputMaybe<OrderTypes>;
+  name?: InputMaybe<OrderTypes>;
+};
+
+export type FindCountExpensesWhere = {
+  _and?: InputMaybe<Array<FindCountExpensesWhere>>;
+  _or?: InputMaybe<Array<FindCountExpensesWhere>>;
+  company?: InputMaybe<StringFilter>;
+  nameBank?: InputMaybe<StringFilter>;
+  numberCount?: InputMaybe<StringFilter>;
+  status?: InputMaybe<StringFilter>;
 };
 
 export type FindCustomFieldValueTypeOrderBy = {
@@ -607,6 +857,20 @@ export type FindDummyWhere = {
   secondField?: InputMaybe<DateFilter>;
   thirdField?: InputMaybe<NumberFilter>;
   type?: InputMaybe<FindDummyTypeWhere>;
+};
+
+export type FindExpensesOrderBy = {
+  createdAt?: InputMaybe<OrderTypes>;
+};
+
+export type FindExpensesWhere = {
+  _and?: InputMaybe<Array<FindExpensesWhere>>;
+  _or?: InputMaybe<Array<FindExpensesWhere>>;
+  company?: InputMaybe<StringFilter>;
+  createdBy?: InputMaybe<StringFilter>;
+  description?: InputMaybe<StringFilter>;
+  expenseDate?: InputMaybe<DateFilter>;
+  status?: InputMaybe<StringFilter>;
 };
 
 export type FindInventoryCloseOrderBy = {
@@ -738,6 +1002,12 @@ export enum FunctionalityTag {
   Standard = 'STANDARD'
 }
 
+export type GetFacturadoPorTrabajadorInput = {
+  companyId: Scalars['ID']['input'];
+  fechaFin: Scalars['String']['input'];
+  fechaInicio: Scalars['String']['input'];
+};
+
 export type Group = {
   __typename?: 'Group';
   createdAt: Scalars['DateTime']['output'];
@@ -819,6 +1089,32 @@ export type InvoiceProduct = {
   updatedAt: Scalars['DateTime']['output'];
 };
 
+export type InvoiceService = {
+  __typename?: 'InvoiceService';
+  createdAt: Scalars['DateTime']['output'];
+  deletedAt?: Maybe<Scalars['DateTime']['output']>;
+  discount?: Maybe<Scalars['Float']['output']>;
+  id: Scalars['ID']['output'];
+  productOutflow: ProductOutflow;
+  quantity: Scalars['Int']['output'];
+  service: RepairType;
+  subtotal: Scalars['Float']['output'];
+  tax?: Maybe<Scalars['Float']['output']>;
+  total: Scalars['Float']['output'];
+  unitPrice: Scalars['Float']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+};
+
+export type ItemDto = {
+  discount: Scalars['Float']['input'];
+  id: Scalars['ID']['input'];
+  quantity: Scalars['Int']['input'];
+  tax: Scalars['Float']['input'];
+  total: Scalars['Float']['input'];
+  type: Scalars['String']['input'];
+  unitPrice: Scalars['Float']['input'];
+};
+
 export type MetadataPagination = {
   __typename?: 'MetadataPagination';
   currentPage?: Maybe<Scalars['Int']['output']>;
@@ -848,16 +1144,22 @@ export type MultikeyRegisterIdInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   addUserRole: User;
+  anularInovoiceByRepair: Scalars['String']['output'];
   codeConfirmation: User;
   create: RoleFx;
+  createCategoryExpense: CategoryExpenses;
   createClient: Client;
   createClientContact: ClientContact;
   createCompany: Company;
+  createCotizacion: Cotizacion;
+  createCountExpense: CountExpenses;
   createCustomFieldValue: CustomFieldValue;
   createDefaultRoles: Array<Role>;
   createDocumentType: DocumentType;
   createDummiesX: Array<Dummy>;
   createDummy: Dummy;
+  createExpense: Expense;
+  createExpensesWoker: Expense;
   createGroup: Group;
   createInventoryClose: InventoryClose;
   createInvoice: Invoice;
@@ -882,12 +1184,16 @@ export type Mutation = {
   i18nTest: Scalars['String']['output'];
   recoverPassword: Scalars['String']['output'];
   remove: NotificationGroup;
+  removeCategoryExpense: CategoryExpenses;
   removeClient: Client;
   removeClientContact: ClientContact;
   removeCompany: Company;
+  removeCotizacion: Cotizacion;
+  removeCountExpense: CountExpenses;
   removeCustomFieldValue: CustomFieldValue;
   removeDocumentType: DocumentType;
   removeDummy: Dummy;
+  removeExpense: Expense;
   removeGroup: Group;
   removeInventoryClose: InventoryClose;
   removeInvoice: Invoice;
@@ -916,12 +1222,16 @@ export type Mutation = {
   signUpWithEmail: AuthResponse;
   signin: AuthResponse;
   update: NotificationGroup;
+  updateCategoryExpense: CategoryExpenses;
   updateClient: Client;
   updateClientContact: ClientContact;
   updateCompany: Company;
+  updateCotizacion: Cotizacion;
+  updateCountExpense: CountExpenses;
   updateCustomFieldValue: CustomFieldValue;
   updateDocumentType: DocumentType;
   updateDummy: Dummy;
+  updateExpense: Expense;
   updateGroup: Group;
   updateInventoryClose: InventoryClose;
   updateInvoice: Invoice;
@@ -950,6 +1260,11 @@ export type MutationAddUserRoleArgs = {
 };
 
 
+export type MutationAnularInovoiceByRepairArgs = {
+  idRepair: Scalars['String']['input'];
+};
+
+
 export type MutationCodeConfirmationArgs = {
   createInput: CodeConfirmationInput;
 };
@@ -957,6 +1272,11 @@ export type MutationCodeConfirmationArgs = {
 
 export type MutationCreateArgs = {
   createInput: CreateAndRemoveRoleFxInput;
+};
+
+
+export type MutationCreateCategoryExpenseArgs = {
+  createInput: CreateCategoryExpensesInput;
 };
 
 
@@ -975,6 +1295,16 @@ export type MutationCreateCompanyArgs = {
 };
 
 
+export type MutationCreateCotizacionArgs = {
+  createInput: CreateCotizacionInput;
+};
+
+
+export type MutationCreateCountExpenseArgs = {
+  createInput: CreateCountExpensesInput;
+};
+
+
 export type MutationCreateCustomFieldValueArgs = {
   createInput: CreateCustomFieldValueInput;
 };
@@ -987,6 +1317,16 @@ export type MutationCreateDocumentTypeArgs = {
 
 export type MutationCreateDummyArgs = {
   createInput: CreateDummyInput;
+};
+
+
+export type MutationCreateExpenseArgs = {
+  createInput: CreateExpensesInput;
+};
+
+
+export type MutationCreateExpensesWokerArgs = {
+  createInput: CreateExpensesWorkerInput;
 };
 
 
@@ -1105,6 +1445,11 @@ export type MutationRemoveArgs = {
 };
 
 
+export type MutationRemoveCategoryExpenseArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
 export type MutationRemoveClientArgs = {
   id: Scalars['ID']['input'];
 };
@@ -1120,6 +1465,16 @@ export type MutationRemoveCompanyArgs = {
 };
 
 
+export type MutationRemoveCotizacionArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationRemoveCountExpenseArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
 export type MutationRemoveCustomFieldValueArgs = {
   id: Scalars['ID']['input'];
 };
@@ -1131,6 +1486,11 @@ export type MutationRemoveDocumentTypeArgs = {
 
 
 export type MutationRemoveDummyArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationRemoveExpenseArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -1270,6 +1630,11 @@ export type MutationUpdateArgs = {
 };
 
 
+export type MutationUpdateCategoryExpenseArgs = {
+  updateInput: UpdateCategoryExpensesInput;
+};
+
+
 export type MutationUpdateClientArgs = {
   updateInput: UpdateClientInput;
 };
@@ -1285,6 +1650,16 @@ export type MutationUpdateCompanyArgs = {
 };
 
 
+export type MutationUpdateCotizacionArgs = {
+  updateInput: UpdateCotizacionInput;
+};
+
+
+export type MutationUpdateCountExpenseArgs = {
+  updateInput: UpdateCountExpensesInput;
+};
+
+
 export type MutationUpdateCustomFieldValueArgs = {
   updateInput: UpdateCustomFieldInput;
 };
@@ -1297,6 +1672,11 @@ export type MutationUpdateDocumentTypeArgs = {
 
 export type MutationUpdateDummyArgs = {
   updateInput: UpdateDummyInput;
+};
+
+
+export type MutationUpdateExpenseArgs = {
+  updateInput: UpdateExpensesInput;
 };
 
 
@@ -1474,6 +1854,12 @@ export type NumberFilter = {
   _notbetween?: InputMaybe<Array<Scalars['Float']['input']>>;
 };
 
+export type OrderRepair = {
+  __typename?: 'OrderRepair';
+  status: Scalars['String']['output'];
+  total_por_estado: Scalars['Float']['output'];
+};
+
 export type OrderRepairty = {
   __typename?: 'OrderRepairty';
   client: Client;
@@ -1569,16 +1955,18 @@ export enum ProductInflowEmun {
 
 export type ProductOutflow = {
   __typename?: 'ProductOutflow';
+  client: Client;
   createdAt: Scalars['DateTime']['output'];
   deletedAt?: Maybe<Scalars['DateTime']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   inflowDate: Scalars['DateTime']['output'];
+  invoiceNumber: Scalars['String']['output'];
   invoiceProducts: Array<InvoiceProduct>;
+  invoiceServices: Array<InvoiceService>;
   paymentMethod: PaymentMethodEnum;
   status: StatusInvoice;
   updatedAt: Scalars['DateTime']['output'];
-  user: User;
 };
 
 export type Products = {
@@ -1595,6 +1983,7 @@ export type Products = {
   minStock?: Maybe<Scalars['Float']['output']>;
   name: Scalars['String']['output'];
   salePrice: Scalars['Float']['output'];
+  stock: StockProductView;
   tax?: Maybe<Scalars['Float']['output']>;
   unitOfMeasure?: Maybe<Scalars['String']['output']>;
   updatedAt: Scalars['DateTime']['output'];
@@ -1621,10 +2010,22 @@ export type Profile = {
 
 export type Query = {
   __typename?: 'Query';
+  CategoryExpense: CategoryExpenses;
+  CategoryExpenses: Array<CategoryExpenses>;
+  CategoryExpensesCount: MetadataPagination;
   Company: Company;
   Companys: Array<Company>;
   CompanysCount: MetadataPagination;
+  Cotizacion: Cotizacion;
+  Cotizaciones: Array<Cotizacion>;
+  CotizacionesCount: MetadataPagination;
   Count: MetadataPagination;
+  CountExpense: CountExpenses;
+  CountExpenses: Array<CountExpenses>;
+  CountExpensesCount: MetadataPagination;
+  Expense: Expense;
+  Expenses: Array<Expense>;
+  ExpensesCount: MetadataPagination;
   InventoryClose: InventoryClose;
   InventoryCloses: Array<InventoryClose>;
   InventoryClosesCount: MetadataPagination;
@@ -1674,6 +2075,12 @@ export type Query = {
   findOneByNumberPhone?: Maybe<Client>;
   functionalities: FunctionalityModel;
   genrateQrByRepair: Scalars['String']['output'];
+  getBalanceByDateRange: Balance;
+  getGastosByDateRange: Array<SumGastos>;
+  getOrdersByDateRange: Array<OrderRepair>;
+  getProductByDateRange: Array<SumGastos>;
+  getServiceByDateRange: Array<SumGastos>;
+  getStockProduct: StockProductView;
   group: Group;
   groups: Array<Group>;
   groupsCount: MetadataPagination;
@@ -1686,6 +2093,9 @@ export type Query = {
   notificationConfigsCount: MetadataPagination;
   notifications: Array<Notification>;
   notificationsCount: MetadataPagination;
+  obtenerBalanceEmpresaByDate: BalanceResponse;
+  obtenerFacturadoPorTrabajador: Array<FacturadoPorTrabajador>;
+  obtenerTopProductosVendidos: Array<TopProductosVendidos>;
   orderRepair: OrderRepairty;
   orderRepairType: RepairType;
   orderRepairs: Array<OrderRepairty>;
@@ -1720,6 +2130,25 @@ export type Query = {
 };
 
 
+export type QueryCategoryExpenseArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryCategoryExpensesArgs = {
+  orderBy?: InputMaybe<Array<FindCategoryExpensesOrderBy>>;
+  pagination?: InputMaybe<Pagination>;
+  where?: InputMaybe<FindCategoryExpensesWhere>;
+};
+
+
+export type QueryCategoryExpensesCountArgs = {
+  orderBy?: InputMaybe<Array<FindCategoryExpensesOrderBy>>;
+  pagination?: InputMaybe<Pagination>;
+  where?: InputMaybe<FindCategoryExpensesWhere>;
+};
+
+
 export type QueryCompanyArgs = {
   id: Scalars['ID']['input'];
 };
@@ -1739,10 +2168,67 @@ export type QueryCompanysCountArgs = {
 };
 
 
+export type QueryCotizacionArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryCotizacionesArgs = {
+  orderBy?: InputMaybe<Array<FindCotizacionOrderBy>>;
+  pagination?: InputMaybe<Pagination>;
+  where?: InputMaybe<FindCotizacionWhere>;
+};
+
+
+export type QueryCotizacionesCountArgs = {
+  orderBy?: InputMaybe<Array<FindCotizacionOrderBy>>;
+  pagination?: InputMaybe<Pagination>;
+  where?: InputMaybe<FindCotizacionWhere>;
+};
+
+
 export type QueryCountArgs = {
   orderBy?: InputMaybe<Array<FindUsersOrderBy>>;
   pagination?: InputMaybe<Pagination>;
   where?: InputMaybe<FindUsersWhere>;
+};
+
+
+export type QueryCountExpenseArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryCountExpensesArgs = {
+  orderBy?: InputMaybe<Array<FindCountExpensesOrderBy>>;
+  pagination?: InputMaybe<Pagination>;
+  where?: InputMaybe<FindCountExpensesWhere>;
+};
+
+
+export type QueryCountExpensesCountArgs = {
+  orderBy?: InputMaybe<Array<FindCountExpensesOrderBy>>;
+  pagination?: InputMaybe<Pagination>;
+  where?: InputMaybe<FindCountExpensesWhere>;
+};
+
+
+export type QueryExpenseArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryExpensesArgs = {
+  orderBy?: InputMaybe<Array<FindExpensesOrderBy>>;
+  pagination?: InputMaybe<Pagination>;
+  where?: InputMaybe<FindExpensesWhere>;
+};
+
+
+export type QueryExpensesCountArgs = {
+  orderBy?: InputMaybe<Array<FindExpensesOrderBy>>;
+  pagination?: InputMaybe<Pagination>;
+  where?: InputMaybe<FindExpensesWhere>;
 };
 
 
@@ -2028,6 +2514,36 @@ export type QueryGenrateQrByRepairArgs = {
 };
 
 
+export type QueryGetBalanceByDateRangeArgs = {
+  dateRange: DateRangeInput;
+};
+
+
+export type QueryGetGastosByDateRangeArgs = {
+  dateRange: DateRangeInput;
+};
+
+
+export type QueryGetOrdersByDateRangeArgs = {
+  dateRange: DateRangeInput;
+};
+
+
+export type QueryGetProductByDateRangeArgs = {
+  dateRange: DateRangeInput;
+};
+
+
+export type QueryGetServiceByDateRangeArgs = {
+  dateRange: DateRangeInput;
+};
+
+
+export type QueryGetStockProductArgs = {
+  productId: Scalars['String']['input'];
+};
+
+
 export type QueryGroupArgs = {
   id: Scalars['ID']['input'];
 };
@@ -2085,6 +2601,21 @@ export type QueryNotificationsArgs = {
 
 export type QueryNotificationsCountArgs = {
   pagination?: InputMaybe<Pagination>;
+};
+
+
+export type QueryObtenerBalanceEmpresaByDateArgs = {
+  input: BalanceInput;
+};
+
+
+export type QueryObtenerFacturadoPorTrabajadorArgs = {
+  input: GetFacturadoPorTrabajadorInput;
+};
+
+
+export type QueryObtenerTopProductosVendidosArgs = {
+  input: GetFacturadoPorTrabajadorInput;
 };
 
 
@@ -2264,6 +2795,7 @@ export type RepairField = {
   minLength?: Maybe<Scalars['Float']['output']>;
   name: Scalars['String']['output'];
   repairType: RepairType;
+  selectorOptions?: Maybe<Array<SelectorOption>>;
   type: FieldTypeEnum;
   updatedAt: Scalars['DateTime']['output'];
 };
@@ -2298,6 +2830,7 @@ export type RepairType = {
   fields?: Maybe<Array<RepairField>>;
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
+  status?: Maybe<Scalars['Boolean']['output']>;
   updatedAt: Scalars['DateTime']['output'];
 };
 
@@ -2329,6 +2862,20 @@ export enum RouterType {
   InternalRouteWithArguments = 'InternalRouteWithArguments',
   InternaltRoute = 'InternaltRoute'
 }
+
+export type SelectorOption = {
+  __typename?: 'SelectorOption';
+  createdAt: Scalars['DateTime']['output'];
+  deletedAt?: Maybe<Scalars['DateTime']['output']>;
+  id: Scalars['ID']['output'];
+  repairField: RepairField;
+  updatedAt: Scalars['DateTime']['output'];
+  value: Scalars['String']['output'];
+};
+
+export type SelectorOptionDto = {
+  value: Scalars['String']['input'];
+};
 
 export type SendDoubleVerificationInput = {
   email?: InputMaybe<Scalars['String']['input']>;
@@ -2411,12 +2958,40 @@ export enum StatePersistent {
   Send = 'Send'
 }
 
+export enum StatusCategoryExpenses {
+  Activo = 'ACTIVO',
+  Inactivo = 'INACTIVO'
+}
+
+export enum StatusCountExpenses {
+  Activo = 'ACTIVO',
+  Cerrada = 'CERRADA',
+  Inactivo = 'INACTIVO'
+}
+
+export enum StatusExpenses {
+  Cancelada = 'CANCELADA',
+  Pagada = 'PAGADA',
+  Pendiente = 'PENDIENTE'
+}
+
 export enum StatusInvoice {
   Anulada = 'ANULADA',
   Elaborada = 'ELABORADA',
   Pagada = 'PAGADA',
   Vencida = 'VENCIDA'
 }
+
+export type StockProductView = {
+  __typename?: 'StockProductView';
+  description: Scalars['String']['output'];
+  entrada_producto: Scalars['Float']['output'];
+  id: Scalars['ID']['output'];
+  isActive: Scalars['Boolean']['output'];
+  name: Scalars['String']['output'];
+  salida_producto: Scalars['Float']['output'];
+  stock: Scalars['Float']['output'];
+};
 
 export type StringFilter = {
   _contains?: InputMaybe<Scalars['String']['input']>;
@@ -2430,6 +3005,26 @@ export type StringFilter = {
   _notlike?: InputMaybe<Scalars['String']['input']>;
   _notstartswith?: InputMaybe<Scalars['String']['input']>;
   _startswith?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type SumGastos = {
+  __typename?: 'SumGastos';
+  day: Scalars['Float']['output'];
+  month: Scalars['Float']['output'];
+  total: Scalars['Float']['output'];
+  year: Scalars['Float']['output'];
+};
+
+export type TopProductosVendidos = {
+  __typename?: 'TopProductosVendidos';
+  company_id: Scalars['String']['output'];
+  cost_price: Scalars['Float']['output'];
+  diferencia: Scalars['Float']['output'];
+  nombre_producto: Scalars['String']['output'];
+  product_id: Scalars['String']['output'];
+  quantity: Scalars['Float']['output'];
+  sale_price: Scalars['Float']['output'];
+  total_vendido_producto: Scalars['Float']['output'];
 };
 
 export enum TypeNotification {
@@ -2455,6 +3050,13 @@ export enum TypeWorker {
   Externo = 'externo',
   Interno = 'interno'
 }
+
+export type UpdateCategoryExpensesInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
+  status?: InputMaybe<StatusCategoryExpenses>;
+};
 
 export type UpdateClientContactInput = {
   celular?: InputMaybe<Scalars['String']['input']>;
@@ -2491,12 +3093,27 @@ export type UpdateCompanyInput = {
   userId?: InputMaybe<Scalars['ID']['input']>;
 };
 
+export type UpdateCotizacionInput = {
+  id: Scalars['ID']['input'];
+  status: CotizacionStatusEmun;
+};
+
+export type UpdateCountExpensesInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
+  nameBank?: InputMaybe<Scalars['String']['input']>;
+  numberCount?: InputMaybe<Scalars['String']['input']>;
+  status?: InputMaybe<StatusCountExpenses>;
+};
+
 export type UpdateCustomFieldInput = {
   fieldId?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['ID']['input'];
   valorFecha?: InputMaybe<Scalars['DateTime']['input']>;
   valorFotoId?: InputMaybe<Scalars['String']['input']>;
   valorNumerico?: InputMaybe<Scalars['Float']['input']>;
+  valorSeletor?: InputMaybe<Scalars['String']['input']>;
   valorTexto?: InputMaybe<Scalars['String']['input']>;
   valorTextoLargo?: InputMaybe<Scalars['String']['input']>;
 };
@@ -2513,6 +3130,22 @@ export type UpdateDummyInput = {
   phone?: InputMaybe<Scalars['String']['input']>;
   secondField?: InputMaybe<Scalars['DateTime']['input']>;
   thirdField?: InputMaybe<Scalars['Float']['input']>;
+};
+
+export type UpdateExpensesInput = {
+  amount?: InputMaybe<Scalars['Float']['input']>;
+  autorizoById?: InputMaybe<Scalars['ID']['input']>;
+  canceldById?: InputMaybe<Scalars['ID']['input']>;
+  categoryId?: InputMaybe<Scalars['ID']['input']>;
+  countId?: InputMaybe<Scalars['ID']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  expenseDate?: InputMaybe<Scalars['DateTime']['input']>;
+  id: Scalars['ID']['input'];
+  isRecurring?: InputMaybe<Scalars['Boolean']['input']>;
+  nextDueDate?: InputMaybe<Scalars['DateTime']['input']>;
+  paymentMethod?: InputMaybe<PaymentMethodEnum>;
+  referenceNumber?: InputMaybe<Scalars['String']['input']>;
+  status?: InputMaybe<StatusExpenses>;
 };
 
 export type UpdateGroupInput = {
@@ -2626,7 +3259,6 @@ export type UpdatePositionInput = {
 };
 
 export type UpdateProductsInflowInput = {
-  companyId?: InputMaybe<Scalars['ID']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['ID']['input'];
   inflowDate?: InputMaybe<Scalars['DateTime']['input']>;
@@ -2636,7 +3268,6 @@ export type UpdateProductsInflowInput = {
 };
 
 export type UpdateProductsInput = {
-  companyId?: InputMaybe<Scalars['ID']['input']>;
   costPrice?: InputMaybe<Scalars['Float']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   expirationDate?: InputMaybe<Scalars['DateTime']['input']>;
@@ -2652,14 +3283,14 @@ export type UpdateProductsInput = {
 };
 
 export type UpdateProductsOutflowInput = {
-  companyId?: InputMaybe<Scalars['ID']['input']>;
+  clientId?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['ID']['input'];
   inflowDate?: InputMaybe<Scalars['DateTime']['input']>;
   invoiceProducts?: InputMaybe<Array<CreateInvoiceProductInput>>;
+  invoiceServices?: InputMaybe<Array<CreateInvoiceServiceInput>>;
   paymentMethod?: InputMaybe<PaymentMethodEnum>;
   status?: InputMaybe<StatusInvoice>;
-  userId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateProfileInput = {
@@ -2679,6 +3310,7 @@ export type UpdateRepairTypeInput = {
   fields?: InputMaybe<Array<CreateRepairFieldInput>>;
   id: Scalars['ID']['input'];
   name?: InputMaybe<Scalars['String']['input']>;
+  status: Scalars['Boolean']['input'];
 };
 
 export type UpdateRoleInput = {
@@ -2846,7 +3478,7 @@ export type FindOneByDocumentNumberQueryVariables = Exact<{
 }>;
 
 
-export type FindOneByDocumentNumberQuery = { __typename?: 'Query', findOneByDocumentNumber?: { __typename?: 'Client', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, lastName?: string | null, numberDocument: string, email: string, address?: string | null, celular: string, identificationType?: UserDocumentTypes | null } | null };
+export type FindOneByDocumentNumberQuery = { __typename?: 'Query', findOneByDocumentNumber?: { __typename?: 'Client', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, lastName?: string | null, numberDocument?: string | null, email?: string | null, address?: string | null, celular: string, identificationType?: UserDocumentTypes | null } | null };
 
 export type ClientsQueryVariables = Exact<{
   orderBy?: InputMaybe<Array<FindClientOrderBy> | FindClientOrderBy>;
@@ -2855,14 +3487,21 @@ export type ClientsQueryVariables = Exact<{
 }>;
 
 
-export type ClientsQuery = { __typename?: 'Query', clients: Array<{ __typename?: 'Client', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, identificationType?: UserDocumentTypes | null, lastName?: string | null, numberDocument: string, email: string, address?: string | null, celular: string }> };
+export type ClientsQuery = { __typename?: 'Query', clients: Array<{ __typename?: 'Client', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, identificationType?: UserDocumentTypes | null, lastName?: string | null, numberDocument?: string | null, email?: string | null, address?: string | null, celular: string }> };
 
 export type FindOneByNumberPhoneQueryVariables = Exact<{
   numberPhone: Scalars['String']['input'];
 }>;
 
 
-export type FindOneByNumberPhoneQuery = { __typename?: 'Query', findOneByNumberPhone?: { __typename?: 'Client', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, identificationType?: UserDocumentTypes | null, lastName?: string | null, numberDocument: string, email: string, address?: string | null, celular: string } | null };
+export type FindOneByNumberPhoneQuery = { __typename?: 'Query', findOneByNumberPhone?: { __typename?: 'Client', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, identificationType?: UserDocumentTypes | null, lastName?: string | null, numberDocument?: string | null, email?: string | null, address?: string | null, celular: string } | null };
+
+export type CreateClientMutationVariables = Exact<{
+  createInput: CreateClientInput;
+}>;
+
+
+export type CreateClientMutation = { __typename?: 'Mutation', createClient: { __typename?: 'Client', id: string } };
 
 export type CreateInvoiceMutationVariables = Exact<{
   createInput: CreateInvoiceInput;
@@ -2883,7 +3522,7 @@ export type OrderRepairQueryVariables = Exact<{
 }>;
 
 
-export type OrderRepairQuery = { __typename?: 'Query', orderRepair: { __typename?: 'OrderRepairty', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, status: OrderStatusEnum, deliveryDate?: any | null, client: { __typename?: 'Client', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, lastName?: string | null, numberDocument: string, email: string, address?: string | null, celular: string }, repairType: { __typename?: 'RepairType', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, costEstimate?: number | null, fields?: Array<{ __typename?: 'RepairField', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, type: FieldTypeEnum, isRequired: boolean, minLength?: number | null, maxLength?: number | null }> | null }, fieldValues?: Array<{ __typename?: 'CustomFieldValue', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, valorTexto?: string | null, valorFecha?: any | null, valorNumerico?: number | null, valorTextoLargo?: string | null, field: { __typename?: 'RepairField', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, type: FieldTypeEnum, isRequired: boolean, minLength?: number | null, maxLength?: number | null }, valorFoto?: { __typename?: 'FileInfo', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, fileName: string, fileExtension: string, fileMode: FileModes, fileMongoId?: string | null, fileUrl?: string | null, url: string } | null }> | null, invoice?: { __typename?: 'Invoice', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, invoiceNumber: string, issueDate: any, dueDate?: any | null, subtotal?: number | null, tax?: number | null, total?: number | null, discount?: number | null, status: StatusInvoice, paymentMethod?: PaymentMethodEnum | null, paymentReference?: string | null, description?: string | null, cliente: { __typename?: 'Client', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, lastName?: string | null, numberDocument: string, email: string, address?: string | null, celular: string }, orrderReapirty: { __typename?: 'OrderRepairty', repairType: { __typename?: 'RepairType', name: string, costEstimate?: number | null } } } | null } };
+export type OrderRepairQuery = { __typename?: 'Query', orderRepair: { __typename?: 'OrderRepairty', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, status: OrderStatusEnum, deliveryDate?: any | null, client: { __typename?: 'Client', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, lastName?: string | null, numberDocument?: string | null, email?: string | null, address?: string | null, celular: string }, repairType: { __typename?: 'RepairType', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, costEstimate?: number | null, fields?: Array<{ __typename?: 'RepairField', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, type: FieldTypeEnum, isRequired: boolean, minLength?: number | null, maxLength?: number | null, selectorOptions?: Array<{ __typename?: 'SelectorOption', value: string, id: string, repairField: { __typename?: 'RepairField', id: string } }> | null }> | null }, fieldValues?: Array<{ __typename?: 'CustomFieldValue', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, valorTexto?: string | null, valorFecha?: any | null, valorNumerico?: number | null, valorTextoLargo?: string | null, valorSeletor?: string | null, field: { __typename?: 'RepairField', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, type: FieldTypeEnum, isRequired: boolean, minLength?: number | null, maxLength?: number | null, selectorOptions?: Array<{ __typename?: 'SelectorOption', value: string, id: string, repairField: { __typename?: 'RepairField', id: string } }> | null }, valorFoto?: { __typename?: 'FileInfo', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, fileName: string, fileExtension: string, fileMode: FileModes, fileMongoId?: string | null, fileUrl?: string | null, url: string } | null }> | null, invoice?: { __typename?: 'Invoice', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, invoiceNumber: string, issueDate: any, dueDate?: any | null, subtotal?: number | null, tax?: number | null, total?: number | null, discount?: number | null, status: StatusInvoice, paymentMethod?: PaymentMethodEnum | null, paymentReference?: string | null, description?: string | null, cliente: { __typename?: 'Client', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, lastName?: string | null, numberDocument?: string | null, email?: string | null, address?: string | null, celular: string }, orrderReapirty: { __typename?: 'OrderRepairty', repairType: { __typename?: 'RepairType', name: string, costEstimate?: number | null } } } | null } };
 
 export type OrderRepairsTypeQueryVariables = Exact<{
   where?: InputMaybe<FindOrderRepairTypeWhere>;
@@ -2891,7 +3530,7 @@ export type OrderRepairsTypeQueryVariables = Exact<{
 }>;
 
 
-export type OrderRepairsTypeQuery = { __typename?: 'Query', orderRepairsType: Array<{ __typename?: 'RepairType', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, costEstimate?: number | null, fields?: Array<{ __typename?: 'RepairField', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, type: FieldTypeEnum, isRequired: boolean, minLength?: number | null, maxLength?: number | null }> | null }> };
+export type OrderRepairsTypeQuery = { __typename?: 'Query', orderRepairsType: Array<{ __typename?: 'RepairType', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, costEstimate?: number | null, status?: boolean | null, fields?: Array<{ __typename?: 'RepairField', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, type: FieldTypeEnum, isRequired: boolean, minLength?: number | null, maxLength?: number | null, selectorOptions?: Array<{ __typename?: 'SelectorOption', value: string, id: string, repairField: { __typename?: 'RepairField', id: string } }> | null }> | null }> };
 
 export type OrderRepairsQueryVariables = Exact<{
   orderBy?: InputMaybe<Array<FindOrderRepairOrderBy> | FindOrderRepairOrderBy>;
@@ -2900,7 +3539,7 @@ export type OrderRepairsQueryVariables = Exact<{
 }>;
 
 
-export type OrderRepairsQuery = { __typename?: 'Query', orderRepairs: Array<{ __typename?: 'OrderRepairty', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, status: OrderStatusEnum, deliveryDate?: any | null, client: { __typename?: 'Client', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, identificationType?: UserDocumentTypes | null, lastName?: string | null, numberDocument: string, email: string, address?: string | null, celular: string }, repairType: { __typename?: 'RepairType', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, costEstimate?: number | null, fields?: Array<{ __typename?: 'RepairField', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, type: FieldTypeEnum, isRequired: boolean, minLength?: number | null, maxLength?: number | null }> | null }, fieldValues?: Array<{ __typename?: 'CustomFieldValue', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, valorTexto?: string | null, valorFecha?: any | null, valorNumerico?: number | null, valorTextoLargo?: string | null, orderRepair: { __typename?: 'OrderRepairty', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, status: OrderStatusEnum, deliveryDate?: any | null }, field: { __typename?: 'RepairField', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, type: FieldTypeEnum, isRequired: boolean, minLength?: number | null, maxLength?: number | null }, valorFoto?: { __typename?: 'FileInfo', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, fileName: string, fileExtension: string, fileMode: FileModes, fileMongoId?: string | null, fileUrl?: string | null, url: string } | null }> | null }> };
+export type OrderRepairsQuery = { __typename?: 'Query', orderRepairs: Array<{ __typename?: 'OrderRepairty', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, status: OrderStatusEnum, deliveryDate?: any | null, client: { __typename?: 'Client', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, identificationType?: UserDocumentTypes | null, lastName?: string | null, numberDocument?: string | null, email?: string | null, address?: string | null, celular: string }, repairType: { __typename?: 'RepairType', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, status?: boolean | null, costEstimate?: number | null, fields?: Array<{ __typename?: 'RepairField', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, type: FieldTypeEnum, isRequired: boolean, minLength?: number | null, maxLength?: number | null, selectorOptions?: Array<{ __typename?: 'SelectorOption', value: string, id: string, repairField: { __typename?: 'RepairField', id: string } }> | null }> | null }, fieldValues?: Array<{ __typename?: 'CustomFieldValue', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, valorTexto?: string | null, valorFecha?: any | null, valorNumerico?: number | null, valorTextoLargo?: string | null, valorSeletor?: string | null, orderRepair: { __typename?: 'OrderRepairty', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, status: OrderStatusEnum, deliveryDate?: any | null }, field: { __typename?: 'RepairField', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, type: FieldTypeEnum, isRequired: boolean, minLength?: number | null, maxLength?: number | null, selectorOptions?: Array<{ __typename?: 'SelectorOption', value: string, id: string, repairField: { __typename?: 'RepairField', id: string } }> | null }, valorFoto?: { __typename?: 'FileInfo', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, fileName: string, fileExtension: string, fileMode: FileModes, fileMongoId?: string | null, fileUrl?: string | null, url: string } | null }> | null }> };
 
 export type GenrateQrByRepairQueryVariables = Exact<{
   idRepair: Scalars['String']['input'];
@@ -2920,6 +3559,89 @@ export type UpdateOrderRepairMutationVariables = Exact<{
 
 
 export type UpdateOrderRepairMutation = { __typename?: 'Mutation', updateOrderRepair: { __typename?: 'OrderRepairty', id: string } };
+
+export type CreateProductMutationVariables = Exact<{
+  createInput: CreateProductInput;
+}>;
+
+
+export type CreateProductMutation = { __typename?: 'Mutation', createProduct: { __typename?: 'Products', id: string } };
+
+export type UpdateProductMutationVariables = Exact<{
+  updateInput: UpdateProductsInput;
+}>;
+
+
+export type UpdateProductMutation = { __typename?: 'Mutation', updateProduct: { __typename?: 'Products', id: string } };
+
+export type ProductsQueryVariables = Exact<{
+  orderBy?: InputMaybe<Array<FindProductsOrderBy> | FindProductsOrderBy>;
+  where?: InputMaybe<FindProductsWhere>;
+  pagination?: InputMaybe<Pagination>;
+}>;
+
+
+export type ProductsQuery = { __typename?: 'Query', Products: Array<{ __typename?: 'Products', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, description?: string | null, salePrice: number, costPrice?: number | null, tax?: number | null, unitOfMeasure?: string | null, isActive: boolean, expirationDate?: any | null, isShowPublic: boolean, minStock?: number | null, stock: { __typename?: 'StockProductView', id: string, entrada_producto: number, salida_producto: number, stock: number, name: string } }>, ProductsCount: { __typename?: 'MetadataPagination', totalItems?: number | null, itemsPerPage?: number | null, totalPages?: number | null, currentPage?: number | null } };
+
+export type ProductQueryVariables = Exact<{
+  productId: Scalars['ID']['input'];
+}>;
+
+
+export type ProductQuery = { __typename?: 'Query', Product: { __typename?: 'Products', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, description?: string | null, salePrice: number, costPrice?: number | null, tax?: number | null, unitOfMeasure?: string | null, isActive: boolean, expirationDate?: any | null, minStock?: number | null, stock: { __typename?: 'StockProductView', id: string, entrada_producto: number, salida_producto: number, stock: number, name: string } } };
+
+export type CreateProductInflowMutationVariables = Exact<{
+  createInput: CreateProductInflowInput;
+}>;
+
+
+export type CreateProductInflowMutation = { __typename?: 'Mutation', createProductInflow: { __typename?: 'ProductInflow', id: string } };
+
+export type UpdateProductInflowMutationVariables = Exact<{
+  updateInput: UpdateProductsInflowInput;
+}>;
+
+
+export type UpdateProductInflowMutation = { __typename?: 'Mutation', updateProductInflow: { __typename?: 'ProductInflow', id: string } };
+
+export type ProductsInflowsQueryVariables = Exact<{
+  orderBy?: InputMaybe<Array<FindProductsInflowOrderBy> | FindProductsInflowOrderBy>;
+  where?: InputMaybe<FindProductsInflowWhere>;
+  pagination?: InputMaybe<Pagination>;
+}>;
+
+
+export type ProductsInflowsQuery = { __typename?: 'Query', ProductsInflows: Array<{ __typename?: 'ProductInflow', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, quantity: number, inflowDate: any, status: ProductInflowEmun, description?: string | null, product: { __typename?: 'Products', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, description?: string | null, salePrice: number, costPrice?: number | null, tax?: number | null, unitOfMeasure?: string | null, isActive: boolean, expirationDate?: any | null }, user: { __typename?: 'User', email: string, fullName: string, id: string, identificationNumber?: string | null } }>, ProductsInflowsCount: { __typename?: 'MetadataPagination', currentPage?: number | null, itemsPerPage?: number | null, totalItems?: number | null, totalPages?: number | null } };
+
+export type ProductInflowQueryVariables = Exact<{
+  productInflowId: Scalars['ID']['input'];
+}>;
+
+
+export type ProductInflowQuery = { __typename?: 'Query', ProductInflow: { __typename?: 'ProductInflow', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, quantity: number, inflowDate: any, description?: string | null, product: { __typename?: 'Products', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, description?: string | null, salePrice: number, costPrice?: number | null, tax?: number | null, unitOfMeasure?: string | null, isActive: boolean, expirationDate?: any | null }, user: { __typename?: 'User', email: string, fullName: string, id: string, identificationNumber?: string | null } } };
+
+export type CreateProductOutflowMutationVariables = Exact<{
+  createInput: CreateProductOutflowInput;
+}>;
+
+
+export type CreateProductOutflowMutation = { __typename?: 'Mutation', createProductOutflow: { __typename?: 'ProductOutflow', id: string } };
+
+export type UpdateProductOutflowMutationVariables = Exact<{
+  updateInput: UpdateProductsOutflowInput;
+}>;
+
+
+export type UpdateProductOutflowMutation = { __typename?: 'Mutation', updateProductOutflow: { __typename?: 'ProductOutflow', id: string } };
+
+export type ProductsOutflowsQueryVariables = Exact<{
+  orderBy?: InputMaybe<Array<FindProductsOutflowOrderBy> | FindProductsOutflowOrderBy>;
+  where?: InputMaybe<FindProductsOutflowWhere>;
+  pagination?: InputMaybe<Pagination>;
+}>;
+
+
+export type ProductsOutflowsQuery = { __typename?: 'Query', ProductsOutflows: Array<{ __typename?: 'ProductOutflow', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, inflowDate: any, description?: string | null, paymentMethod: PaymentMethodEnum, status: StatusInvoice, invoiceNumber: string, client: { __typename?: 'Client', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, lastName?: string | null, numberDocument?: string | null, email?: string | null, address?: string | null, celular: string }, invoiceProducts: Array<{ __typename?: 'InvoiceProduct', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, quantity: number, unitPrice: number, subtotal: number, discount?: number | null, tax?: number | null, total: number, product: { __typename?: 'Products', costPrice?: number | null, id: string, name: string, tax?: number | null, salePrice: number } }>, invoiceServices: Array<{ __typename?: 'InvoiceService', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, quantity: number, unitPrice: number, subtotal: number, discount?: number | null, tax?: number | null, total: number, service: { __typename?: 'RepairType', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, status?: boolean | null, costEstimate?: number | null } }> }>, ProductsOutflowsCount: { __typename?: 'MetadataPagination', currentPage?: number | null, itemsPerPage?: number | null, totalItems?: number | null, totalPages?: number | null } };
 
 
 export const SigninDocument = gql`
@@ -3221,6 +3943,39 @@ export type FindOneByNumberPhoneQueryHookResult = ReturnType<typeof useFindOneBy
 export type FindOneByNumberPhoneLazyQueryHookResult = ReturnType<typeof useFindOneByNumberPhoneLazyQuery>;
 export type FindOneByNumberPhoneSuspenseQueryHookResult = ReturnType<typeof useFindOneByNumberPhoneSuspenseQuery>;
 export type FindOneByNumberPhoneQueryResult = Apollo.QueryResult<FindOneByNumberPhoneQuery, FindOneByNumberPhoneQueryVariables>;
+export const CreateClientDocument = gql`
+    mutation CreateClient($createInput: CreateClientInput!) {
+  createClient(createInput: $createInput) {
+    id
+  }
+}
+    `;
+export type CreateClientMutationFn = Apollo.MutationFunction<CreateClientMutation, CreateClientMutationVariables>;
+
+/**
+ * __useCreateClientMutation__
+ *
+ * To run a mutation, you first call `useCreateClientMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateClientMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createClientMutation, { data, loading, error }] = useCreateClientMutation({
+ *   variables: {
+ *      createInput: // value for 'createInput'
+ *   },
+ * });
+ */
+export function useCreateClientMutation(baseOptions?: Apollo.MutationHookOptions<CreateClientMutation, CreateClientMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateClientMutation, CreateClientMutationVariables>(CreateClientDocument, options);
+      }
+export type CreateClientMutationHookResult = ReturnType<typeof useCreateClientMutation>;
+export type CreateClientMutationResult = Apollo.MutationResult<CreateClientMutation>;
+export type CreateClientMutationOptions = Apollo.BaseMutationOptions<CreateClientMutation, CreateClientMutationVariables>;
 export const CreateInvoiceDocument = gql`
     mutation CreateInvoice($createInput: CreateInvoiceInput!) {
   createInvoice(createInput: $createInput) {
@@ -3323,6 +4078,13 @@ export const OrderRepairDocument = gql`
         isRequired
         minLength
         maxLength
+        selectorOptions {
+          value
+          id
+          repairField {
+            id
+          }
+        }
       }
     }
     fieldValues {
@@ -3340,11 +4102,19 @@ export const OrderRepairDocument = gql`
         isRequired
         minLength
         maxLength
+        selectorOptions {
+          value
+          id
+          repairField {
+            id
+          }
+        }
       }
       valorTexto
       valorFecha
       valorNumerico
       valorTextoLargo
+      valorSeletor
       valorFoto {
         id
         createdAt
@@ -3438,6 +4208,7 @@ export const OrderRepairsTypeDocument = gql`
     deletedAt
     name
     costEstimate
+    status
     fields {
       id
       createdAt
@@ -3448,6 +4219,13 @@ export const OrderRepairsTypeDocument = gql`
       isRequired
       minLength
       maxLength
+      selectorOptions {
+        value
+        id
+        repairField {
+          id
+        }
+      }
     }
   }
 }
@@ -3514,6 +4292,7 @@ export const OrderRepairsDocument = gql`
       updatedAt
       deletedAt
       name
+      status
       costEstimate
       fields {
         id
@@ -3525,6 +4304,13 @@ export const OrderRepairsDocument = gql`
         isRequired
         minLength
         maxLength
+        selectorOptions {
+          value
+          id
+          repairField {
+            id
+          }
+        }
       }
     }
     fieldValues {
@@ -3550,11 +4336,19 @@ export const OrderRepairsDocument = gql`
         isRequired
         minLength
         maxLength
+        selectorOptions {
+          value
+          id
+          repairField {
+            id
+          }
+        }
       }
       valorTexto
       valorFecha
       valorNumerico
       valorTextoLargo
+      valorSeletor
       valorFoto {
         id
         createdAt
@@ -3719,3 +4513,577 @@ export function useUpdateOrderRepairMutation(baseOptions?: Apollo.MutationHookOp
 export type UpdateOrderRepairMutationHookResult = ReturnType<typeof useUpdateOrderRepairMutation>;
 export type UpdateOrderRepairMutationResult = Apollo.MutationResult<UpdateOrderRepairMutation>;
 export type UpdateOrderRepairMutationOptions = Apollo.BaseMutationOptions<UpdateOrderRepairMutation, UpdateOrderRepairMutationVariables>;
+export const CreateProductDocument = gql`
+    mutation CreateProduct($createInput: CreateProductInput!) {
+  createProduct(createInput: $createInput) {
+    id
+  }
+}
+    `;
+export type CreateProductMutationFn = Apollo.MutationFunction<CreateProductMutation, CreateProductMutationVariables>;
+
+/**
+ * __useCreateProductMutation__
+ *
+ * To run a mutation, you first call `useCreateProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProductMutation, { data, loading, error }] = useCreateProductMutation({
+ *   variables: {
+ *      createInput: // value for 'createInput'
+ *   },
+ * });
+ */
+export function useCreateProductMutation(baseOptions?: Apollo.MutationHookOptions<CreateProductMutation, CreateProductMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateProductMutation, CreateProductMutationVariables>(CreateProductDocument, options);
+      }
+export type CreateProductMutationHookResult = ReturnType<typeof useCreateProductMutation>;
+export type CreateProductMutationResult = Apollo.MutationResult<CreateProductMutation>;
+export type CreateProductMutationOptions = Apollo.BaseMutationOptions<CreateProductMutation, CreateProductMutationVariables>;
+export const UpdateProductDocument = gql`
+    mutation UpdateProduct($updateInput: UpdateProductsInput!) {
+  updateProduct(updateInput: $updateInput) {
+    id
+  }
+}
+    `;
+export type UpdateProductMutationFn = Apollo.MutationFunction<UpdateProductMutation, UpdateProductMutationVariables>;
+
+/**
+ * __useUpdateProductMutation__
+ *
+ * To run a mutation, you first call `useUpdateProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProductMutation, { data, loading, error }] = useUpdateProductMutation({
+ *   variables: {
+ *      updateInput: // value for 'updateInput'
+ *   },
+ * });
+ */
+export function useUpdateProductMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProductMutation, UpdateProductMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProductMutation, UpdateProductMutationVariables>(UpdateProductDocument, options);
+      }
+export type UpdateProductMutationHookResult = ReturnType<typeof useUpdateProductMutation>;
+export type UpdateProductMutationResult = Apollo.MutationResult<UpdateProductMutation>;
+export type UpdateProductMutationOptions = Apollo.BaseMutationOptions<UpdateProductMutation, UpdateProductMutationVariables>;
+export const ProductsDocument = gql`
+    query Products($orderBy: [FindProductsOrderBy!], $where: FindProductsWhere, $pagination: Pagination) {
+  Products(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    name
+    description
+    salePrice
+    costPrice
+    tax
+    unitOfMeasure
+    isActive
+    expirationDate
+    isShowPublic
+    minStock
+    stock {
+      id
+      entrada_producto
+      salida_producto
+      stock
+      name
+    }
+  }
+  ProductsCount(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    totalItems
+    itemsPerPage
+    totalPages
+    currentPage
+  }
+}
+    `;
+
+/**
+ * __useProductsQuery__
+ *
+ * To run a query within a React component, call `useProductsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProductsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProductsQuery({
+ *   variables: {
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *      pagination: // value for 'pagination'
+ *   },
+ * });
+ */
+export function useProductsQuery(baseOptions?: Apollo.QueryHookOptions<ProductsQuery, ProductsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProductsQuery, ProductsQueryVariables>(ProductsDocument, options);
+      }
+export function useProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProductsQuery, ProductsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProductsQuery, ProductsQueryVariables>(ProductsDocument, options);
+        }
+export function useProductsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ProductsQuery, ProductsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ProductsQuery, ProductsQueryVariables>(ProductsDocument, options);
+        }
+export type ProductsQueryHookResult = ReturnType<typeof useProductsQuery>;
+export type ProductsLazyQueryHookResult = ReturnType<typeof useProductsLazyQuery>;
+export type ProductsSuspenseQueryHookResult = ReturnType<typeof useProductsSuspenseQuery>;
+export type ProductsQueryResult = Apollo.QueryResult<ProductsQuery, ProductsQueryVariables>;
+export const ProductDocument = gql`
+    query Product($productId: ID!) {
+  Product(id: $productId) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    name
+    description
+    salePrice
+    costPrice
+    tax
+    unitOfMeasure
+    isActive
+    expirationDate
+    minStock
+    stock {
+      id
+      entrada_producto
+      salida_producto
+      stock
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useProductQuery__
+ *
+ * To run a query within a React component, call `useProductQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProductQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProductQuery({
+ *   variables: {
+ *      productId: // value for 'productId'
+ *   },
+ * });
+ */
+export function useProductQuery(baseOptions: Apollo.QueryHookOptions<ProductQuery, ProductQueryVariables> & ({ variables: ProductQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProductQuery, ProductQueryVariables>(ProductDocument, options);
+      }
+export function useProductLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProductQuery, ProductQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProductQuery, ProductQueryVariables>(ProductDocument, options);
+        }
+export function useProductSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ProductQuery, ProductQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ProductQuery, ProductQueryVariables>(ProductDocument, options);
+        }
+export type ProductQueryHookResult = ReturnType<typeof useProductQuery>;
+export type ProductLazyQueryHookResult = ReturnType<typeof useProductLazyQuery>;
+export type ProductSuspenseQueryHookResult = ReturnType<typeof useProductSuspenseQuery>;
+export type ProductQueryResult = Apollo.QueryResult<ProductQuery, ProductQueryVariables>;
+export const CreateProductInflowDocument = gql`
+    mutation CreateProductInflow($createInput: CreateProductInflowInput!) {
+  createProductInflow(createInput: $createInput) {
+    id
+  }
+}
+    `;
+export type CreateProductInflowMutationFn = Apollo.MutationFunction<CreateProductInflowMutation, CreateProductInflowMutationVariables>;
+
+/**
+ * __useCreateProductInflowMutation__
+ *
+ * To run a mutation, you first call `useCreateProductInflowMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProductInflowMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProductInflowMutation, { data, loading, error }] = useCreateProductInflowMutation({
+ *   variables: {
+ *      createInput: // value for 'createInput'
+ *   },
+ * });
+ */
+export function useCreateProductInflowMutation(baseOptions?: Apollo.MutationHookOptions<CreateProductInflowMutation, CreateProductInflowMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateProductInflowMutation, CreateProductInflowMutationVariables>(CreateProductInflowDocument, options);
+      }
+export type CreateProductInflowMutationHookResult = ReturnType<typeof useCreateProductInflowMutation>;
+export type CreateProductInflowMutationResult = Apollo.MutationResult<CreateProductInflowMutation>;
+export type CreateProductInflowMutationOptions = Apollo.BaseMutationOptions<CreateProductInflowMutation, CreateProductInflowMutationVariables>;
+export const UpdateProductInflowDocument = gql`
+    mutation UpdateProductInflow($updateInput: UpdateProductsInflowInput!) {
+  updateProductInflow(updateInput: $updateInput) {
+    id
+  }
+}
+    `;
+export type UpdateProductInflowMutationFn = Apollo.MutationFunction<UpdateProductInflowMutation, UpdateProductInflowMutationVariables>;
+
+/**
+ * __useUpdateProductInflowMutation__
+ *
+ * To run a mutation, you first call `useUpdateProductInflowMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProductInflowMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProductInflowMutation, { data, loading, error }] = useUpdateProductInflowMutation({
+ *   variables: {
+ *      updateInput: // value for 'updateInput'
+ *   },
+ * });
+ */
+export function useUpdateProductInflowMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProductInflowMutation, UpdateProductInflowMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProductInflowMutation, UpdateProductInflowMutationVariables>(UpdateProductInflowDocument, options);
+      }
+export type UpdateProductInflowMutationHookResult = ReturnType<typeof useUpdateProductInflowMutation>;
+export type UpdateProductInflowMutationResult = Apollo.MutationResult<UpdateProductInflowMutation>;
+export type UpdateProductInflowMutationOptions = Apollo.BaseMutationOptions<UpdateProductInflowMutation, UpdateProductInflowMutationVariables>;
+export const ProductsInflowsDocument = gql`
+    query ProductsInflows($orderBy: [FindProductsInflowOrderBy!], $where: FindProductsInflowWhere, $pagination: Pagination) {
+  ProductsInflows(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    quantity
+    inflowDate
+    status
+    description
+    product {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      description
+      salePrice
+      costPrice
+      tax
+      unitOfMeasure
+      isActive
+      expirationDate
+    }
+    user {
+      email
+      fullName
+      id
+      identificationNumber
+    }
+  }
+  ProductsInflowsCount(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    currentPage
+    itemsPerPage
+    totalItems
+    totalPages
+  }
+}
+    `;
+
+/**
+ * __useProductsInflowsQuery__
+ *
+ * To run a query within a React component, call `useProductsInflowsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProductsInflowsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProductsInflowsQuery({
+ *   variables: {
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *      pagination: // value for 'pagination'
+ *   },
+ * });
+ */
+export function useProductsInflowsQuery(baseOptions?: Apollo.QueryHookOptions<ProductsInflowsQuery, ProductsInflowsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProductsInflowsQuery, ProductsInflowsQueryVariables>(ProductsInflowsDocument, options);
+      }
+export function useProductsInflowsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProductsInflowsQuery, ProductsInflowsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProductsInflowsQuery, ProductsInflowsQueryVariables>(ProductsInflowsDocument, options);
+        }
+export function useProductsInflowsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ProductsInflowsQuery, ProductsInflowsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ProductsInflowsQuery, ProductsInflowsQueryVariables>(ProductsInflowsDocument, options);
+        }
+export type ProductsInflowsQueryHookResult = ReturnType<typeof useProductsInflowsQuery>;
+export type ProductsInflowsLazyQueryHookResult = ReturnType<typeof useProductsInflowsLazyQuery>;
+export type ProductsInflowsSuspenseQueryHookResult = ReturnType<typeof useProductsInflowsSuspenseQuery>;
+export type ProductsInflowsQueryResult = Apollo.QueryResult<ProductsInflowsQuery, ProductsInflowsQueryVariables>;
+export const ProductInflowDocument = gql`
+    query ProductInflow($productInflowId: ID!) {
+  ProductInflow(id: $productInflowId) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    quantity
+    inflowDate
+    description
+    product {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      description
+      salePrice
+      costPrice
+      tax
+      unitOfMeasure
+      isActive
+      expirationDate
+    }
+    user {
+      email
+      fullName
+      id
+      identificationNumber
+    }
+  }
+}
+    `;
+
+/**
+ * __useProductInflowQuery__
+ *
+ * To run a query within a React component, call `useProductInflowQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProductInflowQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProductInflowQuery({
+ *   variables: {
+ *      productInflowId: // value for 'productInflowId'
+ *   },
+ * });
+ */
+export function useProductInflowQuery(baseOptions: Apollo.QueryHookOptions<ProductInflowQuery, ProductInflowQueryVariables> & ({ variables: ProductInflowQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProductInflowQuery, ProductInflowQueryVariables>(ProductInflowDocument, options);
+      }
+export function useProductInflowLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProductInflowQuery, ProductInflowQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProductInflowQuery, ProductInflowQueryVariables>(ProductInflowDocument, options);
+        }
+export function useProductInflowSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ProductInflowQuery, ProductInflowQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ProductInflowQuery, ProductInflowQueryVariables>(ProductInflowDocument, options);
+        }
+export type ProductInflowQueryHookResult = ReturnType<typeof useProductInflowQuery>;
+export type ProductInflowLazyQueryHookResult = ReturnType<typeof useProductInflowLazyQuery>;
+export type ProductInflowSuspenseQueryHookResult = ReturnType<typeof useProductInflowSuspenseQuery>;
+export type ProductInflowQueryResult = Apollo.QueryResult<ProductInflowQuery, ProductInflowQueryVariables>;
+export const CreateProductOutflowDocument = gql`
+    mutation CreateProductOutflow($createInput: CreateProductOutflowInput!) {
+  createProductOutflow(createInput: $createInput) {
+    id
+  }
+}
+    `;
+export type CreateProductOutflowMutationFn = Apollo.MutationFunction<CreateProductOutflowMutation, CreateProductOutflowMutationVariables>;
+
+/**
+ * __useCreateProductOutflowMutation__
+ *
+ * To run a mutation, you first call `useCreateProductOutflowMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProductOutflowMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProductOutflowMutation, { data, loading, error }] = useCreateProductOutflowMutation({
+ *   variables: {
+ *      createInput: // value for 'createInput'
+ *   },
+ * });
+ */
+export function useCreateProductOutflowMutation(baseOptions?: Apollo.MutationHookOptions<CreateProductOutflowMutation, CreateProductOutflowMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateProductOutflowMutation, CreateProductOutflowMutationVariables>(CreateProductOutflowDocument, options);
+      }
+export type CreateProductOutflowMutationHookResult = ReturnType<typeof useCreateProductOutflowMutation>;
+export type CreateProductOutflowMutationResult = Apollo.MutationResult<CreateProductOutflowMutation>;
+export type CreateProductOutflowMutationOptions = Apollo.BaseMutationOptions<CreateProductOutflowMutation, CreateProductOutflowMutationVariables>;
+export const UpdateProductOutflowDocument = gql`
+    mutation UpdateProductOutflow($updateInput: UpdateProductsOutflowInput!) {
+  updateProductOutflow(updateInput: $updateInput) {
+    id
+  }
+}
+    `;
+export type UpdateProductOutflowMutationFn = Apollo.MutationFunction<UpdateProductOutflowMutation, UpdateProductOutflowMutationVariables>;
+
+/**
+ * __useUpdateProductOutflowMutation__
+ *
+ * To run a mutation, you first call `useUpdateProductOutflowMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProductOutflowMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProductOutflowMutation, { data, loading, error }] = useUpdateProductOutflowMutation({
+ *   variables: {
+ *      updateInput: // value for 'updateInput'
+ *   },
+ * });
+ */
+export function useUpdateProductOutflowMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProductOutflowMutation, UpdateProductOutflowMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProductOutflowMutation, UpdateProductOutflowMutationVariables>(UpdateProductOutflowDocument, options);
+      }
+export type UpdateProductOutflowMutationHookResult = ReturnType<typeof useUpdateProductOutflowMutation>;
+export type UpdateProductOutflowMutationResult = Apollo.MutationResult<UpdateProductOutflowMutation>;
+export type UpdateProductOutflowMutationOptions = Apollo.BaseMutationOptions<UpdateProductOutflowMutation, UpdateProductOutflowMutationVariables>;
+export const ProductsOutflowsDocument = gql`
+    query ProductsOutflows($orderBy: [FindProductsOutflowOrderBy!], $where: FindProductsOutflowWhere, $pagination: Pagination) {
+  ProductsOutflows(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    inflowDate
+    description
+    paymentMethod
+    status
+    invoiceNumber
+    client {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      lastName
+      numberDocument
+      email
+      address
+      celular
+    }
+    invoiceProducts {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      quantity
+      unitPrice
+      subtotal
+      discount
+      tax
+      total
+      product {
+        costPrice
+        id
+        name
+        tax
+        salePrice
+      }
+    }
+    invoiceServices {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      quantity
+      unitPrice
+      subtotal
+      discount
+      tax
+      total
+      service {
+        id
+        createdAt
+        updatedAt
+        deletedAt
+        name
+        status
+        costEstimate
+      }
+    }
+  }
+  ProductsOutflowsCount(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    currentPage
+    itemsPerPage
+    totalItems
+    totalPages
+  }
+}
+    `;
+
+/**
+ * __useProductsOutflowsQuery__
+ *
+ * To run a query within a React component, call `useProductsOutflowsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProductsOutflowsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProductsOutflowsQuery({
+ *   variables: {
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *      pagination: // value for 'pagination'
+ *   },
+ * });
+ */
+export function useProductsOutflowsQuery(baseOptions?: Apollo.QueryHookOptions<ProductsOutflowsQuery, ProductsOutflowsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProductsOutflowsQuery, ProductsOutflowsQueryVariables>(ProductsOutflowsDocument, options);
+      }
+export function useProductsOutflowsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProductsOutflowsQuery, ProductsOutflowsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProductsOutflowsQuery, ProductsOutflowsQueryVariables>(ProductsOutflowsDocument, options);
+        }
+export function useProductsOutflowsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ProductsOutflowsQuery, ProductsOutflowsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ProductsOutflowsQuery, ProductsOutflowsQueryVariables>(ProductsOutflowsDocument, options);
+        }
+export type ProductsOutflowsQueryHookResult = ReturnType<typeof useProductsOutflowsQuery>;
+export type ProductsOutflowsLazyQueryHookResult = ReturnType<typeof useProductsOutflowsLazyQuery>;
+export type ProductsOutflowsSuspenseQueryHookResult = ReturnType<typeof useProductsOutflowsSuspenseQuery>;
+export type ProductsOutflowsQueryResult = Apollo.QueryResult<ProductsOutflowsQuery, ProductsOutflowsQueryVariables>;

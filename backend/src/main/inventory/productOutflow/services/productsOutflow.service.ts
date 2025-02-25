@@ -56,9 +56,12 @@ export class ProductsOutflowService extends CrudServiceFrom(serviceStructure) {
     for (const invoiceProductDTO of createInput.invoiceProducts) {
       const { quantity, unitPrice, discount = 0, tax = 0, productId } = invoiceProductDTO;
       const productDetail = await this.productService.findOne(context,productId,true);
-
       const subtotal = quantity * productDetail.salePrice;
-      const total = subtotal - discount + tax;
+      const descuento = (subtotal * discount) / 100;
+      const impuesto = (subtotal * tax) / 100;
+      const total=  subtotal - descuento + impuesto;
+      // const subtotal = quantity * productDetail.salePrice;
+      // const total = (subtotal - discount) + tax;
 
       const invoiceProduct = this.invoiceProductRepository.create({
         quantity,
@@ -76,9 +79,10 @@ export class ProductsOutflowService extends CrudServiceFrom(serviceStructure) {
     for(const invoiceServiceDTO of createInput.invoiceServices){
       const { quantity, unitPrice, discount = 0, tax = 0, serviceId } = invoiceServiceDTO;
       const service = await this.ordertypeService.findOne(context,serviceId,true);
-
       const subtotal = quantity * service.costEstimate;
-      const total = subtotal - discount + tax;
+      const descuento = (subtotal * discount) / 100;
+      const impuesto = (subtotal * tax) / 100;
+      const total=  subtotal - descuento + impuesto;
 
       const invoiceService = this.invoiceServiceRepository.create({
         quantity,

@@ -4,6 +4,7 @@ import { useColor } from '../../Constants/Color';
 import Select, { OptionsSelect } from '../../components/input/Select';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useFindOneByDocumentNumberLazyQuery, useFindOneByNumberPhoneLazyQuery, UserDocumentTypes } from '../../graphql/generated/graphql';
+import SearchUserComponent from '../../components/search/user-input-search';
 
 const { color } = useColor();
 
@@ -128,6 +129,23 @@ const ClientForm: React.FC<ClientFormProps> = ({ clientData, setClientData }) =>
       keyboardShouldPersistTaps="handled"
     >
       <View style={styles.formContainer}>
+      <Text style={styles.textPlaceholder}>Bucar cliente</Text>
+        <SearchUserComponent 
+            onSelectClient={(client)=> {
+              console.log(client)
+              setClientData({
+                nombre: client.name,
+                apellido: client.lastName || '',
+                email: client.email,
+                telefono: client.celular,
+                numberDocumento: client.numberDocument,
+                typeNumberDocument: client.identificationType || '',
+                address: client.address || ''
+              });
+            }}
+            placeholder={'Buscar por nombre o celular'}
+            key={clientData.numberDocumento}
+          />
         <Text style={styles.textPlaceholder}>Número de documento</Text>
         <TextInput
           style={[styles.input]}

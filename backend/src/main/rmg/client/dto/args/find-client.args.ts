@@ -12,7 +12,9 @@ class FindClientWhere {
 
   @Field(() => StringFilter)
   name: StringFilter;
-
+  @Field(() => StringFilter)
+  celular: StringFilter;
+  
   @Field(() => StringFilter)
   user: StringFilter;
 

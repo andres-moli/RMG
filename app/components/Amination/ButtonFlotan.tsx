@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Animated, TouchableOpacity, StyleSheet, View, TouchableWithoutFeedback } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useColor } from '../../Constants/Color';
+import { useNavigation } from '@react-navigation/native';
 
 const { color } = useColor();
 
@@ -13,7 +14,7 @@ const FloatingButton: React.FC<FloatingButtonProps> = ({ onPress }) => {
   const [showOptions, setShowOptions] = useState(false); // Estado para controlar la visibilidad de las opciones
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const translateAnim = useRef(new Animated.Value(0)).current; // Animación para las opciones adicionales
-
+  const navigation = useNavigation()
   const handlePressIn = () => {
     Animated.spring(scaleAnim, {
       toValue: 0.9,
@@ -48,6 +49,9 @@ const FloatingButton: React.FC<FloatingButtonProps> = ({ onPress }) => {
       }).start();
     }
   };
+  const handelCash = () => {
+    navigation.navigate('ReciboPagoScreen')
+  }
   return (
     <View style={styles.container}>
       <TouchableWithoutFeedback onPress={closeOptions}>
@@ -59,8 +63,8 @@ const FloatingButton: React.FC<FloatingButtonProps> = ({ onPress }) => {
           <TouchableOpacity onPress={onPress} style={[styles.optionButton, styles.optionButton1]}>
             <MaterialCommunityIcons name="car-wrench" color="white" size={24} />
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.optionButton, styles.optionButton1]}>
-            <MaterialCommunityIcons name="cash-plus" color="white" size={24} />
+          <TouchableOpacity onPress={handelCash}style={[styles.optionButton, styles.optionButton1]}>
+            <MaterialCommunityIcons name="account-cash-outline" color="white" size={24} />
           </TouchableOpacity>
         </Animated.View>
       )}

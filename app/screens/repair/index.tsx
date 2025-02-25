@@ -5,7 +5,7 @@ import { RepairField, FieldTypeEnum, OrderRepairty, useOrderRepairQuery, OrderSt
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import ModalQr from './modalQr';
-// import DatePickerComponent from '../../components/input/FormDate';
+import DatePickerComponent from '../../components/input/FormDate';
 import dayjs from 'dayjs';
 import ImageField from './imageComponente';
 import { ToastyErrorGraph } from '../../graphql';
@@ -13,6 +13,7 @@ import * as Progress from 'react-native-progress';
 import { makePhoneCall } from '../../Lib/MarquetCell';
 import { ModalInvoiceCreate } from './ModalFactureCreate';
 import InvoiceModal from './ModalInvoice';
+import Select, { OptionsSelect } from '../../components/input/Select';
 const { color } = useColor();
 type BotonesHabilitados = {
   finalizar: boolean;
@@ -61,6 +62,7 @@ const RepairDetailScreen = ({ route }: any) => {
       // Inicializar los valores del formulario con los valores existentes
       const initialValues: any = {};
       orderRepair.fieldValues.forEach((fieldValue) => {
+        console.log(fieldValue)
         let value
         switch (fieldValue.field.type) {
           case FieldTypeEnum.Text:
@@ -78,8 +80,9 @@ const RepairDetailScreen = ({ route }: any) => {
           case FieldTypeEnum.Image:
             value = fieldValue.valorFoto
             break;
-          // case FieldTypeEnum.Select:
-          //   break;
+          case FieldTypeEnum.Selector:
+            value = fieldValue.valorSeletor
+            break;
           // case FieldTypeEnum.Checkbox:
           //   break;
           // case FieldTypeEnum.Radio:
@@ -144,27 +147,27 @@ const RepairDetailScreen = ({ route }: any) => {
         Alert.alert("HUBO UN ERROR", res.errors[0].message, [ {text: 'ACEPTAR', style: 'default'}]);
         return
       }
-      if(status === OrderStatusEnum.Completed){
-        Alert.alert("¡Muy bien!", 'El proceso termino con éxito, desea crear Recibo de pago', 
-          [ 
-            {
-              text: 'Crear Recibo de pago', 
-              style: 'default',
-              onPress: () => {
-                setModalVisibleFactura(true)
-              }
-            },
-            {
-              text: 'No Crear', 
-              style: 'cancel',
-              onPress: async () => {
-                await refetch()
-              }
-            }
-          ]
-        );
-        return
-      }
+      // if(status === OrderStatusEnum.Completed){
+      //   Alert.alert("¡Muy bien!", 'El proceso termino con éxito, desea crear Recibo de pago', 
+      //     [ 
+      //       {
+      //         text: 'Crear Recibo de pago', 
+      //         style: 'default',
+      //         onPress: () => {
+      //           setModalVisibleFactura(true)
+      //         }
+      //       },
+      //       {
+      //         text: 'No Crear', 
+      //         style: 'cancel',
+      //         onPress: async () => {
+      //           await refetch()
+      //         }
+      //       }
+      //     ]
+      //   );
+      //   return
+      // }
       Alert.alert("¡Muy bien!", 'El proceso termino con éxito', [ {text: 'ACEPTAR', style: 'default'}]);
       refetch()
     }catch (err){
@@ -222,7 +225,7 @@ const RepairDetailScreen = ({ route }: any) => {
         </View>
       );
     case FieldTypeEnum.Date:
-      return null
+      // return null
       if(value){
         return (
           <View key={field.id} style={styles.inputContainer}>
@@ -249,6 +252,23 @@ const RepairDetailScreen = ({ route }: any) => {
             onChange={(val) => handleChange(field.id, val)} 
           />
         );
+      case FieldTypeEnum.Selector: 
+      console.log(formValues)
+        const options: OptionsSelect[] = field.selectorOptions?.map((op) => {
+          return {
+            key: op.id,
+            value: op.value
+          }
+        }) || []
+        return(
+          <Select 
+            options={options}
+            placeholder={field.name}
+            onSelect={(val) => handleChange(field.id, val)}
+            key={field.id}
+            selectedOption={value}
+          />
+        )
       default:
         return null;
     }
@@ -374,7 +394,7 @@ const RepairDetailScreen = ({ route }: any) => {
               <MaterialCommunityIcons name="close-circle" color={!cancelar ? color.darkGray : color.primary} size={40} />
               <Text style={styles.textButton}>CANCELAR</Text>
             </TouchableOpacity>
-            {
+            {/* {
               orderRepair.invoice ?
               <TouchableOpacity onPress={() => {setmodalVisibleFacturaEmiter(true)}} style={styles.iconButton}>
                 <MaterialCommunityIcons name="cash-register" color={!facturar ? color.darkGray : color.primary}size={40} />
@@ -385,18 +405,18 @@ const RepairDetailScreen = ({ route }: any) => {
               <MaterialCommunityIcons name="cash-check" color={!facturar ? color.darkGray : color.primary}size={40} />
               <Text style={styles.textButton}>RECIBO DE PAGO</Text>
             </TouchableOpacity>
-            }
+            } */}
           </View>
           <View style={styles.formContainer}>
             <Text style={styles.formTitle}>Formulario de Reparación</Text>
             {orderRepair?.repairType?.fields?.map((field: RepairField) => renderField(field))}
             {successMessage ? <Text style={styles.successMessage}>{successMessage}</Text> : null}
 
-            <View style={styles.buttonContainer}>
+            {/* <View style={styles.buttonContainer}>
               <Text style={styles.submitButton} onPress={handleSubmit}>
                 Enviar
               </Text>
-            </View>
+            </View> */}
           </View>
         </>
       )}

@@ -1,0 +1,232 @@
+mutation CreateProduct($createInput: CreateProductInput!) {
+  createProduct(createInput: $createInput) {
+    id
+  }
+}
+mutation UpdateProduct($updateInput: UpdateProductsInput!) {
+  updateProduct(updateInput: $updateInput) {
+    id
+  }
+}
+
+query Products($orderBy: [FindProductsOrderBy!], $where: FindProductsWhere, $pagination: Pagination) {
+  Products(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    name
+    description
+    salePrice
+    costPrice
+    tax
+    unitOfMeasure
+    isActive
+    expirationDate
+    isShowPublic
+    minStock
+    stock {
+      id
+      entrada_producto
+      salida_producto
+      stock
+      name
+    }
+  }
+  ProductsCount(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    totalItems
+    itemsPerPage
+    totalPages
+    currentPage
+  }
+}
+query Product($productId: ID!) {
+  Product(id: $productId) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    name
+    description
+    salePrice
+    costPrice
+    tax
+    unitOfMeasure
+    isActive
+    expirationDate
+    minStock
+    stock {
+      id
+      entrada_producto
+      salida_producto
+      stock
+      name
+    }
+  }
+}
+
+mutation CreateProductInflow($createInput: CreateProductInflowInput!) {
+  createProductInflow(createInput: $createInput) {
+    id
+  }
+}
+
+mutation UpdateProductInflow($updateInput: UpdateProductsInflowInput!) {
+  updateProductInflow(updateInput: $updateInput) {
+    id
+  }
+}
+
+query ProductsInflows($orderBy: [FindProductsInflowOrderBy!], $where: FindProductsInflowWhere, $pagination: Pagination) {
+  ProductsInflows(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    quantity
+    inflowDate
+    status
+    description
+    product {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      description
+      salePrice
+      costPrice
+      tax
+      unitOfMeasure
+      isActive
+      expirationDate
+    }
+    user {
+      email
+      fullName
+      id
+      identificationNumber
+    }
+  }
+  ProductsInflowsCount(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    currentPage
+    itemsPerPage
+    totalItems
+    totalPages
+  }
+}
+query ProductInflow($productInflowId: ID!) {
+  ProductInflow(id: $productInflowId) {
+      id
+    createdAt
+    updatedAt
+    deletedAt
+    quantity
+    inflowDate
+    description
+    product {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      description
+      salePrice
+      costPrice
+      tax
+      unitOfMeasure
+      isActive
+      expirationDate
+    }
+    user {
+      email
+      fullName
+      id
+      identificationNumber
+    }  
+  }
+}
+
+mutation CreateProductOutflow($createInput: CreateProductOutflowInput!) {
+  createProductOutflow(createInput: $createInput) {
+    id
+  }
+}
+
+mutation UpdateProductOutflow($updateInput: UpdateProductsOutflowInput!) {
+  updateProductOutflow(updateInput: $updateInput) {
+    id
+  }
+}
+
+query ProductsOutflows($orderBy: [FindProductsOutflowOrderBy!], $where: FindProductsOutflowWhere, $pagination: Pagination) {
+  ProductsOutflows(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    inflowDate
+    description
+    paymentMethod
+    status
+    invoiceNumber
+    client {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      lastName
+      numberDocument
+      email
+      address
+      celular
+    }
+    invoiceProducts {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      quantity
+      unitPrice
+      subtotal
+      discount
+      tax
+      total
+      product {
+        costPrice
+        id
+        name
+        tax
+        salePrice
+      }
+    }
+    invoiceServices {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      quantity
+      unitPrice
+      subtotal
+      discount
+      tax
+      total
+      service {
+        id
+        createdAt
+        updatedAt
+        deletedAt
+        name
+        status
+        costEstimate
+      }
+    }
+  }
+  ProductsOutflowsCount(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    currentPage
+    itemsPerPage
+    totalItems
+    totalPages
+  }
+}

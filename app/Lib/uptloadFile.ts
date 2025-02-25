@@ -1,6 +1,7 @@
 import { FileInfo } from '../graphql/generated/graphql';
 import axios from "axios";
 import * as ImageManipulator from 'expo-image-manipulator';
+import { API_URL_REST } from '../graphql/client';
 
 const compressImage = async (uri: string) => {
   const result = await ImageManipulator.manipulateAsync(
@@ -13,7 +14,7 @@ const compressImage = async (uri: string) => {
 // Función para subir el archivo
 const handleUploadImage = async (file: any,  setProgress: React.Dispatch<React.SetStateAction<number>>) => {
   try {
-    const url = `https://2dw9tmtv-3035.use2.devtunnels.ms/attachment/files`;
+    const url = `${API_URL_REST}attachment/files`;
     const formData = new FormData();
     formData.append('file', {
       uri: await compressImage(file.uri),

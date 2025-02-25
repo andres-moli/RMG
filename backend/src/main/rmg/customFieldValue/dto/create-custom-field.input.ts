@@ -31,4 +31,10 @@ export class CreateCustomFieldValueInput {
   @IsOptional()
   @IsString()
   valorFotoId?: string;
+
+  
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  @IsString()
+  valorSeletor?: string
 }
