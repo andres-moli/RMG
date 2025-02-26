@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, Platform } from 'react-native';
 import { useColor } from '../../Constants/Color';
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 import { Client, useClientsQuery } from '../../graphql/generated/graphql';
@@ -7,7 +7,7 @@ import { Client, useClientsQuery } from '../../graphql/generated/graphql';
 const { color } = useColor();
 
 const ClientList = () => {
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState<string | null>(null);
   const [page, setPage] = useState(1); // Para manejar la paginación
   const [loadingMore, setLoadingMore] = useState(false); // Para controlar la carga de más datos
   const [clients, setClients] = useState<Client[]>([]); // Estado para almacenar los clientes
@@ -26,7 +26,7 @@ const ClientList = () => {
       setLoadingMore(false); // Terminamos de cargar más datos
     }
   });
-
+  
   // Filtra los clientes con base en la búsqueda
   const handleSearch = (text: string) => {
     setSearch(text);
@@ -71,7 +71,7 @@ const ClientList = () => {
       <TextInput
         style={styles.searchInput}
         placeholder="Buscar cliente..."
-        value={search}
+        value={search || ''}
         onChangeText={handleSearch}
       />
       {/* Botón de Crear Cliente */}
@@ -96,6 +96,12 @@ const ClientList = () => {
         onEndReachedThreshold={0.5} // Activar a los 50% de la lista
         onRefresh={onRefresh} // Refrescar la lista
         refreshing={loading} // Mostrar indicador de carga cuando se refresca
+        ListFooterComponent={
+          Platform.OS === 'ios' && (loadingMore ||loading)  ?
+          (<ActivityIndicator size="large" color={color.primary} />)
+          :
+          <></>
+        }
         // ListFooterComponent={loadingMore && <ActivityIndicator size="large" color={color.primary} />} // Indicador de carga al final
       />
     </View>

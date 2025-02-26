@@ -14,6 +14,9 @@ class FindProductsOutflowWhere {
   @Field(() => StringFilter)
   company: StringFilter
 
+  @Field(() => StringFilter)
+  client: StringFilter
+
   @Field(() => DateFilter)
   inflowDate:DateFilter
   

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { OrderTypes, ProductOutflow, useProductsOutflowsQuery } from "../../graphql/generated/graphql";
+import { Client, OrderTypes, ProductOutflow, useProductsOutflowsQuery } from "../../graphql/generated/graphql";
 import { useColor } from "../../Constants/Color";
 import { View, Text, TouchableOpacity, StyleSheet, FlatList, Platform, ActivityIndicator, ScrollView, RefreshControl } from "react-native";
 import moment from "moment"; // Para formatear fechas
@@ -8,6 +8,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons"; // Para los iconos
 import { formatCurrency } from "../../Lib/convertMoney";
 import { handleSendEmail } from "../../Lib/sendMail";
 import { handleSendWhastapp } from "../../Lib/sendWhastapp";
+import SearchUserComponent from "../../components/search/user-input-search";
 
 const { color } = useColor();
 
@@ -20,6 +21,7 @@ const ListReciboScreen = ({navigation}) => {
   const [recibos, setRecibos] = useState<ProductOutflow[]>([]); // Estado para almacenar todos los recibos
   const [showDatePicker, setShowDatePicker] = useState(false); // Para mostrar el selector de fecha
   const [refreshing, setRefreshing] = useState(false); // Estado para el scroll refresh
+  const [selectedClientId, setSelectedClientId] = useState<string | null>(null); // Estado para el cliente seleccionado
 
   const { data, loading, refetch } = useProductsOutflowsQuery({
     variables: {
@@ -78,7 +80,7 @@ const ListReciboScreen = ({navigation}) => {
       });
       setLoadingMore(false); // Detener el indicador de carga
     }
-  }, [data]);
+  }, [data,selectedClientId]);
 
   const openModal = (recibo: ProductOutflow) => {
     // setSelectedRecibo(recibo);
@@ -179,15 +181,67 @@ const ListReciboScreen = ({navigation}) => {
       </TouchableOpacity>
     );
   };
-
+  const handleSelectClient = (client: Client) => {
+    setSelectedClientId(client.id); // Actualiza el estado con el ID del cliente seleccionado
+    setSkip(0); // Reinicia la paginación
+    setRecibos([]); // Reiniciar los recibos
+    refetch({
+      where: {
+        client: { _eq: client.id }, // Filtra por cliente.id
+      },
+      pagination: {
+        skip: 0,
+        take: 10,
+      },
+      orderBy: {
+        createdAt: OrderTypes.Desc,
+      },
+    });
+  };
+  const onRefreshClient = async () => {
+    setRefreshing(true); // Activar el indicador de refresh
+    setSkip(0); // Reinicia la paginación
+    setRecibos([]); // Reiniciar los recibos
+    setSelectedClientId(null)
+    const res = await refetch(
+      {
+        pagination: {
+          skip: 0, // Calculamos el "skip" según la página actual
+          take: 10, // Tomamos 10 elementos por cada petición
+        },
+        orderBy: {
+          createdAt: OrderTypes.Desc,
+        },
+      }
+    )
+    setRecibos(res.data?.ProductsOutflows || [])
+    setRefreshing(false); // Activar el indicador de refresh
+  }
   // Calcular el total de los recibos
   const totalRecibos = recibos.length;
 
   return (
-    <View style={{ padding: 20 }}>
+    <View style={{ padding: 20, flex: 1 }}>
       {/* Total de los recibos */}
+      <View style={
+          {
+            height: 50,
+            borderColor: color.primary,
+            marginBottom: 20,
+            // color: color.primary,
+          }
+      }>
+        <SearchUserComponent
+          placeholder="Buscar por cliente"
+          onSelectClient={handleSelectClient}
+          onClear={async ()=>
+            {
+              onRefreshClient()
+            }}
+        />
+      </View>
       <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 20 }}>
-        Total Recibos: {totalRecibos}
+        Total Readacibos: {totalRecibos}
       </Text>
 
       {/* Lista de recibos con Scroll Refresh */}

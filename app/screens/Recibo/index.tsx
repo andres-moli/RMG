@@ -251,11 +251,11 @@ const ReciboPagoScreen = () => {
       />
 
       {/* Mostrar información del cliente seleccionado */}
-      {cliente && (
+      {/* {cliente && (
         <View style={styles.clienteContainer}>
           <Text style={styles.clienteText}>Cliente: {cliente.name} {cliente.lastName}</Text>
         </View>
-      )}
+      )} */}
 
       {/* Lista de productos/servicios */}
       {productosServicios.map((item) => (

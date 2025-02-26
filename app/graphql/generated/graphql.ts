@@ -953,6 +953,7 @@ export type FindProductsOutflowOrderBy = {
 export type FindProductsOutflowWhere = {
   _and?: InputMaybe<Array<FindProductsOutflowWhere>>;
   _or?: InputMaybe<Array<FindProductsOutflowWhere>>;
+  client?: InputMaybe<StringFilter>;
   company?: InputMaybe<StringFilter>;
   description?: InputMaybe<StringFilter>;
   inflowDate?: InputMaybe<DateFilter>;

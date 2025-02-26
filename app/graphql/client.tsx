@@ -4,9 +4,11 @@ import { onError } from '@apollo/client/link/error';
 import { setContext } from '@apollo/client/link/context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export const API_URL_REST = 'https://4tpbvf4h-3035.use.devtunnels.ms/'
+// export const API_URL_REST = 'https://4tpbvf4h-3035.use.devtunnels.ms/'
+export const API_URL_REST = 'https://2dw9tmtv-3035.use2.devtunnels.ms/'
 // URL del servidor GraphQL
-const GRAPHQL_URL = 'https://4tpbvf4h-3035.use.devtunnels.ms/graphql'; // Usa tu URL real
+const GRAPHQL_URL = 'https://2dw9tmtv-3035.use2.devtunnels.ms/graphql'; // Usa tu URL real
+// const GRAPHQL_URL = 'https://4tpbvf4h-3035.use.devtunnels.ms/graphql'; // Usa tu URL real
 export const SESSION_COOKIE_KEY = 'your_session_cookie_key'; // Ajusta según tu clave
 export const USER_COOKIES_ROLE = "user_cookies_rol"
 // Configuración del enlace HTTP para Apollo Client

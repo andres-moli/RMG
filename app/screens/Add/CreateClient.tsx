@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Keyboard, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Keyboard, ActivityIndicator, RefreshControl } from 'react-native';
 import { useColor } from '../../Constants/Color';
 import Select, { OptionsSelect } from '../../components/input/Select';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -43,6 +43,7 @@ interface ClientFormProps {
 const ClientForm: React.FC<ClientFormProps> = ({ clientData, setClientData }) => {
   const [findOneClient, { loading }] = useFindOneByDocumentNumberLazyQuery();
   const [findOneClientByNumberQuery, { loading: loadingPhone }] = useFindOneByNumberPhoneLazyQuery();
+  const [refreshing, setRefreshing] = useState(false)
 
 
   const handleInputChange = (name: string, value: string) => {
@@ -122,17 +123,32 @@ const ClientForm: React.FC<ClientFormProps> = ({ clientData, setClientData }) =>
       console.error('Error fetching client:', error);
     }
   };
+  const onRefreshf = async () => {
+    setRefreshing(true)
+    setClientData((prev) => ({
+      nombre: '',
+      apellido: '',
+      email: '',
+      telefono: prev.telefono,
+      numberDocumento: prev.numberDocumento, // Mantener solo el número de documento
+      typeNumberDocument: '',
+      address: ''
+    }));
+    setRefreshing(false)
+  }
   return (
     <KeyboardAwareScrollView
       style={styles.container}
       contentContainerStyle={styles.scrollViewContainer}
       keyboardShouldPersistTaps="handled"
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefreshf}/>
+      }
     >
       <View style={styles.formContainer}>
       <Text style={styles.textPlaceholder}>Bucar cliente</Text>
         <SearchUserComponent 
             onSelectClient={(client)=> {
-              console.log(client)
               setClientData({
                 nombre: client.name,
                 apellido: client.lastName || '',
@@ -142,6 +158,17 @@ const ClientForm: React.FC<ClientFormProps> = ({ clientData, setClientData }) =>
                 typeNumberDocument: client.identificationType || '',
                 address: client.address || ''
               });
+            }}
+            onClear={() => {
+              setClientData((prev) => ({
+                nombre: '',
+                apellido: '',
+                email: '',
+                telefono: prev.telefono,
+                numberDocumento: prev.numberDocumento, // Mantener solo el número de documento
+                typeNumberDocument: '',
+                address: ''
+              }));
             }}
             placeholder={'Buscar por nombre o celular'}
             key={clientData.numberDocumento}

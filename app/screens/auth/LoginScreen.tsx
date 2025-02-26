@@ -17,7 +17,7 @@ import { useSigninMutation } from '../../graphql/generated/graphql';
 import { ToastyErrorGraph } from '../../graphql';
 import { UserContext } from '../../context/UserContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { SESSION_COOKIE_KEY } from '../../graphql/client';
+import { API_URL_REST, SESSION_COOKIE_KEY } from '../../graphql/client';
 
 const { color } = useColor();
 
@@ -134,6 +134,7 @@ const LoginScreen: React.FC = () => {
       </TouchableOpacity>
       <TouchableOpacity>
         {/* Botón de Iniciar Sesión */} 
+        <Text style={styles.forgotPassword}>{API_URL_REST}</Text>
         <Text style={styles.forgotPassword} onPress={()=> {navigation.navigate("ForgotPassword")}}>¿Olvidaste tu contraseña?</Text>
       </TouchableOpacity>
       <Footer />
