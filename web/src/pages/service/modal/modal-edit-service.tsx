@@ -84,7 +84,7 @@ const UpdateRegisterService: React.FC<RegisterModalProps> = ({ isOpen, onClose, 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white p-8 rounded-lg shadow-lg w-[1000px] max-h-[90vh] overflow-y-auto">
         <h2 className="text-3xl font-bold mb-6 text-center">Registrar Servicio</h2>
 

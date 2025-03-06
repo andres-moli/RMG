@@ -9,9 +9,10 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 interface RegisterModalProps {
   isOpen: boolean;
   onClose: () => void;
+  refresh?: () => void;
 }
 
-const RegisterServiceModal: React.FC<RegisterModalProps> = ({ isOpen, onClose }) => {
+const RegisterServiceModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, refresh }) => {
   const [fields, setFields] = useState<RepairField[]>([]);
   const [formValues, setFormValues] = useState<{ [key: string]: string | File }>({});
   const [newFieldName, setNewFieldName] = useState("");
@@ -116,8 +117,13 @@ const RegisterServiceModal: React.FC<RegisterModalProps> = ({ isOpen, onClose })
         toast.dismiss(toastId);
         return;
       }
-
+      
       toast.success("Servicio creado con éxito.");
+      if(refresh){
+        await refresh()
+        onClose()
+        return
+      }
       apolloClient.cache.evict({ fieldName: "OrderRepairsType" });
       setFields([])
     } catch (err) {
@@ -139,7 +145,7 @@ const RegisterServiceModal: React.FC<RegisterModalProps> = ({ isOpen, onClose })
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white p-8 rounded-lg shadow-lg w-[1000px] max-h-[90vh] overflow-y-auto">
         <h2 className="text-3xl font-bold mb-6 text-center">Registrar Servicio</h2>
 

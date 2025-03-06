@@ -364,6 +364,7 @@ export type CreateInvoiceProductInput = {
   productId: Scalars['ID'];
   quantity: Scalars['Float'];
   tax?: InputMaybe<Scalars['Float']>;
+  total?: InputMaybe<Scalars['Float']>;
   unitPrice: Scalars['Float'];
 };
 
@@ -372,6 +373,7 @@ export type CreateInvoiceServiceInput = {
   quantity: Scalars['Float'];
   serviceId: Scalars['ID'];
   tax?: InputMaybe<Scalars['Float']>;
+  total?: InputMaybe<Scalars['Float']>;
   unitPrice: Scalars['Float'];
 };
 
@@ -482,6 +484,7 @@ export type CreateProductOutflowInput = {
   inflowDate: Scalars['DateTime'];
   invoiceProducts: Array<CreateInvoiceProductInput>;
   invoiceServices: Array<CreateInvoiceServiceInput>;
+  manually?: InputMaybe<Scalars['Boolean']>;
   paymentMethod: PaymentMethodEnum;
   status: StatusInvoice;
 };
@@ -761,6 +764,7 @@ export type FindClientOrderBy = {
 export type FindClientWhere = {
   _and?: InputMaybe<Array<FindClientWhere>>;
   _or?: InputMaybe<Array<FindClientWhere>>;
+  celular?: InputMaybe<StringFilter>;
   department?: InputMaybe<StringFilter>;
   lastName?: InputMaybe<StringFilter>;
   name?: InputMaybe<StringFilter>;
@@ -950,6 +954,7 @@ export type FindProductsOutflowOrderBy = {
 export type FindProductsOutflowWhere = {
   _and?: InputMaybe<Array<FindProductsOutflowWhere>>;
   _or?: InputMaybe<Array<FindProductsOutflowWhere>>;
+  client?: InputMaybe<StringFilter>;
   company?: InputMaybe<StringFilter>;
   description?: InputMaybe<StringFilter>;
   inflowDate?: InputMaybe<DateFilter>;
@@ -1961,6 +1966,7 @@ export type ProductOutflow = {
   invoiceNumber: Scalars['String'];
   invoiceProducts: Array<InvoiceProduct>;
   invoiceServices: Array<InvoiceService>;
+  manually?: Maybe<Scalars['Boolean']>;
   paymentMethod: PaymentMethodEnum;
   status: StatusInvoice;
   updatedAt: Scalars['DateTime'];
@@ -3286,6 +3292,7 @@ export type UpdateProductsOutflowInput = {
   inflowDate?: InputMaybe<Scalars['DateTime']>;
   invoiceProducts?: InputMaybe<Array<CreateInvoiceProductInput>>;
   invoiceServices?: InputMaybe<Array<CreateInvoiceServiceInput>>;
+  manually?: InputMaybe<Scalars['Boolean']>;
   paymentMethod?: InputMaybe<PaymentMethodEnum>;
   status?: InputMaybe<StatusInvoice>;
 };

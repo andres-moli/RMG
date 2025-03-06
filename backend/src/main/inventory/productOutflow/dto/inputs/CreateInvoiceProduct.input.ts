@@ -13,6 +13,8 @@ export class CreateInvoiceProductInput {
 
   @Field(() => Float, { nullable: true })
   tax?: number;
+  @Field(() => Float, { nullable: true })
+  total?: number;
 
   @Field(() => ID)
   productId: string;
@@ -30,6 +32,9 @@ export class CreateInvoiceServiceInput {
 
   @Field(() => Float, { nullable: true })
   tax?: number;
+
+  @Field(() => Float, { nullable: true })
+  total?: number;
 
   @Field(() => ID)
   serviceId: string;

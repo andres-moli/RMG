@@ -52,49 +52,78 @@ export class ProductsOutflowService extends CrudServiceFrom(serviceStructure) {
   async afterCreate(context: IContext, repository: Repository<ProductOutflow>, entity: ProductOutflow, createInput: CreateProductOutflowInput): Promise<void> {
     await this.CreateDetailInvoice(context,createInput,entity)
   }
-  async CreateDetailInvoice(context: IContext,createInput: CreateProductOutflowInput, entity: ProductOutflow){
+  async CreateDetailInvoice(
+    context: IContext,
+    createInput: CreateProductOutflowInput,
+    entity: ProductOutflow
+  ) {
+    // Lógica para productos
     for (const invoiceProductDTO of createInput.invoiceProducts) {
-      const { quantity, unitPrice, discount = 0, tax = 0, productId } = invoiceProductDTO;
-      const productDetail = await this.productService.findOne(context,productId,true);
-      const subtotal = quantity * productDetail.salePrice;
-      const descuento = (subtotal * discount) / 100;
-      const impuesto = (subtotal * tax) / 100;
-      const total=  subtotal - descuento + impuesto;
-      // const subtotal = quantity * productDetail.salePrice;
-      // const total = (subtotal - discount) + tax;
-
+      const { quantity, unitPrice, discount = 0, tax = 0, productId, total: manualTotal } = invoiceProductDTO;
+      console.log(manualTotal)
+      const productDetail = await this.productService.findOne(context, productId, true);
+  
+      let subtotal, descuento, impuesto, total;
+  
+      if (createInput.manually) {
+        // Cálculo manual: usar el total proporcionado por el usuario
+        subtotal = quantity * productDetail.salePrice;
+        descuento = 0; // Descuento e impuesto se ignoran en modo manual
+        impuesto = 0;
+        total = manualTotal || 0; // Usar el total manual
+      } else {
+        // Cálculo automático
+        subtotal = quantity * productDetail.salePrice;
+        descuento = (subtotal * discount) / 100;
+        impuesto = (subtotal * tax) / 100;
+        total = subtotal - descuento + impuesto;
+      }
+  
       const invoiceProduct = this.invoiceProductRepository.create({
         quantity,
         unitPrice: productDetail.salePrice,
         subtotal,
-        discount,
-        tax,
+        discount: createInput.manually  ? discount : 0, // Descuento solo en modo automático
+        tax: createInput.manually  ? tax : 0, // Impuesto solo en modo automático
         total,
         product: productDetail,
-        productOutflow: entity
+        productOutflow: entity,
       });
-
+  
       await this.invoiceProductRepository.save(invoiceProduct);
     }
-    for(const invoiceServiceDTO of createInput.invoiceServices){
-      const { quantity, unitPrice, discount = 0, tax = 0, serviceId } = invoiceServiceDTO;
-      const service = await this.ordertypeService.findOne(context,serviceId,true);
-      const subtotal = quantity * service.costEstimate;
-      const descuento = (subtotal * discount) / 100;
-      const impuesto = (subtotal * tax) / 100;
-      const total=  subtotal - descuento + impuesto;
-
+  
+    // Lógica para servicios
+    for (const invoiceServiceDTO of createInput.invoiceServices) {
+      const { quantity, unitPrice, discount = 0, tax = 0, serviceId, total: manualTotal } = invoiceServiceDTO;
+      const service = await this.ordertypeService.findOne(context, serviceId, true);
+      let subtotal, descuento, impuesto, total;
+  
+      if (createInput.manually) {
+        // Cálculo manual: usar el total proporcionado por el usuario
+        subtotal = quantity * service.costEstimate;
+        descuento = 0; // Descuento e impuesto se ignoran en modo manual
+        impuesto = 0;
+        total = manualTotal || 0; // Usar el total manual
+      } else {
+        // Cálculo automático
+        subtotal = quantity * service.costEstimate;
+        descuento = (subtotal * discount) / 100;
+        impuesto = (subtotal * tax) / 100;
+        total = subtotal - descuento + impuesto;
+      }
+  
       const invoiceService = this.invoiceServiceRepository.create({
         quantity,
         unitPrice: service.costEstimate,
         subtotal,
-        discount,
-        tax,
+        discount: createInput.manually  ? discount : 0, // Descuento solo en modo automático
+        tax: createInput.manually  ? tax : 0, // Impuesto solo en modo automático
         total,
         service: service,
-        productOutflow: entity
+        productOutflow: entity,
       });
-
+  
       await this.invoiceServiceRepository.save(invoiceService);
     }
   }

@@ -7,6 +7,7 @@ import { apolloClient } from "../../../main.config";
 interface RegisterModalProps {
   isOpen: boolean;
   onClose: () => void;
+  refresh?: () => void;
 }
 const typeDocumentsOptions: { key: string; value: string | number }[] = [
   {
@@ -26,7 +27,7 @@ const typeDocumentsOptions: { key: string; value: string | number }[] = [
     value: "Permiso de permanencia espacial"
   },
 ]
-const RegisterClientModal: React.FC<RegisterModalProps> = ({ isOpen, onClose }) => {
+const RegisterClientModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, refresh }) => {
   const [createUser] = useCreateClientMutation()
   const [formData, setFormData] = useState({
     name: "",
@@ -107,6 +108,11 @@ const RegisterClientModal: React.FC<RegisterModalProps> = ({ isOpen, onClose }) 
         return
       }
       toast.success('Usuario creado...');
+      if(refresh){
+        await refresh()
+        onClose()
+        return
+      }
       apolloClient.cache.evict({ fieldName: "clients" })
     } catch (err) {
         ToastyErrorGraph(err as any)
@@ -128,7 +134,7 @@ const RegisterClientModal: React.FC<RegisterModalProps> = ({ isOpen, onClose }) 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white p-6 rounded-lg w-[800px] shadow-lg max-h-[80vh] overflow-y-auto">
         <h2 className="text-2xl font-bold mb-4">Registro de Cliente</h2>
         <form onSubmit={handleSubmit}>

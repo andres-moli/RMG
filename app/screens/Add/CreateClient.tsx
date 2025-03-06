@@ -205,7 +205,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ clientData, setClientData }) =>
         <Select
           onSelect={(text) => handleInputChange('typeNumberDocument', text)}
           options={typeDocumentsOptions}
-          selectedOption={clientData.typeNumberDocument || ''}
+          selectedOption={clientData.typeNumberDocument || UserDocumentTypes.CitizenshipCard}
           placeholder="Seleccione un tipo de documento"
         />
 

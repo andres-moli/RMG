@@ -25,7 +25,7 @@ const StepProgress = ({navigation}) => {
     email: '',
     telefono: '',
     numberDocumento: '',
-    typeNumberDocument: '',
+    typeNumberDocument: UserDocumentTypes.CitizenshipCard,
     address: ''
   });
   const [repairData, setRepairData] = useState<any>(null);
@@ -35,7 +35,7 @@ const StepProgress = ({navigation}) => {
   const [loading, setLoading] = useState(false); // Estado para cargar
   
   useEffect(()=>{
-    if (clientData.nombre && clientData.apellido && clientData.email && clientData.telefono){
+    if (clientData.telefono){
       setnextDisabled(true)
     }else {
       setnextDisabled(false)
@@ -91,7 +91,7 @@ const StepProgress = ({navigation}) => {
         numberDocument: clientData.numberDocumento,
         celular: clientData.telefono,
         email: clientData.email,
-        identificationType: clientData.typeNumberDocument as UserDocumentTypes,
+        identificationType: clientData.typeNumberDocument || UserDocumentTypes.CitizenshipCard as UserDocumentTypes,
         address: clientData.address
       },
       repairTypeId: data.repairTypeId,

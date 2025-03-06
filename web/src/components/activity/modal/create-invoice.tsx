@@ -85,7 +85,7 @@ const CreateInovice: React.FC<CommentModalProps> = ({ isOpen, onClose, orderRepa
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white p-6 rounded-lg w-[800px] shadow-xl max-h-[80vh] overflow-y-auto">
         <h2 className="text-2xl font-bold mb-4 text-center text-gray-800">Crear recibo de pago</h2>
         <div className="space-y-4">

@@ -7,8 +7,9 @@ import { apolloClient } from "../../../main.config";
 interface RegisterModalProps {
   isOpen: boolean;
   onClose: () => void;
+  refresh?: () => void;
 }
-const RegisterModalProducts: React.FC<RegisterModalProps> = ({ isOpen, onClose }) => {
+const RegisterModalProducts: React.FC<RegisterModalProps> = ({ isOpen, onClose, refresh }) => {
   const [createUser] = useCreateProductMutation()
   const [formData, setFormData] = useState({
     name: "",
@@ -77,6 +78,11 @@ const RegisterModalProducts: React.FC<RegisterModalProps> = ({ isOpen, onClose }
         return
       }
       toast.success('Producto creado...');
+      if(refresh){
+        await refresh()
+        onClose()
+        return
+      }
       apolloClient.cache.evict({ fieldName: "Products" })
     } catch (err) {
         ToastyErrorGraph(err as any)

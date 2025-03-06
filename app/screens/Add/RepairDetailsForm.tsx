@@ -9,6 +9,7 @@ import * as ImagePicker from 'expo-image-picker';
 import DatePickerComponent from '../../components/input/FormDate';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import mime from 'mime';
+import { formatCurrency } from '../../Lib/convertMoney';
 const { color } = useColor();
 
 const RepairDetailsForm = forwardRef(({ onSubmit }: { onSubmit: (data: any) => void }, ref: any) => {
@@ -46,7 +47,7 @@ const RepairDetailsForm = forwardRef(({ onSubmit }: { onSubmit: (data: any) => v
   const option: OptionsSelect[] = repairsType.map((re) => {
     return {
       key: re.id,
-      value: re.name,
+      value: re.name + '-' + formatCurrency(re.costEstimate || 0),
     };
   });
 

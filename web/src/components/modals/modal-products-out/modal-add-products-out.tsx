@@ -6,6 +6,10 @@ import { apolloClient } from "../../../main.config";
 import { PiPlus } from "react-icons/pi";
 import { BiTrash } from "react-icons/bi";
 import SearchableSelect from "../../SelectFind/selectFind";
+import RegisterClientModal from "../modal-client/modal-add-client";
+import RegisterServiceModal from "../../../pages/service/modal/modal-add-service";
+import RegisterModalProducts from "../modal-products/modal-add-products";
+import RegisterModalProductsEntry from "../modal-products-entry/modal-add-products-entry";
 
 interface RegisterModalProps {
   isOpen: boolean;
@@ -24,8 +28,12 @@ const RegisterModalProductsOut: React.FC<RegisterModalProps> = ({ isOpen, onClos
   const [description, setDescription] = useState<string>();
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodEnum>();
   const [items, setItems] = useState([{ type: 'product', id: '', quantity: 1, discount: 0, tax: 0, unitPrice: 0, total: 0 }]);
-
-  const { data, loading } = useClientsQuery({
+  const [calculationMethod, setCalculationMethod] = useState<'manual' | 'auto'>('auto');
+  const [isOpenModalCliente,setOpenModalCliente] = useState(false)
+  const [isOpenModalService,setOpenModalService] = useState(false)
+  const [isOpenModalProduct,setOpenModalProduct] = useState(false)
+  const [isOpenModalProductEntry,setOpenModalProductEntry] = useState(false)
+  const { data, loading, refetch } = useClientsQuery({
     variables: {
       orderBy: { createdAt: OrderTypes.Desc },
       pagination: { skip: 0, take: 99999999 }
@@ -37,36 +45,41 @@ const RegisterModalProductsOut: React.FC<RegisterModalProps> = ({ isOpen, onClos
     value: x.name + ' ' + x.lastName + " - " + x.numberDocument,
   })) || [];
 
-  const { data: productsData, loading: productsLoading } = useProductsQuery({
+  const { data: productsData, loading: productsLoading, refetch: refetchProduct } = useProductsQuery({
     variables: {
       where: { isActive: { _eq: 'true' } },
+      orderBy: {
+        name: OrderTypes.Asc
+      },
       pagination: { skip: 0, take: 99999999 }
     }
   });
 
   const optionProductList = productsData?.Products.map((p) => ({
     key: p.id,
-    value: p.name + " - " + p.salePrice,
+    value: p.name + " - " + formatCurrency(p.salePrice),
   })) || [];
 
-  const { data: serviceData, loading: serviceLoading } = useOrderRepairsTypeQuery({
+  const { data: serviceData, loading: serviceLoading, refetch: refetchService } = useOrderRepairsTypeQuery({
     variables: {
       where: {},
+      orderBy: {
+        createdAt: OrderTypes.Desc
+      },
       pagination: { skip: 0, take: 99999999 }
     }
   });
 
   const optionServiceList = serviceData?.orderRepairsType.filter((s) => s.status).map((p) => ({
     key: p.id,
-    value: p.name + " - " + p.costEstimate,
+    value: p.name + " - " + formatCurrency(p.costEstimate || 0),
   })) || [];
 
   const handleItemChange = (index: number, field: string, value: string | number) => {
     const updatedItems = [...items];
     updatedItems[index][field] = value;
-
+  
     if (field === 'type' || field === 'id') {
-      // Si cambia el tipo o el ID, recalcular el precio unitario
       const item = updatedItems[index];
       if (item.type === 'product') {
         const product = productsData?.Products.find((p) => p.id === item.id);
@@ -76,17 +89,21 @@ const RegisterModalProductsOut: React.FC<RegisterModalProps> = ({ isOpen, onClos
         updatedItems[index].unitPrice = service?.costEstimate || 0;
       }
     }
-
-    // Calcular el total
-    const { quantity, discount, tax, unitPrice } = updatedItems[index];
-    const subtotal = unitPrice * quantity;
-    const discountAmount = (subtotal * discount) / 100;
-    const taxAmount = (subtotal * tax) / 100;
-    updatedItems[index].total = subtotal - discountAmount + taxAmount;
-
+  
+    if (calculationMethod === 'auto') {
+      const { quantity, discount, tax, unitPrice } = updatedItems[index];
+      const subtotal = unitPrice * quantity;
+      const discountAmount = (subtotal * discount) / 100;
+      const taxAmount = (subtotal * tax) / 100;
+      updatedItems[index].total = subtotal - discountAmount + taxAmount;
+    }
+    if(field == 'quantity' && calculationMethod === 'manual'){
+      const { total, quantity } = updatedItems[index];
+      updatedItems[index].total = total * quantity
+    }
+  
     setItems(updatedItems);
   };
-
   const addItem = () => {
     setItems([...items, { type: 'product', id: '', quantity: 1, discount: 0, tax: 0, unitPrice: 0, total: 0 }]);
   };
@@ -124,22 +141,24 @@ const RegisterModalProductsOut: React.FC<RegisterModalProps> = ({ isOpen, onClos
     try {
       const invoiceProducts = items
         .filter((item) => item.type === 'product')
-        .map(({ id, quantity, discount, tax, unitPrice }) => ({
+        .map(({ id, quantity, discount, tax, unitPrice,total }) => ({
           productId: id,
           quantity,
           discount,
           tax,
           unitPrice,
+          total: calculationMethod === 'manual' ? total : undefined
         }));
 
       const invoiceServices = items
         .filter((item) => item.type === 'service')
-        .map(({ id, quantity, discount, tax, unitPrice }) => ({
+        .map(({ id, quantity, discount, tax, unitPrice, total }) => ({
           serviceId: id,
           quantity,
           discount,
           tax,
           unitPrice,
+          total: calculationMethod === 'manual' ? total : undefined
         }));
 
       const resMutation = await createUser({
@@ -150,6 +169,7 @@ const RegisterModalProductsOut: React.FC<RegisterModalProps> = ({ isOpen, onClos
             inflowDate: new Date(),
             paymentMethod: paymentMethod as PaymentMethodEnum,
             status: StatusInvoice.Pagada,
+            manually: calculationMethod === 'manual',
             invoiceProducts,
             invoiceServices,
           }
@@ -175,18 +195,49 @@ const RegisterModalProductsOut: React.FC<RegisterModalProps> = ({ isOpen, onClos
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white p-6 rounded-lg  w-[90%] shadow-lg max-h-[80vh] overflow-y-auto">
         <h2 className="text-2xl font-bold mb-4">Entrada de productos y servicios</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
+          <div className="space-y-4">
+            <button 
+              type="button" 
+              className="bg-blue-500 text-white px-4 py-2 rounded-md mb-4 mx-4" 
+              onClick={() => setOpenModalCliente(true)}
+            >
+              Crear Cliente
+            </button>
+            <button 
+              type="button" 
+              className="bg-orange-500 text-white px-4 py-2 rounded-md mb-4 mx-4" 
+              onClick={() => setOpenModalService(true)}
+            >
+              Crear Servicio
+            </button>
+            <button 
+              type="button" 
+              className="bg-blue-500 text-white px-4 py-2 rounded-md mb-4 mx-4" 
+              onClick={() => setOpenModalProduct(true)}
+            >
+              Crear Producto
+            </button>
+            <button 
+              type="button" 
+              className="bg-orange-500 text-white px-4 py-2 rounded-md mb-4 mx-4" 
+              onClick={() => setOpenModalProductEntry(true)}
+            >
+              Crear Entrada Producto
+            </button>
+          </div>
+
             <SearchableSelect
               value={clientId}
               onChange={(value) => setClientId(value)}
               options={optionClient}
               placeholder="Seleccione un cliente"
             />
-            <label htmlFor="identificationType" className="block text-sm font-medium">Tipo de Identificación</label>
+            <label htmlFor="identificationType" className="block text-sm font-medium">Metodo de pago</label>
             <select
               id="identificationType"
               name="identificationType"
@@ -199,6 +250,29 @@ const RegisterModalProductsOut: React.FC<RegisterModalProps> = ({ isOpen, onClos
                 <option key={id.key} value={id.key}>{id.value}</option>
               ))}
             </select>
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium">Método de cálculo:</label>
+            <div>
+              <label>
+                <input
+                  type="radio"
+                  value="auto"
+                  checked={calculationMethod === 'auto'}
+                  onChange={() => setCalculationMethod('auto')}
+                />
+                Automático (con descuento e impuesto)
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  value="manual"
+                  checked={calculationMethod === 'manual'}
+                  onChange={() => setCalculationMethod('manual')}
+                />
+                Manual
+              </label>
+            </div>
           </div>
           <label htmlFor="description" className="block text-sm font-medium">Descripción</label>
           <textarea
@@ -253,28 +327,31 @@ const RegisterModalProductsOut: React.FC<RegisterModalProps> = ({ isOpen, onClos
                       />
                     </td>
                     <td className="w-1/12">
-                      <input
-                        type="number"
-                        value={item.discount}
-                        onChange={(e) => handleItemChange(index, 'discount', parseFloat(e.target.value) || 0)}
-                        className="w-full p-2 border border-gray-300 rounded"
-                      />
-                    </td>
-                    <td className="w-1/12">
-                      <input
-                        type="number"
-                        value={item.tax}
-                        onChange={(e) => handleItemChange(index, 'tax', parseFloat(e.target.value) || 0)}
-                        className="w-full p-2 border border-gray-300 rounded"
-                      />
-                    </td>
-                    <td className="w-1/6 p-1 text-right">
-                      <input
-                        type="number"
-                        value={item.total.toFixed(2)}
-                        className="w-full p-2 border border-gray-300 rounded"
-                        disabled
-                      />
+                        <input
+                          type="number"
+                          value={item.discount}
+                          onChange={(e) => handleItemChange(index, 'discount', parseFloat(e.target.value) || 0)}
+                          className="w-full p-2 border border-gray-300 rounded"
+                          disabled={calculationMethod === 'manual'}
+                        />
+                      </td>
+                      <td className="w-1/12">
+                        <input
+                          type="number"
+                          value={item.tax}
+                          onChange={(e) => handleItemChange(index, 'tax', parseFloat(e.target.value) || 0)}
+                          className="w-full p-2 border border-gray-300 rounded"
+                          disabled={calculationMethod === 'manual'}
+                        />
+                      </td>
+                      <td className="w-1/6 p-1 text-right">
+                        <input
+                          type="number"
+                          value={calculationMethod === 'manual' ? item.total: item.total.toFixed(2)}
+                          onChange={(e) => calculationMethod === 'manual' && handleItemChange(index, 'total', parseFloat(e.target.value) || 0)}
+                          className="w-full p-2 border border-gray-300 rounded"
+                          disabled={calculationMethod === 'auto'}
+                        />
                     </td>
                     <td className="w-1/12 text-center">
                       <BiTrash onClick={() => removeItem(index)} className="text-red-500 cursor-pointer" />
@@ -296,6 +373,26 @@ const RegisterModalProductsOut: React.FC<RegisterModalProps> = ({ isOpen, onClos
           </button>
         </form>
       </div>
+      <RegisterClientModal 
+        isOpen={isOpenModalCliente}
+        onClose={() => setOpenModalCliente(false)}
+        refresh={refetch}
+      />
+      <RegisterServiceModal 
+          isOpen={isOpenModalService}
+          onClose={() => setOpenModalService(false)}
+          refresh={refetchService}
+      />
+      <RegisterModalProducts 
+        isOpen={isOpenModalProduct}
+        onClose={() => setOpenModalProduct(false)}
+        refresh={refetchProduct}
+      />
+      <RegisterModalProductsEntry 
+        isOpen={isOpenModalProductEntry}
+        onClose={() => setOpenModalProductEntry(false)}
+
+      />
     </div>
   );
 };

@@ -17,6 +17,11 @@ export class CreateProductOutflowInput {
   @Field(() => String)
   clientId: string;
 
+  @Field(() => Boolean, { nullable: true })
+  @IsBoolean()
+  @IsOptional()
+  manually?: boolean
+
   @Field(() => String, { nullable: true })
   @IsOptional()
   @IsString()

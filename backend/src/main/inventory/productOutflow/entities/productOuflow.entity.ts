@@ -20,6 +20,9 @@ export class ProductOutflow extends CrudEntity {
   @Field(() => Date)
   inflowDate: Date;
 
+  @Column({default: false, nullable: true})
+  @Field(() => Boolean, {nullable: true})
+  manually?: boolean;
   @Column({ nullable: true })
   @Field(() => String, { nullable: true })
   description?: string;  // Notas adicionales sobre la entrada de productos
