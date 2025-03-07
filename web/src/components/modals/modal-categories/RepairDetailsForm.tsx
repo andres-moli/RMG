@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useImperativeHandle, forwardRef } from "react";
 import { CustomFieldValue, FieldTypeEnum, OrderTypes, RepairField, useOrderRepairsTypeQuery } from "../../../domain/graphql";
 import mime from "mime";
+import { formatCurrency } from "../../../lib/utils";
 
 const RepairDetailsForm = forwardRef(({ onSubmit }: { onSubmit: (data: any) => void }, ref: any) => {
   const [selectTypeRepair, setSelectTypeRepair] = useState<string | undefined>();
@@ -23,9 +24,11 @@ const RepairDetailsForm = forwardRef(({ onSubmit }: { onSubmit: (data: any) => v
   const repairsType = data?.orderRepairsType.filter((type) => type.status) || [];
   const options = repairsType.map((repair) => ({
     key: repair.id,
-    value: repair.name,
+    value: repair.name + ' - ' + formatCurrency(repair.costEstimate || 0),
   }));
-
+  useEffect(() => {
+    window.scrollTo(0,0)
+  }, [])
   useEffect(() => {
     if (selectTypeRepair) {
       const selectedRepair = repairsType.find((repair) => repair.id === selectTypeRepair);

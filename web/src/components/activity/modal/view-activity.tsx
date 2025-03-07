@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { CustomFieldValue, OrderRepairty, OrderStatusEnum, useAnularInovoiceByRepairMutation, useCreateUserMutation, User, UserDocumentTypes, UserTypes, useUpdateOrderRepairMutation, useUpdateUserMutation } from "../../../domain/graphql";
 import { toast } from "sonner";
-import { ToastyErrorGraph } from "../../../lib/utils";
+import { formatCurrency, ToastyErrorGraph } from "../../../lib/utils";
 import { apolloClient } from "../../../main.config";
 import dayjs from "dayjs";
 import { getStatusLabel } from "../tables/activity-table";
@@ -155,7 +155,7 @@ const ViewActivityModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, visi
                   type="text"
                 id="description"
                 name="description"
-                value={visit.repairType.name}
+                value={visit.repairType.name + ' - ' + formatCurrency(visit.repairType.costEstimate || 0)}
                 disabled
                 //   onChange={handleChange}
                 className={`mt-1 block w-full p-2 border border-gray-300 rounded-md`}
