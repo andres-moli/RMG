@@ -54,6 +54,22 @@ const EditModalProductsOut: React.FC<RegisterModalProps> = ({ isOpen, onClose, p
               value={product.status}
               className={`mt-1 block w-full p-2 border border-gray-300 rounded-md`}
             />
+            {
+              product.description
+              &&
+              (
+                <>
+                  <label htmlFor="description" className="block text-sm font-medium">Descripción</label>
+                  <textarea
+                  disabled
+                    id="description"
+                    name="description"
+                    value={product.description}
+                    className={`mt-1 block w-full p-2 border border-gray-300 rounded-md`}
+                  />         
+                </>
+              )
+            }
             <h3 className="bottom-4 right-4 mt-4 text-lg font-semibold">
               Total recibo de pago: {formatCurrency(calculateTotalInvoice())}
             </h3>

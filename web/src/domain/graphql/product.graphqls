@@ -168,6 +168,7 @@ query ProductsOutflows($orderBy: [FindProductsOutflowOrderBy!], $where: FindProd
     inflowDate
     description
     paymentMethod
+    manually
     status
     invoiceNumber
     client {

@@ -39,11 +39,16 @@ export const dowlonadProductInoices = (invoiceData: ProductOutflow) => {
         
         .company-logo img {
           width: 150px;
+          display: block; /* Convierte la imagen en un bloque */
+          margin-right: auto; /* Alinea a la izquierda */
+
         }
   
         .company-info {
           font-size: 14px;
           margin-top: 5px;
+          text-align: left;
+
         }
   
         .client-info {
@@ -110,6 +115,59 @@ export const dowlonadProductInoices = (invoiceData: ProductOutflow) => {
           pointer-events: none;
           white-space: nowrap;
         }
+          .pago-info {
+            font-family: Arial, sans-serif;
+            color: #333;
+            max-width: 900px; /* Más largo pero menos ancho */
+            text-align: left;
+        }
+
+.mensaje {
+    font-size: 0.9em;
+    margin-bottom: 10px;
+    text-align: left;
+    color: #555;
+}
+                            .mensaje-name {
+                font-size: 0.7em;
+                margin-bottom: 5px;
+                text-align: left;
+                color: #555;
+            }
+.cuentas-container {
+    display: flex;
+    justify-content: space-start;
+     margin-bottom: 20px;
+    gap: 30px; /* Espacio entre las cuentas */
+}
+
+.cuenta {
+    display: flex;
+    align-items: left;
+    gap: 5px; /* Espacio entre el logo y la información */
+}
+
+.banco-logo {
+    width: 25px; /* Logo más pequeño */
+    height: 25px;
+}
+
+.cuenta-info {
+    text-align: left;
+}
+
+.cuenta-info label {
+    font-weight: bold;
+    font-size: 0.8em;
+    color: #2c3e50;
+    display: block;
+}
+
+.cuenta-info p {
+    font-size: 0.8em;
+    margin: 0;
+    color: #555;
+}
       }
     </style>
   </head>
@@ -118,15 +176,6 @@ export const dowlonadProductInoices = (invoiceData: ProductOutflow) => {
     
     <div class="invoice-container">
       <div class="header">
-        <div class="client-info">
-          <strong>Datos del cliente:</strong>
-          <address>
-            ${invoiceData.client.name} ${invoiceData.client.lastName}<br>
-            ${invoiceData.client.numberDocument}<br>
-            ${invoiceData.client.address}<br>
-            ${invoiceData.client.email}
-          </address>
-        </div>
         <div class="company-header">
           <div class="company-logo">
             <img src="/logo3.png" alt="Image">
@@ -134,17 +183,27 @@ export const dowlonadProductInoices = (invoiceData: ProductOutflow) => {
           <div class="company-info">
             <address>
               Calle 42 #33-26, Barranquilla <br>
-              3006734018
+              3006734018 <br>
+              C.C. 8721239
             </address>
-          </div>
+        </div>
         </div>
         <div class="repair-info">
           <strong>Número de Recibo:</strong> ${invoiceData.invoiceNumber}<br>
           <strong>Método de pago:</strong> ${invoiceData.paymentMethod}<br>
-          <strong>Fecha:</strong> ${dayjs(invoiceData.createdAt).locale('es').format('YYYY-MMMM-DD HH:mm:ss')}
+          <strong>Fecha:</strong> ${dayjs(invoiceData.createdAt).locale('es').format('YYYY-MMMM-DD HH:mm:ss')}<br>
+          <strong>Generado:</strong>${dayjs().format("HH:mm")} del día ${dayjs().format("DD")} de ${dayjs().locale('es').format("MM")} de ${dayjs().format("YYYY")}.
         </div>
       </div>
-      
+      <div class="client-info">
+          <strong>Datos del cliente:</strong>
+          <address>
+            ${invoiceData.client.name ? `Nombre: ${invoiceData.client.name} ${invoiceData.client.lastName}<br>` : ''}
+            ${invoiceData.client.numberDocument ? `Numero Documento: ${invoiceData.client.numberDocument}<br>` : ''}
+            ${invoiceData.client.address ? `Dirreción: ${invoiceData.client.address}<br>` : ''}
+            ${invoiceData.client.address ? `Email: ${invoiceData.client.email}<br>` : ''}
+          </address>
+        </div>
       <div class="invoice-body">
         <table class="custom-table">
           <thead>
@@ -160,7 +219,7 @@ export const dowlonadProductInoices = (invoiceData: ProductOutflow) => {
             ${invoiceData.invoiceProducts.map(product => `
               <tr>
                 <td>${product.product.name}</td>
-                <td>${formatCurrency(product.subtotal)}</td>
+                <td>${invoiceData.manually ? formatCurrency(product.total) : formatCurrency(product.subtotal)}</td>
                 <td>${product.quantity}</td>
                 <td>${formatCurrency(product.discount || 0)}</td>
                 <td>${formatCurrency(product.total || 0)}</td>
@@ -169,7 +228,7 @@ export const dowlonadProductInoices = (invoiceData: ProductOutflow) => {
             ${invoiceData.invoiceServices.map(service => `
               <tr>
                 <td>${service.service.name}</td>
-                <td>${formatCurrency(service.subtotal)}</td>
+                <td>${invoiceData.manually ? formatCurrency(service.total) : formatCurrency(service.subtotal)}</td>
                 <td>${service.quantity}</td>
                 <td>${formatCurrency(service.discount || 0)}</td>
                 <td>${formatCurrency(service.total || 0)}</td>
@@ -185,11 +244,35 @@ export const dowlonadProductInoices = (invoiceData: ProductOutflow) => {
           </tbody>
         </table>
       </div>
-      <!-- <div class="invoice-footer">
-        Gracias por su compra, fue un placer atenderlo.
-      </div> -->
       <div class="invoice-footer">
-        Generado a las ${dayjs().format("HH:mm")} del día ${dayjs().format("DD")} de ${dayjs().locale('es').format("MMMM")} de ${dayjs().format("YYYY")}.
+        ${invoiceData.description || ''}
+      </div> 
+      <div class="pago-info">
+        <p class="mensaje">Metodos de pago:</p>
+        <div class="cuentas-container">
+              <div class="cuenta">
+                  <img src="/logo-nequi.jpg" alt="Nequi" class="banco-logo">
+                  <div class="cuenta-info">
+                      <label>Nequi</label>
+                      <p><strong>3006734018</strong></p>
+                  </div>
+              </div>
+              <div class="cuenta">
+                  <img src="/logo-davi.png" alt="Nequi" class="banco-logo">
+                  <div class="cuenta-info">
+                      <label>DaviPlata</label>
+                      <p><strong>3006734018</strong></p>
+                  </div>
+              </div>
+              <div class="cuenta">
+                  <img src="/logo-bancolombia.jpg" alt="Bancolombia" class="banco-logo">
+                  <div class="cuenta-info">
+                      <label>Bancolombia</label>
+                      <p><strong>AHORROS-08100050341</strong></p>
+                  </div>
+              </div>
+          </div>
+        <p class="mensaje-name">RAFAEL MALDONADO G. <br> C.C. 8721239.</p>
       </div>
       <div class="cut-line"></div>
     </div>
