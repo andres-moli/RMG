@@ -94,7 +94,7 @@ export const RECIBO_PAGO_PRODUCTO_SERVICIO = (invoiceData?: ProductOutflow) => {
           }
     
           .invoice-footer {
-            text-align: center;
+            text-align: left;
             margin-top: 10px;
           }
           .cut-line {

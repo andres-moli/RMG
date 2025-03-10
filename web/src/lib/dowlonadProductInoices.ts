@@ -93,7 +93,7 @@ export const dowlonadProductInoices = (invoiceData: ProductOutflow) => {
         }
   
         .invoice-footer {
-          text-align: center;
+          text-align: left;
           margin-top: 10px;
         }
         .cut-line {
