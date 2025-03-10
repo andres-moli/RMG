@@ -235,10 +235,10 @@ export const dowlonadProductInoices = (invoiceData: ProductOutflow) => {
               </tr>
             `).join("")}
             <tr>
-              <td><strong>Total a pagar</strong></td>
               <td></td>
               <td></td>
               <td></td>
+              <td><strong>Total</strong></td>
               <td><strong>${formatCurrency((invoiceData.invoiceProducts?.reduce((total, product) => total + product.total, 0) + invoiceData.invoiceServices?.reduce((total, product) => total + product.total, 0)) || 0)}</strong></td>
             </tr>
           </tbody>
