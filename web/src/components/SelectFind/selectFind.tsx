@@ -8,9 +8,16 @@ interface SearchableSelectProps {
   value: string | number;
   onChange: (value: string | number) => void;
   placeholder?: string;
+  openUp?: boolean; // Nuevo prop para decidir la dirección del menú
 }
 
-const SearchableSelect: React.FC<SearchableSelectProps> = ({ options, value, onChange, placeholder = "Selecciona una opción" }) => {
+const SearchableSelect: React.FC<SearchableSelectProps> = ({
+  options,
+  value,
+  onChange,
+  placeholder = "Selecciona una opción",
+  openUp = false, // Valor por defecto: false (abre hacia abajo)
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -38,7 +45,11 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({ options, value, onC
       </div>
 
       {isOpen && (
-        <div className="absolute z-10 bottom-full mb-2 w-full bg-white border rounded shadow-lg">
+        <div
+          className={`absolute z-10 w-full bg-white border rounded shadow-lg ${
+            openUp ? 'bottom-full mb-2' : 'mt-2'
+          }`}
+        >
           <input
             type="text"
             value={searchTerm}

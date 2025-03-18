@@ -316,6 +316,7 @@ const RegisterModalProductsOut: React.FC<RegisterModalProps> = ({ isOpen, onClos
                         onChange={(value) => handleItemChange(index, 'id', value)}
                         options={item.type === 'product' ? optionProductList : optionServiceList}
                         placeholder={`Seleccione un ${item.type}`}
+                        openUp={true}
                       />
                     </td>
                     <td className="w-1/12">
