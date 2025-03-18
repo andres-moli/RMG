@@ -10,7 +10,7 @@ export const RECIBO_PAGO_PRODUCTO_SERVICIO = (invoiceData?: ProductOutflow) => {
     const htmlContent = `
     <html>
     <head>
-      <title>Recibo producto - ${invoiceData?.invoiceNumber}</title>
+      <title>Cuenta de cobro - ${invoiceData?.invoiceNumber}</title>
       <style>
           body {
             height: auto;
@@ -131,7 +131,6 @@ export const RECIBO_PAGO_PRODUCTO_SERVICIO = (invoiceData?: ProductOutflow) => {
             }
                             .mensaje-name {
                 font-size: 0.7em;
-                margin-bottom: 5px;
                 text-align: left;
                 color: #555;
             }
@@ -173,7 +172,7 @@ export const RECIBO_PAGO_PRODUCTO_SERVICIO = (invoiceData?: ProductOutflow) => {
       </style>
     </head>
     <body>
-      ${invoiceData?.status === StatusInvoice.ANULADA ? '<div class="sello-anulado">RECIBO ANULADO</div>' : ''}
+      ${invoiceData?.status === StatusInvoice.ANULADA ? '<div class="sello-anulado">CUENTA DE COBRO ANULADA</div>' : ''}
       
       <div class="invoice-container">
         <div class="header">
@@ -190,7 +189,7 @@ export const RECIBO_PAGO_PRODUCTO_SERVICIO = (invoiceData?: ProductOutflow) => {
           </div>
           </div>
           <div class="repair-info">
-            <strong>Número de Recibo:</strong> ${invoiceData.invoiceNumber}<br>
+            <strong>Cuenta de cobro:</strong> ${invoiceData.invoiceNumber}<br>
             <strong>Método de pago:</strong> ${invoiceData.paymentMethod}<br>
             <strong>Fecha:</strong> ${dayjs(invoiceData.createdAt).locale('es').format('YYYY-MMMM-DD HH:mm:ss')}<br>
             <strong>Generado:</strong>${dayjs().format("HH:mm")} del día ${dayjs().format("DD")} de ${dayjs().locale('es').format("MM")} de ${dayjs().format("YYYY")}.
@@ -221,7 +220,7 @@ export const RECIBO_PAGO_PRODUCTO_SERVICIO = (invoiceData?: ProductOutflow) => {
               ${invoiceData?.invoiceProducts.map(product => `
                 <tr>
                   <td>${product.product.name}</td>
-                  <td>${formatCurrency(product.subtotal)}</td>
+                  <td>${invoiceData.manually ? formatCurrency(product.total) : formatCurrency(product.subtotal)}</td>
                   <td>${product.quantity}</td>
                   <td>${formatCurrency(product.discount || 0)}</td>
                   <td>${formatCurrency(product.total || 0)}</td>
@@ -230,7 +229,7 @@ export const RECIBO_PAGO_PRODUCTO_SERVICIO = (invoiceData?: ProductOutflow) => {
               ${invoiceData?.invoiceServices.map(service => `
                 <tr>
                   <td>${service.service.name}</td>
-                  <td>${formatCurrency(service.subtotal)}</td>
+                  <td>${invoiceData.manually ? formatCurrency(service.total) : formatCurrency(service.subtotal)}</td>
                   <td>${service.quantity}</td>
                   <td>${formatCurrency(service.discount || 0)}</td>
                   <td>${formatCurrency(service.total || 0)}</td>
@@ -267,7 +266,7 @@ export const RECIBO_PAGO_PRODUCTO_SERVICIO = (invoiceData?: ProductOutflow) => {
                   </div>
               </div>
               <div class="cuenta">
-                  <img src="logo-bancolombia.jpg" alt="Bancolombia" class="banco-logo">
+                  <img src="${process.env.BASE_URL}public/logo-bancolombia.jpg" alt="Bancolombia" class="banco-logo">
                   <div class="cuenta-info">
                       <label>Bancolombia</label>
                       <p><strong>AHORROS-08100050341</strong></p>

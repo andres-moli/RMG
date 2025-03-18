@@ -178,14 +178,14 @@ const ProductOutTable: React.FC = () => {
                     ?
                     <MdMarkEmailUnread />
                     :
-                    <BiMailSend  className="w-5 h-8 text-gray-500 mr-3 cursor-pointer" onClick={()=> handleSendEmail(product.client.email || '', product, 'RECIBO_PAGO_PRODUCTO_SERVICIO',setLoadingEmail)}/>
+                    <BiMailSend title={product.client.email || 'No tiene correo'} className="w-5 h-8 text-gray-500 mr-3 cursor-pointer" onClick={()=> handleSendEmail(product.client.email || '', product, 'RECIBO_PAGO_PRODUCTO_SERVICIO',setLoadingEmail)}/>
                   }
                    {
                     loadginEmial
                     ?
                     <IoLogoWhatsapp />
                     :
-                    <IoLogoWhatsapp   className="w-5 h-8 text-gray-500 mr-3 cursor-pointer" onClick={()=> handleSendWhastapp(product.client.celular || '', product, 'RECIBO_PAGO_PRODUCTO_SERVICIO',setLoadingEmail)}/>
+                    <IoLogoWhatsapp title={product.client.celular || 'No tiene celular'}  className="w-5 h-8 text-gray-500 mr-3 cursor-pointer" onClick={()=> handleSendWhastapp(product.client.celular || '', product, 'RECIBO_PAGO_PRODUCTO_SERVICIO',setLoadingEmail)}/>
                   }
                 </td>
                 {

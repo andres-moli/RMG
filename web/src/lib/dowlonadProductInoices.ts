@@ -11,6 +11,23 @@ export const dowlonadProductInoices = (invoiceData: ProductOutflow) => {
     <title>Recibo de pago - ${invoiceData.invoiceNumber}</title>
     <style>
       @media print {
+        html, body {
+    height: 14.85cm; /* Media hoja A4 */
+    overflow: hidden; /* Evita que se extienda más */
+  }
+
+  .container {
+    width: 100%;
+    height: 14.85cm; /* Media hoja */
+    display: flex;
+    align-items: center; /* Centrar el contenido */
+    justify-content: center;
+  }
+
+  @page {
+    size: A4 portrait; /* Asegura tamaño A4 vertical */
+    margin: 0; /* Elimina márgenes extra */
+  }
         body {
           height: auto;
           margin: 0;
@@ -25,43 +42,52 @@ export const dowlonadProductInoices = (invoiceData: ProductOutflow) => {
           gap: 10px;
         }
         
-        .header {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-start;
-          margin-bottom: 10px;
-        }
-        
-        .company-header {
-          text-align: center;
-          flex: 1;
-        }
-        
-        .company-logo img {
-          width: 150px;
-          display: block; /* Convierte la imagen en un bloque */
-          margin-right: auto; /* Alinea a la izquierda */
+.header {
+  display: flex;
+  flex-direction: column;
+}
 
-        }
-  
-        .company-info {
-          font-size: 14px;
-          margin-top: 5px;
-          text-align: left;
+/* Fila superior: Logo y reparación */
+.top-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  /* Opcional: para que se ajusten bien, puedes controlar el gap */
+  gap: 5px; /* gap mínimo para que queden casi pegados */
+}
 
-        }
-  
-        .client-info {
-          text-align: left;
-          font-size: 14px;
-          width: 45%; /* Ancho para los datos del cliente */
-        }
-  
-        .repair-info {
-          text-align: right;
-          font-size: 14px;
-          width: 45%; /* Ancho para los datos de la reparación */
-        }
+.company-logo img {
+  width: 150px;
+  display: block;
+}
+
+.repair-info {
+  font-size: 14px;
+  align-items: flex-center;
+  /* Si deseas ajustar la separación, puedes usar margin-left en lugar de gap */
+  /* margin-left: 5px; */
+}
+
+/* Fila inferior: Compañía y Cliente */
+.bottom-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 10px;
+}
+
+.company-info {
+  width: 48%;  /* Se reparte el ancho equitativamente */
+  font-size: 14px;
+  text-align: left;
+}
+.client-info {
+  width: 48%;  /* Se reparte el ancho equitativamente */
+  font-size: 14px;
+  text-align: right;
+}
+
+
   
         .invoice-body {
           margin-top: 5px;
@@ -130,7 +156,11 @@ export const dowlonadProductInoices = (invoiceData: ProductOutflow) => {
 }
                             .mensaje-name {
                 font-size: 0.7em;
-                margin-bottom: 5px;
+                text-align: left;
+                color: #555;
+            }
+                                            .mensaje-description {
+                font-size: 0.9em;
                 text-align: left;
                 color: #555;
             }
@@ -176,34 +206,39 @@ export const dowlonadProductInoices = (invoiceData: ProductOutflow) => {
     
     <div class="invoice-container">
       <div class="header">
-        <div class="company-header">
-          <div class="company-logo">
-            <img src="/logo3.png" alt="Image">
-          </div>
-          <div class="company-info">
-            <address>
-              Calle 42 #33-26, Barranquilla <br>
-              3006734018 <br>
-              C.C. 8721239
-            </address>
-        </div>
-        </div>
-        <div class="repair-info">
-          <strong>Número de Recibo:</strong> ${invoiceData.invoiceNumber}<br>
-          <strong>Método de pago:</strong> ${invoiceData.paymentMethod}<br>
-          <strong>Fecha:</strong> ${dayjs(invoiceData.createdAt).locale('es').format('YYYY-MMMM-DD HH:mm:ss')}<br>
-          <strong>Generado:</strong>${dayjs().format("HH:mm")} del día ${dayjs().format("DD")} de ${dayjs().locale('es').format("MM")} de ${dayjs().format("YYYY")}.
-        </div>
-      </div>
-      <div class="client-info">
-          <strong>Datos del cliente:</strong>
-          <address>
-            ${invoiceData.client.name ? `Nombre: ${invoiceData.client.name} ${invoiceData.client.lastName}<br>` : ''}
-            ${invoiceData.client.numberDocument ? `Numero Documento: ${invoiceData.client.numberDocument}<br>` : ''}
-            ${invoiceData.client.address ? `Dirreción: ${invoiceData.client.address}<br>` : ''}
-            ${invoiceData.client.address ? `Email: ${invoiceData.client.email}<br>` : ''}
-          </address>
-        </div>
+  <!-- Fila superior: Logo y datos de reparación -->
+  <div class="top-row">
+    <div class="company-logo">
+      <img src="/logo3.png" alt="Logo">
+    </div>
+    <div class="repair-info">
+      <strong>Número de Recibo:</strong> <br>${invoiceData.invoiceNumber}<br>
+      <strong>Método de pago:</strong> <br>${invoiceData.paymentMethod}<br>
+      <strong>Fecha:</strong> <br>${dayjs(invoiceData.createdAt).locale('es').format('YYYY-MMMM-DD HH:mm:ss')}<br>
+    </div>
+        <div class="client-info">
+      <strong>Datos del cliente:</strong>
+      <address>
+        ${invoiceData.client.name ? `Nombre: ${invoiceData.client.name} ${invoiceData.client.lastName}<br>` : ''}
+        ${invoiceData.client.numberDocument ? `Número Documento: ${invoiceData.client.numberDocument}<br>` : ''}
+        ${invoiceData.client.address ? `Dirección: ${invoiceData.client.address}<br>` : ''}
+        ${invoiceData.client.email ? `Email: ${invoiceData.client.email}<br>` : ''}
+      </address>
+    </div>
+  </div>
+
+  <!-- Fila inferior: Datos de la compañía y datos del cliente -->
+  <div class="bottom-row">
+    <div class="company-info">
+      <address>
+        Calle 42 #33-26, Barranquilla <br>
+        3006734018 <br>
+        C.C. 8721239
+      </address>
+    </div>
+  </div>
+</div>
+
       <div class="invoice-body">
         <table class="custom-table">
           <thead>
@@ -244,7 +279,7 @@ export const dowlonadProductInoices = (invoiceData: ProductOutflow) => {
           </tbody>
         </table>
       </div>
-      <div class="invoice-footer">
+      <div class="mensaje-description">
         ${invoiceData.description || ''}
       </div> 
       <div class="pago-info">

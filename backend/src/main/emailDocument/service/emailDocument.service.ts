@@ -18,7 +18,7 @@ export class EmailDocumentServicePdf {
     switch (type){
       case TYPE_EMAIL_DOCUMETN.RECIBO_PAGO_PRODUCTO_SERVICIO:
         htmlContent = RECIBO_PAGO_PRODUCTO_SERVICIO(data as ProductOutflow)
-        title = `Recibo de pago - ${data?.invoiceNumber || '000000'}`
+        title = `CUENTA DE COBRO - ${data?.invoiceNumber || '000000'}`
         break
       case TYPE_EMAIL_DOCUMETN.COTIZACION: 
         htmlContent = COTIZACION_PRINT_TAMPLATE(data as Cotizacion)
