@@ -38,7 +38,7 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({ options, value, onC
       </div>
 
       {isOpen && (
-        <div className="absolute z-10 mt-2 w-full bg-white border rounded shadow-lg">
+        <div className="absolute z-10 bottom-full mb-2 w-full bg-white border rounded shadow-lg">
           <input
             type="text"
             value={searchTerm}

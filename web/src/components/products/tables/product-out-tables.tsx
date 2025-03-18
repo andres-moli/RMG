@@ -137,6 +137,7 @@ const ProductOutTable: React.FC = () => {
             </th>
             <th scope="col" className="px-6 py-3">Nombre cliente</th>
             <th scope="col" className="px-6 py-3">Metodo de pago</th>
+            <th scope="col" className="px-6 py-3">Valor</th>
             <th scope="col" className="px-6 py-3">Estado</th>
             <th scope="col" className="px-6 py-3">Fecha</th>
             <th scope="col" className="px-6 py-3">Acción</th>
@@ -163,6 +164,7 @@ const ProductOutTable: React.FC = () => {
                 </td>
                 <td className="px-6 py-4">{product.client.name + ' ' + product.client.lastName}</td>
                 <td className="px-6 py-4">{product.paymentMethod}</td>
+                <td className="px-6 py-4">{formatCurrency((product.invoiceProducts?.reduce((total, product) => total + product.total, 0) + product.invoiceServices?.reduce((total, product) => total + product.total, 0)) || 0)}</td>
                 <td className="px-6 py-4">{product.status}</td>
                 <td className="px-6 py-4">{ product.createdAt}</td>
                 <td className="px-6 py-4">
